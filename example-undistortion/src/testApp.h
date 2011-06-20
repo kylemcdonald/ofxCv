@@ -22,4 +22,16 @@ public:
 	bool active;
 	
 	Calibration calibration;
+    
+    //viewports
+    int selectedView;
+    float viewOffset;
+    vector<ofRectangle> viewsPrincipal;
+    vector<ofRectangle> viewsTransformed;
+    
+    //3D scene
+    ofEasyCam   easyCam;
+    
+protected:
+    void calculateViewports();
 };

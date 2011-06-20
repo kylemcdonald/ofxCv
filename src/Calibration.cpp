@@ -192,6 +192,15 @@ namespace ofxCv {
         
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
         
+        //return to pixel space from laa laa land
+        const double fx = ((double*)distortedIntrinsics.getCameraMatrix().data)[0];
+        const double fy = ((double*)distortedIntrinsics.getCameraMatrix().data)[4];
+        const double cx = ((double*)distortedIntrinsics.getCameraMatrix().data)[2];
+        const double cy = ((double*)distortedIntrinsics.getCameraMatrix().data)[5];
+        
+        dst.x = dst.x * fx + cx;
+        dst.y = dst.y * fy + cy;
+        
         return dst;
         
     }
@@ -207,6 +216,18 @@ namespace ofxCv {
         Mat matDst = Mat(nPoints, 1, CV_32FC2, &dst[0].x);
         
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
+        
+        //return to pixel space from laa laa land
+        const double fx = ((double*)distortedIntrinsics.getCameraMatrix().data)[0];
+        const double fy = ((double*)distortedIntrinsics.getCameraMatrix().data)[4];
+        const double cx = ((double*)distortedIntrinsics.getCameraMatrix().data)[2];
+        const double cy = ((double*)distortedIntrinsics.getCameraMatrix().data)[5];
+        //
+        for (int i=0; i<nPoints; i++)
+        {
+            dst[i].x = dst[i].x * fx + cx;
+            dst[i].y = dst[i].y * fy + cy;
+        }
         
     }
     
@@ -242,6 +263,10 @@ namespace ofxCv {
 	const Intrinsics& Calibration::getUndistortedIntrinsics() const {
 		return undistortedIntrinsics;
 	}
+    const vector<vector<Point2f> >& Calibration::getImagePoints()
+    {
+        return imagePoints;
+    }
 	Mat Calibration::getDistCoeffs() const {
 		return distCoeffs;
 	}
