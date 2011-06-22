@@ -13,6 +13,10 @@
 #include "ofConstants.h"
 #include "ofImage.h"
 
+#ifdef TARGET_WIN32
+#include "win32_types.h"
+#endif
+
 /*
 	there should be three kinds of functions:
 	1 utility functions like imitate and toCv
