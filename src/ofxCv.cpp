@@ -244,7 +244,7 @@ namespace ofxCv {
 		matchTemplate(search, sourceMat, result, CV_TM_CCOEFF_NORMED);
 	}
 	
-	ofPoint matchRegion(ofImage& source, ofRectangle& region, ofImage& search) {
+	void matchRegion(ofImage& source, ofRectangle& region, ofImage& search) {
 		FloatImage result;
 		
 		imitate(result, source);
