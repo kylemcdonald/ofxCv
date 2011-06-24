@@ -139,15 +139,15 @@ namespace ofxCv {
 	}
 	bool Calibration::calibrate() {
 		Mat cameraMatrix = Mat::eye(3, 3, CV_64F);
-    distCoeffs = Mat::zeros(8, 1, CV_64F);
+		distCoeffs = Mat::zeros(8, 1, CV_64F);
     
 		updateObjectPoints();
 		
 		int calibFlags = 0;
-    float rms = calibrateCamera(objectPoints, imagePoints, addedImageSize, cameraMatrix, distCoeffs, boardRotations, boardTranslations, calibFlags);
-    ofLog(OF_LOG_VERBOSE, "calibrateCamera() reports RMS error of " + ofToString(rms));
+		float rms = calibrateCamera(objectPoints, imagePoints, addedImageSize, cameraMatrix, distCoeffs, boardRotations, boardTranslations, calibFlags);
+		ofLog(OF_LOG_VERBOSE, "calibrateCamera() reports RMS error of " + ofToString(rms));
 		
-    bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
+		bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
 		
 		if(!ok) {
 			ofLog(OF_LOG_ERROR, "Calibration::calibrate() failed to calibrate the camera");
@@ -262,7 +262,7 @@ namespace ofxCv {
 	const Intrinsics& Calibration::getUndistortedIntrinsics() const {
 		return undistortedIntrinsics;
 	}
-    const vector<vector<Point2f> >& Calibration::getImagePoints()
+    vector<vector<Point2f> >& Calibration::getImagePoints()
     {
         return imagePoints;
     }

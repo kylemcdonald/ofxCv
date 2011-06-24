@@ -73,7 +73,7 @@ namespace ofxCv {
 		const Intrinsics& getUndistortedIntrinsics() const;
 		Mat getDistCoeffs() const;
         
-        const vector<vector<Point2f> >& getImagePoints();
+        vector<vector<Point2f> >& getImagePoints();
 		
 		// if you want a wider fov, say setFillFrame(false) before load() or calibrate()
 		void setFillFrame(bool fillFrame);
