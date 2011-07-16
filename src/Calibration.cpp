@@ -139,16 +139,15 @@ namespace ofxCv {
 	}
 	bool Calibration::calibrate() {
 		Mat cameraMatrix = Mat::eye(3, 3, CV_64F);
-    distCoeffs = Mat::zeros(8, 1, CV_64F);
+		distCoeffs = Mat::zeros(8, 1, CV_64F);
     
 		updateObjectPoints();
 		
 		int calibFlags = 0;
-    float rms = calibrateCamera(objectPoints, imagePoints, addedImageSize, cameraMatrix, distCoeffs, boardRotations, boardTranslations, calibFlags);
-    ofLog(OF_LOG_VERBOSE, "calibrateCamera() reports RMS error of " + ofToString(rms));
-		cout << "should be printing..." << endl;
+		float rms = calibrateCamera(objectPoints, imagePoints, addedImageSize, cameraMatrix, distCoeffs, boardRotations, boardTranslations, calibFlags);
+		ofLog(OF_LOG_VERBOSE, "calibrateCamera() reports RMS error of " + ofToString(rms));
 		
-    bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
+		bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
 		
 		if(!ok) {
 			ofLog(OF_LOG_ERROR, "Calibration::calibrate() failed to calibrate the camera");
@@ -192,6 +191,15 @@ namespace ofxCv {
         
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
         
+        //return to pixel space from laa laa land
+        const double fx = ((double*)distortedIntrinsics.getCameraMatrix().data)[0];
+        const double fy = ((double*)distortedIntrinsics.getCameraMatrix().data)[4];
+        const double cx = ((double*)distortedIntrinsics.getCameraMatrix().data)[2];
+        const double cy = ((double*)distortedIntrinsics.getCameraMatrix().data)[5];
+        
+        dst.x = dst.x * fx + cx;
+        dst.y = dst.y * fy + cy;
+        
         return dst;
         
     }
@@ -207,6 +215,18 @@ namespace ofxCv {
         Mat matDst = Mat(nPoints, 1, CV_32FC2, &dst[0].x);
         
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
+        
+        //return to pixel space from laa laa land
+        const double fx = ((double*)distortedIntrinsics.getCameraMatrix().data)[0];
+        const double fy = ((double*)distortedIntrinsics.getCameraMatrix().data)[4];
+        const double cx = ((double*)distortedIntrinsics.getCameraMatrix().data)[2];
+        const double cy = ((double*)distortedIntrinsics.getCameraMatrix().data)[5];
+        //
+        for (int i=0; i<nPoints; i++)
+        {
+            dst[i].x = dst[i].x * fx + cx;
+            dst[i].y = dst[i].y * fy + cy;
+        }
         
     }
     
@@ -242,6 +262,10 @@ namespace ofxCv {
 	const Intrinsics& Calibration::getUndistortedIntrinsics() const {
 		return undistortedIntrinsics;
 	}
+    vector<vector<Point2f> >& Calibration::getImagePoints()
+    {
+        return imagePoints;
+    }
 	Mat Calibration::getDistCoeffs() const {
 		return distCoeffs;
 	}
