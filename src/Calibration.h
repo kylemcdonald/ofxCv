@@ -86,8 +86,9 @@ namespace ofxCv {
 		
 		const bool &isReady;
 		
-	protected:
 		vector<vector<Point2f> > imagePoints;
+		
+	protected:
 		cv::Size boardSize, addedImageSize;
 		float squareSize;
 		Mat grayMat;
