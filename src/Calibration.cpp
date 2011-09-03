@@ -258,7 +258,7 @@ namespace ofxCv {
 	}
 	void Calibration::customDraw() {
 		for(int i = 0; i < size(); i++) {
-			draw(i);
+			draw3d (i);
 		}
 	}
 	void Calibration::draw(int i) const {
@@ -276,6 +276,9 @@ namespace ofxCv {
 		}
 	}
 	void Calibration::draw3d(int i) const {
+		if (!isReady)
+			return;
+		
 		ofPushStyle();
 		ofPushMatrix();
 		ofNoFill();
@@ -286,10 +289,15 @@ namespace ofxCv {
 		
 		ofDrawBitmapString(ofToString(i), 0, 0);
 		
+		ofVec3f x;
+		float crosssize = squareSize/4;
 		for(int j = 0; j < objectPoints[i].size(); j++) {
+			x = toOf(objectPoints[i][j]);
 			ofPushMatrix();
-			ofTranslate(toOf(objectPoints[i][j]));
-			ofCircle(0, 0, .5);
+			ofTranslate(x);
+			ofLine(crosssize,crosssize,0,-crosssize,-crosssize, 0);
+			ofLine(-crosssize,-crosssize,0,crosssize,crosssize, 0);
+			ofLine(0,0,-crosssize,0,0,crosssize);
 			ofPopMatrix();
 		}
 
