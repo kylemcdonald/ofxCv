@@ -288,18 +288,6 @@ namespace ofxCv {
 		ofSetColor(ofColor::fromHsb(255 * i / size(), 255, 255));
 		
 		ofDrawBitmapString(ofToString(i), 0, 0);
-		
-		ofVec3f x;
-		float crosssize = squareSize/4;
-		for(int j = 0; j < objectPoints[i].size(); j++) {
-			x = toOf(objectPoints[i][j]);
-			ofPushMatrix();
-			ofTranslate(x);
-			ofLine(crosssize,crosssize,0,-crosssize,-crosssize, 0);
-			ofLine(-crosssize,-crosssize,0,crosssize,crosssize, 0);
-			ofLine(0,0,-crosssize,0,0,crosssize);
-			ofPopMatrix();
-		}
 
 		ofMesh mesh;
 		mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
@@ -308,7 +296,10 @@ namespace ofxCv {
 			mesh.addVertex(cur);
 		}
 		mesh.draw();
-		
+		mesh.setMode(OF_PRIMITIVE_POINTS);
+		glPointSize(5.0f);
+		mesh.draw();
+
 		ofPopMatrix();
 		ofPopStyle();
 	}
