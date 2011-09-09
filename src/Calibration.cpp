@@ -258,7 +258,7 @@ namespace ofxCv {
 	}
 	void Calibration::customDraw() {
 		for(int i = 0; i < size(); i++) {
-			draw(i);
+			draw3d (i);
 		}
 	}
 	void Calibration::draw(int i) const {
@@ -276,6 +276,9 @@ namespace ofxCv {
 		}
 	}
 	void Calibration::draw3d(int i) const {
+		if (!isReady)
+			return;
+		
 		ofPushStyle();
 		ofPushMatrix();
 		ofNoFill();
@@ -285,13 +288,6 @@ namespace ofxCv {
 		ofSetColor(ofColor::fromHsb(255 * i / size(), 255, 255));
 		
 		ofDrawBitmapString(ofToString(i), 0, 0);
-		
-		for(int j = 0; j < objectPoints[i].size(); j++) {
-			ofPushMatrix();
-			ofTranslate(toOf(objectPoints[i][j]));
-			ofCircle(0, 0, .5);
-			ofPopMatrix();
-		}
 
 		ofMesh mesh;
 		mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
@@ -300,7 +296,10 @@ namespace ofxCv {
 			mesh.addVertex(cur);
 		}
 		mesh.draw();
-		
+		mesh.setMode(OF_PRIMITIVE_POINTS);
+		glPointSize(5.0f);
+		mesh.draw();
+
 		ofPopMatrix();
 		ofPopStyle();
 	}
