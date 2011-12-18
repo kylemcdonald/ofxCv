@@ -91,15 +91,6 @@ namespace ofxCv {
 		fs << "sensorSize_height" << sensorSize.height;
 		fs << "distCoeffs" << distCoeffs;
 		fs << "reprojectionError" << reprojectionError;
-		fs << "features" << "[";
-		for(int i = 0; i < imagePoints.size(); i++) {
-			fs << "{:" << "points" << "[:"; 
-			for( int j = 0; j < imagePoints[i].size(); j++ ){
-				fs << imagePoints[i][j].x << imagePoints[i][j].y;
-			}
-			fs << "]" << "}";
-		}
-		fs << "]";
 	}
 	
 	void Calibration::load(string filename, bool absolute) {
@@ -116,20 +107,17 @@ namespace ofxCv {
 		fs["sensorSize_height"] >> sensorSize.height;
 		fs["distCoeffs"] >> distCoeffs;
 		fs["reprojectionError"] >> reprojectionError;
-		vector<float> points;		
-		features = fs["features"];
-		int idx = 0;
-
-		for(FileNodeIterator it = features.begin(); it != features.end(); it++) {
-			idx++;
-			(*it)["points"] >> points;
-			vector<Point2f> featureset;
-			for(int i = 0; i < points.size(); i+=2){
-				featureset.push_back(Point2f(points[i], points[i+1]));
-			}
-			imagePoints.push_back(featureset); // technique 1
+		
+		_isReady = checkRange(cameraMatrix) && checkRange(distCoeffs);
+		
+		if(!_isReady) {
+			ofLog(OF_LOG_ERROR, "Calibration::load() loaded an invalid state");
 		}
+		
 		addedImageSize = imageSize;
+		distortedIntrinsics.setup(cameraMatrix, addedImageSize);
+		updateUndistortion();
+
 	}
 	void Calibration::setPatternSize(int xCount, int yCount) {
 		patternSize = cv::Size(xCount, yCount);
