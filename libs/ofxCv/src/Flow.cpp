@@ -3,7 +3,6 @@
  *  FlowExample
  *
  *  Created by James George on 12/20/11.
- *  Copyright 2011. All rights reserved.
  *
  */
 
@@ -173,7 +172,7 @@ namespace ofxCv {
 
 	void FlowFarneback::calcFlow(){
 		int flags = OPTFLOW_USE_INITIAL_FLOW;
-		flags |= farnebackGaussian ? OPTFLOW_USE_INITIAL_FLOW : 0;
+		flags |= farnebackGaussian ? OPTFLOW_FARNEBACK_GAUSSIAN : 0;
 		
 		calcOpticalFlowFarneback(
 								 toCv(last),
