@@ -16,7 +16,6 @@ void testApp::setup() {
 	panel.addSlider("polySigma", 1.5, 1.1, 2);
 	panel.addToggle("OPTFLOW_FARNEBACK_GAUSSIAN", false);
 	
-	
 	panel.addToggle("useFarneback", true);
 	panel.addSlider("winSize", 32, 4, 64, true);
 	panel.addSlider("maxLevel", 3, 0, 8, true);

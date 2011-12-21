@@ -3,7 +3,6 @@
  *  FlowExample
  *
  *  Created by James George on 12/20/11.
- *  Copyright 2011. 
  */
 
 #pragma once
