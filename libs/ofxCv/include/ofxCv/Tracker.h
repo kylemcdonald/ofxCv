@@ -308,10 +308,13 @@ namespace ofxCv {
 	protected:
 		bool dead;
 		unsigned int label;
+         T previous;
 	public:
 		Follower()
 		:dead(false)
-		,label(0) {}
+		,label(0)
+        ,previous(T())
+        {};
 		
 		virtual ~Follower(){};
 		virtual void setup(const T& track) {}
@@ -329,7 +332,12 @@ namespace ofxCv {
 		bool getDead() const {
 			return dead;
 		}
+        void setPrevious(const T& previous){
+            this->previous = previous;
+        }
 	};
+            
+            
 	
 	typedef Follower<cv::Rect> RectFollower;
 	typedef Follower<cv::Point2f> PointFollower;
@@ -338,18 +346,21 @@ namespace ofxCv {
 	class TrackerFollower : public Tracker<T> {
 	protected:
 		vector<unsigned int> labels;
-		vector<F> followers;
+        vector<F> followers;
 	public:
+
 		vector<unsigned int>& track(const vector<T>& objects) {
 			Tracker<T>::track(objects);
 			// kill missing, update old
 			for(int i = 0; i < labels.size(); i++) {
 				unsigned int curLabel = labels[i];
 				F& curFollower = followers[i];
+                
 				if(!Tracker<T>::existsCurrent(curLabel)) {
 					curFollower.kill();
 				} else {
 					curFollower.update(Tracker<T>::getCurrent(curLabel));
+                    curFollower.setPrevious(Tracker<T>::getPrevious(curLabel));   
 				}
 			}
 			// add new
