@@ -332,10 +332,12 @@ namespace ofxCv {
 				}
 			}
 			std::map<unsigned int, cv::Rect>::iterator smoothedItr;
-			for(smoothedItr = smoothed.begin(); smoothedItr != smoothed.end(); smoothedItr++) {
+			for(smoothedItr = smoothed.begin(); smoothedItr != smoothed.end();) {
 				unsigned int label = smoothedItr->first;
 				if(!existsCurrent(label)) {
-					smoothed.erase(smoothed.find(label));
+					smoothed.erase(smoothedItr++);
+				} else {
+					++smoothedItr;
 				}
 			}
 			return labels;
