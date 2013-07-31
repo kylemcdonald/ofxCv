@@ -1,0 +1,87 @@
+﻿Build started 30/07/2013 15:22:39.
+     1>Project "C:\openFrameworks\addons\ofxCv\ofxCvLib\ofxCvLib.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\..\addons\ofxCv\src /I..\..\..\addons\ofxCv\libs\ofxCv\include /I..\..\..\addons\ofxCv\libs\CLD\include /I..\..\..\addons\ofxOpenCv\libs\opencv\include /I..\..\..\libs\openFrameworks /I..\..\..\libs\openFrameworks\graphics /I..\..\..\libs\openFrameworks\app /I..\..\..\libs\openFrameworks\sound /I..\..\..\libs\openFrameworks\utils /I..\..\..\libs\openFrameworks\communication /I..\..\..\libs\openFrameworks\video /I..\..\..\libs\openFrameworks\types /I..\..\..\libs\openFrameworks\math /I..\..\..\libs\openFrameworks\3d /I..\..\..\libs\openFrameworks\gl /I..\..\..\libs\openFrameworks\events /I..\..\..\libs\glut\include /I..\..\..\libs\rtAudio\include /I..\..\..\libs\quicktime\include /I..\..\..\libs\freetype\include /I..\..\..\libs\freetype\include\freetype2 /I..\..\..\libs\freeImage\include /I..\..\..\libs\fmodex\include /I..\..\..\libs\videoInput\include /I..\..\..\libs\glew\include\ /I..\..\..\libs\glu\include /I..\..\..\libs\tess2\include /I..\..\..\libs\cairo\include\cairo /I..\..\..\libs\poco\include /I..\..\..\libs\glfw\include /I..\..\..\libs\openssl\include /I..\..\..\addons /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D POCO_STATIC /D CAIRO_WIN32_STATIC_BUILD /D DISABLE_SOME_FLOATING_POINT /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\libs\CLD\src\ETF.cpp ..\libs\CLD\src\fdog.cpp
+         fdog.cpp
+     1>c:\openframeworks\libs\poco\include\poco\streamconverter.h(126): warning C4250: 'Poco::InputStreamConverter' : inherits 'std::basic_istream<_Elem,_Traits>::std::basic_istream<_Elem,_Traits>::_Add_vtordisp1' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\istream(74) : see declaration of 'std::basic_istream<_Elem,_Traits>::_Add_vtordisp1'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+     1>c:\openframeworks\libs\poco\include\poco\streamconverter.h(144): warning C4250: 'Poco::OutputStreamConverter' : inherits 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\ostream(90) : see declaration of 'std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+         ETF.cpp
+     1>c:\openframeworks\libs\poco\include\poco\streamconverter.h(126): warning C4250: 'Poco::InputStreamConverter' : inherits 'std::basic_istream<_Elem,_Traits>::std::basic_istream<_Elem,_Traits>::_Add_vtordisp1' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\istream(74) : see declaration of 'std::basic_istream<_Elem,_Traits>::_Add_vtordisp1'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+     1>c:\openframeworks\libs\poco\include\poco\streamconverter.h(144): warning C4250: 'Poco::OutputStreamConverter' : inherits 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2' via dominance
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\ostream(90) : see declaration of 'std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2'
+                 with
+                 [
+                     _Elem=char,
+                     _Traits=std::char_traits<char>
+                 ]
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"C:\openFrameworks\apps\ProjectTimeCone\Test_FrameInterpolationStudy\bin\ofxCvLib.lib" opencv_calib3d245d.lib opencv_contrib245d.lib opencv_core245d.lib opencv_features2d245d.lib opencv_flann245d.lib opencv_gpu245d.lib opencv_haartraining_engined.lib opencv_highgui245d.lib opencv_imgproc245d.lib opencv_legacy245d.lib opencv_ml245d.lib opencv_nonfree245d.lib opencv_objdetect245d.lib opencv_photo245d.lib opencv_stitching245d.lib opencv_superres245d.lib opencv_ts245d.lib opencv_video245d.lib zlibd.lib /LIBPATH:..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs /NOLOGO Debug\ETF.obj
+         Debug\fdog.obj
+         Debug\Calibration.obj
+         Debug\ContourFinder.obj
+         Debug\Distance.obj
+         Debug\Flow.obj
+         Debug\Helpers.obj
+         Debug\ObjectFinder.obj
+         Debug\RunningBackground.obj
+         Debug\Tracker.obj
+         Debug\Utilities.obj
+         Debug\Wrappers.obj
+         ofxCvLib.vcxproj -> C:\openFrameworks\apps\ProjectTimeCone\Test_FrameInterpolationStudy\bin\ofxCvLib.lib
+       PostBuildEvent:
+         xcopy /e /i /y "C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\*.dll" "C:\openFrameworks\addons\ofxCv\ofxCvLib\bin"
+         :VCEnd
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\Assimp32.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\fmodex.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\fmodexL.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\FreeImage.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\FreeType-6.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\glut32.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\libeay32.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\ssleay32.dll
+         C:\openFrameworks\addons\ofxCv\ofxCvLib\..\..\..\export\vs\Zlib.dll
+         9 File(s) copied
+     1>Done Building Project "C:\openFrameworks\addons\ofxCv\ofxCvLib\ofxCvLib.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.14
