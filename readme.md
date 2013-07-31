@@ -62,6 +62,7 @@ There is a special setup for working with ofxCv with Visual Studio 2012.
 This is an alternative method to using the project generator, which can help cut development time and keep old projects running longer. To use this, you'll need some knowledge of Visual Studio (e.g. the difference between Solutions and Projects).
 
 Use the follwing steps to setup ofxCv with your project as a static lib:
+
 1. Start with a project which does have the ofxCv source files in it (e.g. a blank project, e.g. emptyExample)
 2. Right click on your Solution and choose `Add`>`Existing Project...`
 3. Select `ofxCv\ofxCvLib\ofxCvLib.vcxproj`
@@ -74,6 +75,7 @@ Use the follwing steps to setup ofxCv with your project as a static lib:
 10. You're done!
 
 Advantages to this method:
+
 1. You only compile ofxCv once between all your projects which use it
 2. If the file structure, header paths or libraries of ofxCv change, you don't need to make any changes to your app project
 3. All header and library settings are done for you
