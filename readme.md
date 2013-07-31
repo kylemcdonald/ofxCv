@@ -55,6 +55,29 @@ If you look inside the ofxCv source, you'll find lots of cases of `ofxCv::` and 
 
 ofxCv takes advantage of namespaces by using overloaded function names. This means that the ofxCv wrapper for `cv::Canny()` is also called `ofxCv::Canny()`. If you write simply `Canny()`, the correct function will be chosen based on the arguments you pass.
 
+## Working with ofxCv as a static lib in Visual Studio 2012
+
+There is a special setup for working with ofxCv with Visual Studio 2012.
+
+This is an alternative method to using the project generator, which can help cut development time and keep old projects running longer. To use this, you'll need some knowledge of Visual Studio (e.g. the difference between Solutions and Projects).
+
+Use the follwing steps to setup ofxCv with your project as a static lib:
+1. Start with a project which does have the ofxCv source files in it (e.g. a blank project, e.g. emptyExample)
+2. Right click on your Solution and choose `Add`>`Existing Project...`
+3. Select `ofxCv\ofxCvLib\ofxCvLib.vcxproj`
+4. Right click on your app project (e.g. `testApp` or whatever you named it) and select `Properties`
+5. Select `Common Properties` at the top of the left hand column
+6. Click `Add New Reference...` and put a tick next to `ofxCvLib`. Close the properties dialog
+7. Go to the `Property Manager` tab (next to `Solution Explorer` tab)
+8. Right click on your app project and select `Add Existing Property Sheet...`
+9. Select `ofxCv\ofxCvLib\ofxCv.props`
+10. You're done!
+
+Advantages to this method:
+1. You only compile ofxCv once between all your projects which use it
+2. If the file structure, header paths or libraries of ofxCv change, you don't need to make any changes to your app project
+3. All header and library settings are done for you
+
 ## Working with ofxCv
 
 Unlike ofxOpenCv, ofxCv encourages you to use either native openFrameworks types or native OpenCv types, rather than introducing a third type like `ofxCvImage`. To work with OF and OpenCv types in a fluid way, ofxCv includes the `toCv()` and `toOf()` functions. They provide the ability to convert openFrameworks data to OpenCv data and vice versa. For large data, like images, this is done by wrapping the data rather than copying it. For small data, like vectors, this is done by copying the data.
