@@ -59,19 +59,19 @@ ofxCv takes advantage of namespaces by using overloaded function names. This mea
 
 There is a special setup for working with ofxCv with Visual Studio 2012.
 
-This is an alternative method to using the project generator, which can help cut development time and keep old projects running longer. To use this, you'll need some knowledge of Visual Studio (e.g. the difference between Solutions and Projects).
+This is an alternative method to using the project generator in order to cut development time and keep old projects automatically updated. If you're new to Visual Studio, then we suggest starting with the normal Project Generator method instead.
 
 Use the follwing steps to setup ofxCv with your project as a static lib:
 
-1. Start with a project which does have the ofxCv source files in it (e.g. a blank project, e.g. emptyExample)
+1. Start with a project without ofxCv (e.g. a blank project, e.g. emptyExample)
 2. Right click on your Solution and choose `Add`>`Existing Project...`
-3. Select `ofxCv\ofxCvLib\ofxCvLib.vcxproj`
+3. Select `ofxCv\ofxCvLib\ofxCvLib.vcxproj`. This brings all the ofxCv source files into your solution.
 4. Right click on your app project (e.g. `testApp` or whatever you named it) and select `Properties`
 5. Select `Common Properties` at the top of the left hand column
-6. Click `Add New Reference...` and put a tick next to `ofxCvLib`. Close the properties dialog
+6. Click `Add New Reference...` and put a tick next to `ofxCvLib`. This links your project to ofxCv and OpenCV. Close the properties dialog
 7. Go to the `Property Manager` tab (next to `Solution Explorer` tab)
 8. Right click on your app project and select `Add Existing Property Sheet...`
-9. Select `ofxCv\ofxCvLib\ofxCv.props`
+9. Select `ofxCv\ofxCvLib\ofxCv.props`. This adds the appropriate header search paths to your app project.
 10. You're done!
 
 Advantages to this method:
