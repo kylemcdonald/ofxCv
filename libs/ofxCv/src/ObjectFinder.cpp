@@ -1,4 +1,4 @@
-#include "ObjectFinder.h"
+#include "ofxCv/ObjectFinder.h"
 
 namespace ofxCv {
 	ObjectFinder::ObjectFinder()

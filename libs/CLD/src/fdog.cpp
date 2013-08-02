@@ -2,10 +2,10 @@
 #include "ofMain.h"
 #include <cmath>
 
-#include "ETF.h"
-#include "fdog.h"
-#include "myvec.h"
-#include "imatrix.h"
+#include "CLD/ETF.h"
+#include "CLD/fdog.h"
+#include "CLD/myvec.h"
+#include "CLD/imatrix.h"
 
 #ifndef ABS
 	#define ABS(x) ( ((x)>0) ? (x) : (-(x)) )
