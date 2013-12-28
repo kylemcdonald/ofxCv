@@ -331,6 +331,15 @@ namespace ofxCv {
 					smoothed[label] = cur;
 				}
 			}
+#if __cplusplus<201103L
+			std::map<unsigned int, cv::Rect>::iterator smoothedItr;
+			for(smoothedItr = smoothed.begin(); smoothedItr != smoothed.end(); smoothedItr++) {
+				unsigned int label = smoothedItr->first;
+ 				if(!existsCurrent(label)) {
+					smoothed.erase(smoothed.find(label));
+				}
+			}
+#else
 			std::map<unsigned int, cv::Rect>::iterator smoothedItr = smoothed.begin();
 			while(smoothedItr != smoothed.end()) {
 				unsigned int label = smoothedItr->first;
@@ -340,6 +349,7 @@ namespace ofxCv {
 					++smoothedItr;
 				}
 			}
+#endif
 			return labels;
 		}
 		const cv::Rect& getSmoothed(unsigned int label) const {
