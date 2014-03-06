@@ -69,7 +69,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opencv_calib3d245.lib;opencv_contrib245.lib;opencv_core245.lib;opencv_features2d245.lib;opencv_flann245.lib;opencv_gpu245.lib;opencv_haartraining_engine.lib;opencv_highgui245.lib;opencv_imgproc245.lib;opencv_legacy245.lib;opencv_ml245.lib;opencv_nonfree245.lib;opencv_objdetect245.lib;opencv_photo245.lib;opencv_stitching245.lib;opencv_superres245.lib;opencv_ts245.lib;opencv_video245.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_calib3d231.lib;opencv_contrib231.lib;opencv_core231.lib;opencv_features2d231.lib;opencv_flann231.lib;opencv_gpu231.lib;opencv_highgui231.lib;opencv_imgproc231.lib;opencv_legacy231.lib;opencv_ml231.lib;opencv_objdetect231.lib;opencv_video231.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
