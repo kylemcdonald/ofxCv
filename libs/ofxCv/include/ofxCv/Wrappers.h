@@ -12,6 +12,7 @@
  - threshold, normalize, invert, lerp
  - bitwise_and, bitwise_or, bitwise_xor
  - max, min, multiply, divide, add, subtract, absdiff
+ - erode, dilate
  
  image transformation:
  - rotate, resize, warpPerspective
@@ -128,6 +129,34 @@ cv::name(xMat, yMat, resultMat);\
 		ofxCv::threshold(srcDst, srcDst, thresholdValue, invert);
 	}
 	
+	// erode out of place
+	template <class S, class D>
+	void erode(S& src, D& dst, int iterations = 1) {
+		imitate(dst, src);
+		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::erode(srcMat, dstMat, Mat(), cv::Point(-1, -1), iterations);
+	}
+	
+	// erode in place
+	template <class SD>
+	void erode(SD& srcDst, int iterations = 1) {
+		ofxCv::erode(srcDst, srcDst, iterations);
+	}
+	
+	// dilate out of place
+	template <class S, class D>
+	void dilate(S& src, D& dst, int iterations = 1) {
+		imitate(dst, src);
+		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::dilate(srcMat, dstMat, Mat(), cv::Point(-1, -1), iterations);
+	}
+	
+	// dilate in place
+	template <class SD>
+	void dilate(SD& srcDst, int iterations = 1) {
+		ofxCv::dilate(srcDst, srcDst, iterations);
+	}
+	
 	// automatic threshold (grayscale 8-bit only) out of place
 	template <class S, class D>
 	void autothreshold(S& src, D& dst, bool invert = false) {
@@ -156,6 +185,20 @@ cv::name(xMat, yMat, resultMat);\
 	// ...or single colors.
 	Vec3b convertColor(Vec3b color, int code);
 	ofColor convertColor(ofColor color, int code);
+    
+    // a common cv task is to convert something to grayscale. this function will
+    // do that quickly for RGBA, RGB, and 1-channel images.
+    template <class S, class D>
+    void copyGray(S& src, D& dst) {
+        int channels = getChannels(src);
+        if(channels == 4) {
+            convertColor(src, dst, CV_RGBA2GRAY);
+        } else if(channels == 3) {
+            convertColor(src, dst, CV_RGB2GRAY);
+        } else if(channels == 1) {
+            copy(src, dst);
+        }
+    }
 	
 	int forceOdd(int x);
 	
@@ -326,6 +369,13 @@ cv::name(xMat, yMat, resultMat);\
 		fillPoly(dstMat, ppt, npt, 1, Scalar(255));
 	}
 	
+	template <class S, class D>
+	void flip(S& src, D& dst, int code) {
+		imitate(dst, src);
+		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::flip(srcMat, dstMat, code);
+	}
+	
 	// if you're doing the same rotation multiple times, it's better to precompute
 	// the displacement and use remap.
 	template <class S, class D>
@@ -335,6 +385,27 @@ cv::name(xMat, yMat, resultMat);\
 		Point2f center(srcMat.rows / 2, srcMat.cols / 2);
 		Mat rotationMatrix = getRotationMatrix2D(center, angle, 1);
 		warpAffine(srcMat, dstMat, rotationMatrix, srcMat.size(), interpolation, BORDER_CONSTANT, toCv(fill));
+	}
+	
+	// efficient version of rotate that only operates on 0, 90, 180, 270 degrees
+	// the output is allocated to contain all pixels of the input.
+	template <class S, class D>
+	void rotate90(S& src, D& dst, int angle) {
+		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		if(angle == 0) {
+			copy(src, dst);
+		} else if(angle == 90) {
+			allocate(dst, srcMat.rows, srcMat.cols, srcMat.type());
+			cv::transpose(srcMat, dstMat);
+			cv::flip(dstMat, dstMat, 1);
+		} else if(angle == 180) {
+			imitate(dst, src);
+			cv::flip(srcMat, dstMat, -1);
+		} else if(angle == 270) {
+			allocate(dst, srcMat.rows, srcMat.cols, srcMat.type());
+			cv::transpose(srcMat, dstMat);
+			cv::flip(dstMat, dstMat, 0);
+		}
 	}
 	
 	// finds the 3x4 matrix that best describes the (premultiplied) affine transformation between two point clouds

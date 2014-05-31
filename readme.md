@@ -2,6 +2,17 @@
 
 ofxCv represents an alternative approach to wrapping OpenCV for openFrameworks. It is designed for openFrameworks 007+ compatibility only. My first goal is to have a complete substitute for ofxOpenCv, at which point I will start versioning releases. Until then, I don't recommend that anyone use it as it will be undergoing irregular massive rehauling.
 
+# Installation
+
+Either clone out the source code using git:
+
+	> cd openFrameworks/addons/
+	> git clone https://github.com/kylemcdonald/ofxCv.git
+
+Or download the source from GitHub [here](https://github.com/kylemcdonald/ofxCv/archive/master.zip), unzip the folder, rename it from `ofxCv-master` to `ofxCv` and place it in your `openFrameworks/addons` folder.
+
+You don't need to move any of the examples anywhere, you can run them in place.
+
 # Goals
 
 ofxCv has a few goals driving its development.
@@ -122,6 +133,10 @@ Because there are cases where in place usage will cause a compile error. More sp
 * It will only reallocate memory if necessary. This means it can be used liberally.
 
 If you are writing a function that returns data, the ofxCv style is to call `imitate()` on the data to be returned from inside the function, allocating it as necessary.
+
+### drawMat()
+
+Sometimes you want to draw a `Mat` to the screen directly, as quickly and easily as possible, and `drawMat()` will do this for you. `drawMat()` is not the most optimal way of drawing images to the screen, because it creates a texture every time it draws. If you want to draw things for efficiently, you should allocate an `ofImage img;`, use `Mat mat = toCv(img);` to treat it as a `Mat`, and then call `img.update()` to upload the modified pixels to the graphics card so you can see the results in `img.draw()`.
 
 # Working with OpenCv 2
 

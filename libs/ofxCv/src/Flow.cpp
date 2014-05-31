@@ -4,58 +4,44 @@ namespace ofxCv {
 	
 	using namespace cv;
 	
-#pragma mark FLOW IMPLEMENTATION
-	Flow::Flow(){
-		hasFlow = false;
-		last.setUseTexture(false);
-		curr.setUseTexture(false);
+	Flow::Flow()
+    :hasFlow(false) {
 	}
 	
 	Flow::~Flow(){
 	}
 	
 	//call with two images
-	void Flow::calcOpticalFlow(ofBaseHasPixels& lastImage, ofBaseHasPixels& currentImage){
-		calcOpticalFlow(lastImage.getPixelsRef(), currentImage.getPixelsRef());
-	}
-	
-	void Flow::calcOpticalFlow(ofPixelsRef lastImage, ofPixelsRef currentImage){
-		last = lastImage;
-		last.setImageType(OF_IMAGE_GRAYSCALE); //force to gray
-		
-		calcFlow(); //will call concrete implementation
+	void Flow::calcOpticalFlow(Mat lastImage, Mat currentImage){
+        if(lastImage.channels() == 1 && currentImage.channels() == 1) {
+            calcFlow(lastImage, currentImage);
+        } else {
+            copyGray(lastImage, last);
+            copyGray(currentImage, curr);
+            calcFlow(last, curr);
+        }
 		hasFlow = true;
-		
-		curr.setFromPixels(currentImage);
-		curr.setImageType(OF_IMAGE_GRAYSCALE);
 	}
 	
-	//you can add subsequent images this way without having to store 
+	//you can add subsequent images this way without having to store
 	//the previous one yourself
-	void Flow::calcOpticalFlow(ofBaseHasPixels& nextImage){
-		calcOpticalFlow(nextImage.getPixelsRef());
-	}
-	
-	void Flow::calcOpticalFlow(ofPixelsRef nextImage){
-		curr.setFromPixels(nextImage);
-		curr.setImageType(OF_IMAGE_GRAYSCALE);
-		
-		if(last.isAllocated()){
-			calcFlow(); //will call concrete implementation
+	void Flow::calcOpticalFlow(Mat nextImage){
+        copyGray(nextImage, curr);
+		if(last.size == curr.size){
+			calcFlow(last, curr);
 			hasFlow = true;
 		}
-		
-		last.setFromPixels(curr.getPixelsRef());
+        swap(curr, last);
 	}
-	
+    
 	void Flow::draw(){
 		if(hasFlow) {
-			drawFlow(ofRectangle(0,0, last.getWidth(), last.getHeight() ));
+			drawFlow(ofRectangle(0, 0, getWidth(), getHeight()));
 		}
 	}
 	void Flow::draw(float x, float y){
 		if(hasFlow){
-			drawFlow(ofRectangle(x,y,last.getWidth(),last.getHeight()));
+			drawFlow(ofRectangle(x, y, getWidth(), getHeight()));
 		}
 	}
 	void Flow::draw(float x, float y, float width, float height){
@@ -68,11 +54,18 @@ namespace ofxCv {
 			drawFlow(rect);
 		}
 	}
-	int Flow::getWidth()  { return 0; }
-	int Flow::getHeight() { return 0; }
+	int Flow::getWidth()  {
+        return curr.cols;
+    }
+	int Flow::getHeight() {
+        return curr.rows;
+    }
+    void Flow::resetFlow() {
+        last = Mat();
+        curr = Mat();
+        hasFlow = false;
+    }
 	
-	
-#pragma mark PYRLK IMPLEMENTATION
 	FlowPyrLK::FlowPyrLK()
 	:windowSize(32)
 	,maxLevel(3)
@@ -103,59 +96,55 @@ namespace ofxCv {
 		this->minDistance = minDistance;
 	}
 	
-	void FlowPyrLK::calcFlow(){
-		if(!nextPts.empty()){
+	void FlowPyrLK::calcFlow(Mat prev, Mat next){
+		if(!nextPts.empty() || calcFeaturesNextFrame){
 			if(calcFeaturesNextFrame){
-				calcFeaturesToTrack(prevPts);
+				calcFeaturesToTrack(prevPts, next);
 				calcFeaturesNextFrame = false;
 			}else{
-				prevPts = nextPts;
+                swap(prevPts, nextPts);
 			}
 			nextPts.clear();
-			
+            
 #if CV_MAJOR_VERSION>=2 && (CV_MINOR_VERSION>4 || (CV_MINOR_VERSION==4 && CV_SUBMINOR_VERSION>=1))
-			buildOpticalFlowPyramid(toCv(curr),pyramid,cv::Size(windowSize, windowSize),10);
-			calcOpticalFlowPyrLK(
-													 prevPyramid,
-													 pyramid,
-													 prevPts,
-													 nextPts,
-													 status,
-													 err,
-													 
-													 cv::Size(windowSize, windowSize),
-													 maxLevel
-													 );
+			if (prevPyramid.empty()) {
+				buildOpticalFlowPyramid(prev,prevPyramid,cv::Size(windowSize, windowSize),10);
+			}
+			buildOpticalFlowPyramid(next,pyramid,cv::Size(windowSize, windowSize),10);
+			calcOpticalFlowPyrLK(prevPyramid,
+                                 pyramid,
+                                 prevPts,
+                                 nextPts,
+                                 status,
+                                 err,
+                                 cv::Size(windowSize, windowSize),
+                                 maxLevel);
 			prevPyramid = pyramid;
+			pyramid.clear();
 #else
-			calcOpticalFlowPyrLK(
-													 toCv(last),
-													 toCv(curr),
-													 prevPts,
-													 nextPts,
-													 status,
-													 err,
-													 cv::Size(windowSize, windowSize),
-													 maxLevel
-													 );
+			calcOpticalFlowPyrLK(prev,
+                                 next,
+                                 prevPts,
+                                 nextPts,
+                                 status,
+                                 err,
+                                 cv::Size(windowSize, windowSize),
+                                 maxLevel);
 #endif
 			status.resize(nextPts.size(),0);
 		}else{
-			calcFeaturesToTrack(nextPts);
-#if CV_MAJOR_VERSION==2 && (CV_MINOR_VERSION>4 || (CV_MINOR_VERSION==4 && CV_SUBMINOR_VERSION>=1))
-			buildOpticalFlowPyramid(toCv(curr),prevPyramid,cv::Size(windowSize, windowSize),10);
-#endif
+			calcFeaturesToTrack(nextPts, next);
 		}
 	}
 	
-	void FlowPyrLK::calcFeaturesToTrack(vector<cv::Point2f> & features){
+	void FlowPyrLK::calcFeaturesToTrack(vector<cv::Point2f> & features, Mat next){
 		goodFeaturesToTrack(
-												toCv(curr),
-												features,
-												maxFeatures,
-												qualityLevel,
-												minDistance
-												);
+                            next,
+                            features,
+                            maxFeatures,
+                            qualityLevel,
+                            minDistance
+                            );
 	}
 	
 	void FlowPyrLK::resetFeaturesToTrack(){
@@ -167,17 +156,12 @@ namespace ofxCv {
 		for(int i=0;i<(int)features.size();i++){
 			nextPts[i]=toCv(features[i]);
 		}
+		calcFeaturesNextFrame = false;
 	}
 	
 	void FlowPyrLK::setFeaturesToTrack(const vector<cv::Point2f> & features){
 		nextPts = features;
-	}
-	
-	int FlowPyrLK::getWidth() {
-		return last.getWidth();
-	}
-	int FlowPyrLK::getHeight() {
-		return last.getHeight();
+		calcFeaturesNextFrame = false;
 	}
 	
 	vector<ofPoint> FlowPyrLK::getFeatures(){
@@ -207,16 +191,21 @@ namespace ofxCv {
 	
 	void FlowPyrLK::drawFlow(ofRectangle rect) {
 		ofVec2f offset(rect.x,rect.y);
-		ofVec2f scale(rect.width/last.getWidth(),rect.height/last.getHeight());
+		ofVec2f scale(rect.width/getWidth(),rect.height/getHeight());
 		for(int i = 0; i < (int)prevPts.size(); i++) {
 			if(status[i]){
 				ofLine(toOf(prevPts[i])*scale+offset, toOf(nextPts[i])*scale+offset);
 			}
 		}
 	}
-	
-#pragma mark FARNEBACK IMPLEMENTATION
-	FlowFarneback::FlowFarneback()
+    
+    void FlowPyrLK::resetFlow(){
+        Flow::resetFlow();
+        resetFeaturesToTrack();
+        prevPts.clear();
+    }
+    
+    FlowFarneback::FlowFarneback()
 	:pyramidScale(0.5)
 	,numLevels(4)
 	,windowSize(8)
@@ -231,8 +220,8 @@ namespace ofxCv {
 	}
 	
 	void FlowFarneback::setPyramidScale(float scale){
-		if(scale < 0.0 || scale > 1.0){
-			ofLogWarning("ofxCvFlowFarneback -- Warning setting scale to a number outside of 0 - 1");
+		if(scale < 0.0 || scale >= 1.0){
+			ofLogWarning("FlowFarneback::setPyramidScale") << "setting scale to a number outside of 0 - 1";
 		}
 		this->pyramidScale = scale;
 	}
@@ -251,35 +240,53 @@ namespace ofxCv {
 	}
 	void FlowFarneback::setPolySigma(float polySigma){
 		this->polySigma = polySigma;
-	}	
+	}
 	void FlowFarneback::setUseGaussian(bool gaussian){
 		this->farnebackGaussian = gaussian;
 	}
 	
-	void FlowFarneback::calcFlow(){
-		int flags = OPTFLOW_USE_INITIAL_FLOW;
-		flags |= farnebackGaussian ? OPTFLOW_FARNEBACK_GAUSSIAN : 0;
-		
-		calcOpticalFlowFarneback(
-														 toCv(last),
-														 toCv(curr),
-														 flow,
-														 
-														 pyramidScale,
-														 numLevels,
-														 windowSize,
-														 numIterations,
-														 polyN,
-														 polySigma,
-														 flags
-														 );
+	void FlowFarneback::resetFlow(){
+        Flow::resetFlow();
+		flow.setTo(0);
 	}
-	
+    
+	void FlowFarneback::calcFlow(Mat prev, Mat next){
+		int flags = 0;
+		if(hasFlow){
+			flags = OPTFLOW_USE_INITIAL_FLOW;
+		}
+		if(farnebackGaussian){
+			flags |= OPTFLOW_FARNEBACK_GAUSSIAN;
+		}
+        
+		calcOpticalFlowFarneback(prev,
+								 next,
+								 flow,
+								 pyramidScale,
+								 numLevels,
+								 windowSize,
+								 numIterations,
+								 polyN,
+								 polySigma,
+								 flags);
+	}
+	Mat& FlowFarneback::getFlow() {
+        if(!hasFlow) {
+            flow = Mat::zeros(1, 1, CV_32FC2);
+        }
+        return flow;
+    }
 	ofVec2f FlowFarneback::getFlowOffset(int x, int y){
+		if(!hasFlow){
+			return ofVec2f(0, 0);
+		}
 		const Vec2f& vec = flow.at<Vec2f>(y, x);
 		return ofVec2f(vec[0], vec[1]);
 	}
 	ofVec2f FlowFarneback::getFlowPosition(int x, int y){
+		if(!hasFlow){
+			return ofVec2f(0, 0);
+		}
 		const Vec2f& vec = flow.at<Vec2f>(y, x);
 		return ofVec2f(x + vec[0], y + vec[1]);
 	}
@@ -295,21 +302,18 @@ namespace ofxCv {
 	}
 	
 	ofVec2f FlowFarneback::getTotalFlowInRegion(ofRectangle region){
-		if(!hasFlow) {
-			return ofVec2f();
+		if(!hasFlow){
+			return ofVec2f(0, 0);
 		}
+		
 		const Scalar& sc = sum(flow(toCv(region)));
 		return ofVec2f(sc[0], sc[1]);
 	}
 	
-	int FlowFarneback::getWidth() {
-		return flow.cols;
-	}
-	int FlowFarneback::getHeight() {
-		return flow.rows;
-	}
-	
 	void FlowFarneback::drawFlow(ofRectangle rect){
+		if(!hasFlow){
+			return;
+		}
 		ofVec2f offset(rect.x,rect.y);
 		ofVec2f scale(rect.width/flow.cols, rect.height/flow.rows);
 		int stepSize = 4; //TODO: make class-level parameteric
@@ -317,7 +321,7 @@ namespace ofxCv {
 			for(int x = 0; x < flow.cols; x += stepSize) {
 				ofVec2f cur = ofVec2f(x, y) * scale + offset;
 				ofLine(cur, getFlowPosition(x, y) * scale + offset);
-			} 
+			}
 		}
 	}
 }

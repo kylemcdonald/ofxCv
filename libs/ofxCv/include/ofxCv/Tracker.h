@@ -150,6 +150,7 @@ namespace ofxCv {
 		bool existsCurrent(unsigned int label) const;
 		bool existsPrevious(unsigned int label) const;
 		int getAge(unsigned int label) const;
+		int getLastSeen(unsigned int label) const;
 	};
 	
 	template <class T>
@@ -300,6 +301,11 @@ namespace ofxCv {
 	int Tracker<T>::getAge(unsigned int label) const{
 		return currentLabelMap.find(label)->second->getAge();
 	}
+    
+	template <class T>
+	int Tracker<T>::getLastSeen(unsigned int label) const{
+		return currentLabelMap.find(label)->second->getLastSeen();
+	}
 	
 	class RectTracker : public Tracker<cv::Rect> {
 	protected:
@@ -331,11 +337,13 @@ namespace ofxCv {
 					smoothed[label] = cur;
 				}
 			}
-			std::map<unsigned int, cv::Rect>::iterator smoothedItr;
-			for(smoothedItr = smoothed.begin(); smoothedItr != smoothed.end(); smoothedItr++) {
+			std::map<unsigned int, cv::Rect>::iterator smoothedItr = smoothed.begin();
+			while(smoothedItr != smoothed.end()) {
 				unsigned int label = smoothedItr->first;
 				if(!existsCurrent(label)) {
-					smoothed.erase(smoothed.find(label));
+					smoothed.erase(smoothedItr++);
+				} else {
+					++smoothedItr;
 				}
 			}
 			return labels;

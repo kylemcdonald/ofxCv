@@ -2,13 +2,13 @@
 
 #include "ofxCv.h"
 
-#pragma mark FLOW 
 namespace ofxCv {
 	
 	using namespace cv;
 	
 	class Flow {
 	public:
+        // should constructor be protected?
 		Flow();
 		virtual ~Flow();
 		
@@ -17,27 +17,37 @@ namespace ofxCv {
 		//subsequent calls to getFlow() will be updated
 		
 		//call with two contiguous images
-		void calcOpticalFlow(ofBaseHasPixels& lastImage, ofBaseHasPixels& currentImage);
-		void calcOpticalFlow(ofPixelsRef lastImage, ofPixelsRef currentImage);
+        template <class T>
+		void calcOpticalFlow(T& lastImage, T& currentImage) {
+            calcOpticalFlow(toCv(lastImage), toCv(currentImage));
+        }
+		void calcOpticalFlow(Mat lastImage, Mat currentImage);
 		
 		//call with subsequent images to do running optical flow. 
 		//the Flow class internally stores the last image for convenience
-		void calcOpticalFlow(ofBaseHasPixels& nextImage);
-		void calcOpticalFlow(ofPixelsRef nextImage);
+        template <class T>
+		void calcOpticalFlow(T& currentImage) {
+            calcOpticalFlow(toCv(currentImage));
+        }
+		void calcOpticalFlow(Mat nextImage);
 		
 		void draw();
 		void draw(float x, float y);
 		void draw(float x, float y, float width, float height);
 		void draw(ofRectangle rect);
-		int  getWidth();
-		int  getHeight();
-		
-	protected:
-		ofImage last, curr;
+		int getWidth();
+		int getHeight();
+        
+        virtual void resetFlow();
+        
+    private:
+		Mat last, curr;
+        
+    protected:
 		bool hasFlow;
 		
 		//specific flow implementation
-		virtual void calcFlow() = 0;
+		virtual void calcFlow(Mat prev, Mat next) = 0;
 		//specific drawing implementation
 		virtual void drawFlow(ofRectangle r) = 0;
 	};
@@ -49,7 +59,6 @@ namespace ofxCv {
 	//see http://opencv.willowgarage.com/documentation/cpp/motion_analysis_and_object_tracking.html
 	//for more info on the meaning of these parameters
 	
-#pragma mark FLOW - PYR LK
 	class FlowPyrLK : public Flow {
 	public:
 		FlowPyrLK();
@@ -70,20 +79,16 @@ namespace ofxCv {
 		vector<ofPoint> getCurrent();
 		vector<ofVec2f> getMotion();
 		
-		// size of flow
-		int getWidth();
-		int getHeight();
-		
 		// recalculates features to track
 		void resetFeaturesToTrack();
 		void setFeaturesToTrack(const vector<ofVec2f> & features);
 		void setFeaturesToTrack(const vector<cv::Point2f> & features);
-		
+        void resetFlow();
 	protected:
 		
 		void drawFlow(ofRectangle r);
-		void calcFlow();
-		void calcFeaturesToTrack(vector<cv::Point2f> & features);
+		void calcFlow(Mat prev, Mat next);
+		void calcFeaturesToTrack(vector<cv::Point2f> & features, Mat next);
 		
 		vector<cv::Point2f> prevPts, nextPts;
 		
@@ -108,8 +113,6 @@ namespace ofxCv {
 		vector<float> err;
 	};
 	
-#pragma mark FLOW FARNEBACK	
-	
 	class FlowFarneback : public Flow {
 	public:
 		
@@ -127,6 +130,7 @@ namespace ofxCv {
 		void setPolySigma(float polySigma);
 		void setUseGaussian(bool gaussian);
 		
+        Mat& getFlow();
 		ofVec2f getTotalFlow();
 		ofVec2f getAverageFlow();		
 		ofVec2f getFlowOffset(int x, int y);
@@ -134,15 +138,14 @@ namespace ofxCv {
 		ofVec2f getTotalFlowInRegion(ofRectangle region);
 		ofVec2f getAverageFlowInRegion(ofRectangle region);
 		
-		// size of flow
-		int getWidth();
-		int getHeight();
-		
+        //call this if you switch to a new video file to reset internal caches
+        void resetFlow();
+    
 	protected:
 		cv::Mat flow;
-		
+
 		void drawFlow(ofRectangle rect);
-		void calcFlow();
+		void calcFlow(Mat prev, Mat next);
 		
 		float pyramidScale;
 		int numLevels;
