@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="libs">
+      <UniqueIdentifier>{9b061c39-c207-412e-94e2-3ab9ba8a5a61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\ofxCv">
+      <UniqueIdentifier>{b134aeea-cebb-43eb-af08-bddbb9c02afd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\ofxCv\src">
+      <UniqueIdentifier>{4ba15c4e-b7e1-4a38-8984-28e756453ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\ofxCv\include">
+      <UniqueIdentifier>{693b3c7b-3435-45c9-af4b-3b8c565c897e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\ofxCv\include\ofxCv">
+      <UniqueIdentifier>{0125457a-04e3-4c97-be37-b933c2b61139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\CLD">
+      <UniqueIdentifier>{6505ea76-ec97-4497-9ad9-3a20b0f91c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\CLD\src">
+      <UniqueIdentifier>{393678e2-9449-4a94-a2a6-d36ac75a38b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\CLD\include">
+      <UniqueIdentifier>{404c8ee1-6edc-4497-9084-9a609010e21f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\CLD\include\CLD">
+      <UniqueIdentifier>{00b88b9a-9b2e-47b4-90f9-144a661b2b81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\src">
+      <UniqueIdentifier>{c5cb6174-5dda-41e8-ad15-63440bd0f763}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\ofxCv.h">
+      <Filter>libs\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Distance.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Flow.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Helpers.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\ObjectFinder.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\RunningBackground.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Tracker.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Utilities.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Wrappers.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\Calibration.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ofxCv\include\ofxCv\ContourFinder.h">
+      <Filter>libs\ofxCv\include\ofxCv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\CLD\include\CLD\fdog.h">
+      <Filter>libs\CLD\include\CLD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\CLD\include\CLD\imatrix.h">
+      <Filter>libs\CLD\include\CLD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\CLD\include\CLD\myvec.h">
+      <Filter>libs\CLD\include\CLD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\CLD\include\CLD\ETF.h">
+      <Filter>libs\CLD\include\CLD</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libs\ofxCv\src\ObjectFinder.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\RunningBackground.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Tracker.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Utilities.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Wrappers.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Calibration.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\ContourFinder.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Distance.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Flow.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ofxCv\src\Helpers.cpp">
+      <Filter>libs\ofxCv\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\CLD\src\fdog.cpp">
+      <Filter>libs\CLD\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\CLD\src\ETF.cpp">
+      <Filter>libs\CLD\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
