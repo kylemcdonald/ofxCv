@@ -32,10 +32,10 @@
 #include "ofxCv/Utilities.h"
 
 // coherent line drawing
-#include "imatrix.h"
-#include "ETF.h"
-#include "fdog.h"
-#include "myvec.h"
+#include "CLD/imatrix.h"
+#include "CLD/ETF.h"
+#include "CLD/fdog.h"
+#include "CLD/myvec.h"
 
 namespace ofxCv {
 	
