@@ -155,7 +155,7 @@ namespace ofxCv {
 		ofPushStyle();
 		ofSetColor(background);
 		ofFill();
-		ofDrawRectangle(x, y, width + 2 * padding, height + 2 * padding);
+		ofRect(x, y, width + 2 * padding, height + 2 * padding);
 		ofSetColor(foreground);
 		ofNoFill();
 		ofPushMatrix();

@@ -285,7 +285,7 @@ namespace ofxCv {
 		ofNoFill();
 		for(int i = 0; i < (int)polylines.size(); i++) {
 			polylines[i].draw();
-			ofDrawRectangle(toOf(getBoundingRect(i)));
+			ofRect(toOf(getBoundingRect(i)));
 		}
 		ofPopStyle();
 	}
