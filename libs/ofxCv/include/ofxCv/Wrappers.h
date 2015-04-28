@@ -379,7 +379,7 @@ cv::name(xMat, yMat, resultMat);\
 	void fillPoly(vector<cv::Point>& points, D& dst) {
 		cv::Mat dstMat = toCv(dst);
 		const cv::Point* ppt[1] = { &(points[0]) };
-		int npt[] = { points.size() };
+		int npt[] = { static_cast<int>(points.size()) };
 		dstMat.setTo(Scalar(0));
 		fillPoly(dstMat, ppt, npt, 1, Scalar(255));
 	}
