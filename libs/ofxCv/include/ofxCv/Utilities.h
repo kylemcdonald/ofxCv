@@ -77,7 +77,7 @@ namespace ofxCv {
 		return CV_8S;
 	}
 	template <class T> inline int getDepth(ofBaseHasPixels_<T>& img) {
-		return getDepth(img.getPixels());
+		return getDepth(img.getPixelsRef());
 	}
 	
 	// channels
@@ -123,7 +123,7 @@ namespace ofxCv {
 		return pixels.getNumChannels();
 	}
 	template <class T> inline int getChannels(ofBaseHasPixels_<T>& img) {
-		return getChannels(img.getPixels());
+		return getChannels(img.getPixelsRef());
 	}
 	
 	// image type
