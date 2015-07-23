@@ -5,7 +5,7 @@
  not-in-place variations.
  
  high level image operations:
- - Canny (edge detection), medianBlur, blur (gaussian), convertColor
+ - Canny (edge detection), medianBlur, blur, convertColor
  - Coherent line drawing
  
  low level image manipulation and comparison:
@@ -202,20 +202,35 @@ cv::name(xMat, yMat, resultMat);\
 	
 	int forceOdd(int x);
 	
-	// Gaussian blur
+	// box blur
 	template <class S, class D>
 	void blur(S& src, D& dst, int size) {
 		imitate(dst, src);
 		size = forceOdd(size);
 		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		cv::GaussianBlur(srcMat, dstMat, cv::Size(size, size), 0, 0);
+		cv::blur(srcMat, dstMat, cv::Size(size, size));
 	}
 	
-	// in-place Gaussian blur
+	// in-place box blur
 	template <class SD>
 	void blur(SD& srcDst, int size) {
 		ofxCv::blur(srcDst, srcDst, size);
 	}
+    
+    // Gaussian blur
+    template <class S, class D>
+    void GaussianBlur(S& src, D& dst, int size) {
+        imitate(dst, src);
+        size = forceOdd(size);
+        Mat srcMat = toCv(src), dstMat = toCv(dst);
+        cv::GaussianBlur(srcMat, dstMat, cv::Size(size, size), 0, 0);
+    }
+    
+    // in-place Gaussian blur
+    template <class SD>
+    void GaussianBlur(SD& srcDst, int size) {
+        ofxCv::GaussianBlur(srcDst, srcDst, size);
+    }
 	
 	// Median blur
 	template <class S, class D>
@@ -364,7 +379,7 @@ cv::name(xMat, yMat, resultMat);\
 	void fillPoly(vector<cv::Point>& points, D& dst) {
 		cv::Mat dstMat = toCv(dst);
 		const cv::Point* ppt[1] = { &(points[0]) };
-		int npt[] = { points.size() };
+		int npt[] = { (int) points.size() };
 		dstMat.setTo(Scalar(0));
 		fillPoly(dstMat, ppt, npt, 1, Scalar(255));
 	}
@@ -407,6 +422,14 @@ cv::name(xMat, yMat, resultMat);\
 			cv::flip(dstMat, dstMat, 0);
 		}
 	}
+    
+    template <class S, class D>
+    void transpose(S& src, D& dst) {
+        Mat srcMat = toCv(src);
+        allocate(dst, srcMat.rows, srcMat.cols, srcMat.type());
+        Mat dstMat = toCv(dst);
+        cv::transpose(srcMat, dstMat);
+    }
 	
 	// finds the 3x4 matrix that best describes the (premultiplied) affine transformation between two point clouds
 	ofMatrix4x4 estimateAffine3D(vector<ofVec3f>& from, vector<ofVec3f>& to, float accuracy = .99);
