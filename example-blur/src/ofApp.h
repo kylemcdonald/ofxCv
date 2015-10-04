@@ -9,7 +9,8 @@ public:
 	void update();
 	void draw();
     void keyPressed(int key);
-    
+
+    int blur;
     ofVideoGrabber cam;
     ofImage img;
     bool useGaussian;

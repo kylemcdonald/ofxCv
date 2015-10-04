@@ -3,6 +3,7 @@
 void ofApp::setup() {
     useGaussian = false;
     cam.initGrabber(640, 480);
+    blur=50;
 }
 
 void ofApp::update() {
@@ -10,11 +11,21 @@ void ofApp::update() {
     if(cam.isFrameNew()) {
         ofxCv::copy(cam, img);
         if(useGaussian) {
-            ofxCv::GaussianBlur(img, 50);
+            ofxCv::GaussianBlur(img, blur);
         } else {
-            ofxCv::blur(img, 50);
+            ofxCv::blur(img, blur);
         }
         img.update();
+
+        // now we compute the high frequency quantity in the image,
+        // the sharper the image is, the greater the score is
+        // thus the score could be used as a focus indicator.
+        cv::Mat gray, normalized, sobel;
+        ofxCv::copyGray(img, gray);
+        equalizeHist(gray, normalized);
+        ofxCv::Sobel(normalized,sobel,-1, 1, 1);
+        double score = cv::norm(cv::sum(sobel)) / sobel.total(); // need to get the norm (double) of the sum (scalar) to fix type issue
+        cout << "focus : " << score << endl;
     }
 }
 
@@ -26,5 +37,14 @@ void ofApp::draw() {
 }
 
 void ofApp::keyPressed(int key) {
-    useGaussian = !useGaussian;
+    switch(key){
+        case ' ':
+            useGaussian = !useGaussian; break;
+        case 'z':
+            if(blur<255)blur++; break;
+        case 'a':
+            if (blur>0)blur--; break;
+        default:
+            break;
+    }
 }
