@@ -2,9 +2,9 @@
 #include "ofxCv/Utilities.h"
 
 namespace ofxCv {
-	
+
 	using namespace cv;
-	
+
 	ofMatrix4x4 makeMatrix(Mat rotation, Mat translation) {
 		Mat rot3x3;
 		if(rotation.rows == 3 && rotation.cols == 3) {
@@ -19,11 +19,11 @@ namespace ofxCv {
 											 rm[2], rm[5], rm[8], 0.0f,
 											 tm[0], tm[1], tm[2], 1.0f);
 	}
-	
+
 	void drawMat(Mat& mat, float x, float y) {
 		drawMat(mat, x, y, mat.cols, mat.rows);
 	}
-	
+
     // special case for copying into ofTexture
     template <class S>
     void copy(S& src, ofTexture& tex) {
@@ -33,24 +33,33 @@ namespace ofxCv {
         Mat mat = toCv(src);
 		tex.loadData(mat.ptr(), w, h, glType);
     }
-    
+
 	void drawMat(Mat& mat, float x, float y, float width, float height) {
         if(mat.empty()) {
             return;
         }
-        ofTexture tex;
-        copy(mat, tex);
+        cv::Size roiSize;
+    		cv::Point roiOffset;
+    		mat.locateROI(roiSize, roiOffset);
+    		ofTexture tex;
+        if ( roiSize.width == mat.cols && roiSize.height == mat.rows ){
+       		copy(mat, tex);
+        } else {
+        	Mat tmp;
+        	mat.copyTo(tmp);
+        	copy(tmp,tex);
+        }
 		tex.draw(x, y, width, height);
 	}
-	
+
 	void applyMatrix(const ofMatrix4x4& matrix) {
 		glMultMatrixf((GLfloat*) matrix.getPtr());
 	}
-	
+
 	int forceOdd(int x) {
 		return (x / 2) * 2 + 1;
 	}
-	
+
 	int findFirst(const Mat& arr, unsigned char target) {
 		for(int i = 0; i < arr.rows; i++) {
 			if(arr.at<unsigned char>(i) == target) {
@@ -59,7 +68,7 @@ namespace ofxCv {
 		}
 		return 0;
 	}
-	
+
 	int findLast(const Mat& arr, unsigned char target) {
 		for(int i = arr.rows - 1; i >= 0; i--) {
 			if(arr.at<unsigned char>(i) == target) {
@@ -68,7 +77,7 @@ namespace ofxCv {
 		}
 		return 0;
 	}
-	
+
 	float weightedAverageAngle(const vector<Vec4i>& lines) {
 		float angleSum = 0;
 		ofVec2f start, end;
@@ -85,16 +94,16 @@ namespace ofxCv {
 		}
 		return angleSum / weights;
 	}
-	
+
 	vector<cv::Point2f> getConvexPolygon(const vector<cv::Point2f>& convexHull, int targetPoints) {
 		vector<cv::Point2f> result = convexHull;
-		
+
 		static const unsigned int maxIterations = 16;
 		static const double infinity = numeric_limits<double>::infinity();
 		double minEpsilon = 0;
 		double maxEpsilon = infinity;
 		double curEpsilon = 16; // good initial guess
-		
+
 		// unbounded binary search to simplify the convex hull until it's targetPoints
 		if(result.size() > targetPoints) {
 			for(int i = 0; i < maxIterations; i++) {
@@ -116,14 +125,14 @@ namespace ofxCv {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	void drawHighlightString(string text, ofPoint position, ofColor background, ofColor foreground) {
 		drawHighlightString(text, position.x, position.y, background, foreground);
 	}
-	
+
 	void drawHighlightString(string text, int x, int y, ofColor background, ofColor foreground) {
 		vector<string> lines = ofSplitString(text, "\n");
 		int textLength = 0;
@@ -139,13 +148,13 @@ namespace ofxCv {
 				textLength = curLength;
 			}
 		}
-		
+
 		int padding = 4;
 		int fontSize = 8;
 		float leading = 1.7;
 		int height = lines.size() * fontSize * leading - 1;
 		int width = textLength * fontSize;
-		
+
 #ifdef TARGET_OPENGLES
 		// This needs to be refactored to support OpenGLES
 		// Else it will work correctly
@@ -164,7 +173,7 @@ namespace ofxCv {
 		ofPopMatrix();
 		ofPopStyle();
 		glPopAttrib();
-#endif         
-         
+#endif
+
 	}
 }
