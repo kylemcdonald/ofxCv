@@ -73,7 +73,7 @@ namespace ofxCv {
         void setDistortionCoefficients(float k1, float k2, float p1, float p2, float k3=0, float k4=0, float k5=0, float k6=0);
         
 		void undistort(Mat img, int interpolationMode = INTER_NEAREST);
-		void undistort(Mat src, Mat dst, int interpolationMode = INTER_NEAREST);
+		void undistort(Mat src, Mat &dst, int interpolationMode = INTER_NEAREST);
 		
 		ofVec2f undistort(ofVec2f& src) const;
 		void undistort(vector<ofVec2f>& src, vector<ofVec2f>& dst) const;
