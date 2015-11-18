@@ -121,8 +121,8 @@ namespace ofxCv {
         fs << "distCoeffs" << distCoeffs;
         fs << "reprojectionError" << reprojectionError;
         fs << "features" << "[";
-        for(int i = 0; i < (int)imagePoints.size(); i++) {
-            fs << "[:" << imagePoints[i] << "]";
+        for(unsigned int i = 0; i < imagePoints.size(); i++) {
+            fs << imagePoints[i];
         }
         fs << "]";
     }
@@ -226,12 +226,10 @@ namespace ofxCv {
                 }
             }
         }
-#ifdef USING_OPENCV_2_3
         else {
             int flags = (patternType == CIRCLES_GRID ? CALIB_CB_SYMMETRIC_GRID : CALIB_CB_ASYMMETRIC_GRID); // + CALIB_CB_CLUSTERING
             found = findCirclesGrid(img, patternSize, pointBuf, flags);
         }
-#endif
         return found;
     }
     bool Calibration::clean(float minReprojectionError) {
@@ -263,13 +261,12 @@ namespace ofxCv {
             return ready;
         }
         
-        Mat cameraMatrix = Mat::eye(3, 3, CV_64F);
-        
-        updateObjectPoints();
+        Mat cameraMatrix = Mat1d::eye(3, 3);
         
         int calibFlags = 0;
+        updateObjectPoints();
+        
         float rms = calibrateCamera(objectPoints, imagePoints, addedImageSize, cameraMatrix, distCoeffs, boardRotations, boardTranslations, calibFlags);
-        ofLog(OF_LOG_VERBOSE, "calibrateCamera() reports RMS error of " + ofToString(rms));
         
         ready = checkRange(cameraMatrix) && checkRange(distCoeffs);
         
@@ -304,15 +301,15 @@ namespace ofxCv {
         img.copyTo(undistortBuffer);
         undistort(undistortBuffer, img, interpolationMode);
     }
-    void Calibration::undistort(Mat src, Mat dst, int interpolationMode) {
+    void Calibration::undistort(Mat src, Mat &dst, int interpolationMode) {
         remap(src, dst, undistortMapX, undistortMapY, interpolationMode);
     }
     
     ofVec2f Calibration::undistort(ofVec2f& src) const {
         ofVec2f dst;
         Mat matSrc = Mat(1, 1, CV_32FC2, &src.x);
-        Mat matDst = Mat(1, 1, CV_32FC2, &dst.x);;
-        undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
+        Mat matDst = Mat(1, 1, CV_32FC2, &dst.x);
+        undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs, Mat1d::eye(3, 3), undistortedIntrinsics.getCameraMatrix());
         return dst;
     }
     
@@ -321,7 +318,7 @@ namespace ofxCv {
         dst.resize(n);
         Mat matSrc = Mat(n, 1, CV_32FC2, &src[0].x);
         Mat matDst = Mat(n, 1, CV_32FC2, &dst[0].x);
-        undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
+        undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs, Mat1d::eye(3, 3), undistortedIntrinsics.getCameraMatrix());
     }
     
     bool Calibration::getTransformation(Calibration& dst, Mat& rotation, Mat& translation) {
@@ -467,8 +464,9 @@ namespace ofxCv {
         ofLog(OF_LOG_VERBOSE, "all views have error of " + ofToString(reprojectionError));
     }
     void Calibration::updateUndistortion() {
-        Mat undistortedCameraMatrix = getOptimalNewCameraMatrix(distortedIntrinsics.getCameraMatrix(), distCoeffs, distortedIntrinsics.getImageSize(), fillFrame ? 0 : 1);
-        initUndistortRectifyMap(distortedIntrinsics.getCameraMatrix(), distCoeffs, Mat(), undistortedCameraMatrix, distortedIntrinsics.getImageSize(), CV_16SC2, undistortMapX, undistortMapY);
+        Mat distortedCameraMatrix = distortedIntrinsics.getCameraMatrix();
+        Mat undistortedCameraMatrix = getOptimalNewCameraMatrix(distortedCameraMatrix, distCoeffs, distortedIntrinsics.getImageSize(), fillFrame ? 0 : 1);
+        initUndistortRectifyMap(distortedCameraMatrix, distCoeffs, Mat(), undistortedCameraMatrix, distortedIntrinsics.getImageSize(), CV_16SC2, undistortMapX, undistortMapY);
         undistortedIntrinsics.setup(undistortedCameraMatrix, distortedIntrinsics.getImageSize());
     }
     
