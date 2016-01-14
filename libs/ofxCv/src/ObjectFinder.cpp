@@ -53,7 +53,7 @@ namespace ofxCv {
                                     (findBiggestObject ? CASCADE_FIND_BIGGEST_OBJECT | CASCADE_DO_ROUGH_SEARCH : 0),
                                     minSize,
                                     maxSize);
-		for(int i = 0; i < objects.size(); i++) {
+		for(size_t i = 0; i < objects.size(); i++) {
             cv::Rect& rect = objects[i];
 			rect.width /= rescale, rect.height /= rescale;
 			rect.x /= rescale, rect.y /= rescale;
@@ -81,7 +81,7 @@ namespace ofxCv {
 	void ObjectFinder::draw() const {
 		ofPushStyle();
 		ofNoFill();
-		for(int i = 0; i < size(); i++) {
+		for(size_t i = 0; i < size(); i++) {
 			ofRectangle object = getObject(i);
 			ofDrawRectangle(object);
 			ofDrawBitmapStringHighlight(ofToString(getLabel(i)), object.x, object.y);
