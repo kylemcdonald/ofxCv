@@ -89,7 +89,7 @@ namespace ofxCv {
 		
 		void setSimplify(bool simplify);
 		
-		void draw();
+		void draw() const;
 
 	protected:
 		cv::Mat hsvBuffer, thresh;
