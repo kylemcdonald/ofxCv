@@ -285,7 +285,7 @@ namespace ofxCv {
 		this->simplify = simplify;
 	}
 	
-	void ContourFinder::draw() {
+	void ContourFinder::draw() const {
 		ofPushStyle();
 		ofNoFill();
 		for(int i = 0; i < (int)polylines.size(); i++) {
