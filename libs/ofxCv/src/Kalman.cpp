@@ -12,7 +12,7 @@ namespace ofxCv {
 		if( bUseAccel ) {
 			KF.init(9, 3, 0); // 9 variables (position+velocity+accel) and 3 measurements (position)
 			
-			KF.transitionMatrix = *(Mat_<T>(9, 9) <<
+			KF.transitionMatrix = (Mat_<T>(9, 9) <<
 									1,0,0,1,0,0,0.5,0,0,
 									0,1,0,0,1,0,0,0.5,0,
 									0,0,1,0,0,1,0,0,0.5,
@@ -29,7 +29,7 @@ namespace ofxCv {
 		} else {
 			KF.init(6, 3, 0); // 6 variables (position+velocity) and 3 measurements (position)
 			
-			KF.transitionMatrix = *(Mat_<T>(6, 6) <<
+			KF.transitionMatrix = (Mat_<T>(6, 6) <<
 									1,0,0,1,0,0,
 									0,1,0,0,1,0,
 									0,0,1,0,0,1,
