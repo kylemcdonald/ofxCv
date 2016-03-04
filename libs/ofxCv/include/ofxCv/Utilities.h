@@ -14,6 +14,8 @@
 #include "ofTexture.h"
 #include "ofPixels.h"
 #include "ofBaseTypes.h"
+#include "ofVideoPlayer.h"
+#include "ofVideoGrabber.h"
 #include "ofPolyline.h"
 #include "ofVectorMath.h"
 
@@ -177,7 +179,7 @@ namespace ofxCv {
         {
             img.allocate(width, height, getOfImageType(cvType));
         }
-	}
+    }
     inline void allocate(ofTexture& img, int width, int height, int cvType) {
         if (!img.isAllocated() ||
             getWidth(img) != width ||
@@ -195,7 +197,9 @@ namespace ofxCv {
 		}
 	}
 	// ofVideoPlayer/Grabber can't be allocated, so we assume we don't need to do anything
-	inline void allocate(ofBaseVideoDraws & img, int width, int height, int cvType) {}
+    inline void allocate(ofBaseVideoDraws & img, int width, int height, int cvType) {}
+    inline void allocate(ofVideoPlayer & img, int width, int height, int cvType) {}
+    inline void allocate(ofVideoGrabber & img, int width, int height, int cvType) {}
 	
 	// imitate() is good for preparing buffers
 	// it's like allocate(), but uses the size and type of the original as a reference
