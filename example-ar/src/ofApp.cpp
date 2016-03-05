@@ -12,8 +12,9 @@ void ofApp::setup() {
 	objectPoints = Calibration::createObjectPoints(patternSize, 1., CHESSBOARD);
 	found = false;
 	
-	light.enable();
+    light.enable();
 	light.setPosition(500, 0, 0);
+    ofDisableLighting();
 }
 
 void ofApp::update() {
@@ -47,16 +48,16 @@ void ofApp::draw() {
 		
 		ofEnableLighting();
 		ofSetColor(255);
-		glEnable(GL_DEPTH_TEST);
+        ofEnableDepthTest();
 		ofTranslate(.5, .5, -.5);
 		for(int i = 0; i < patternSize.width / 2; i++) {
 			for(int j = 0; j < patternSize.height / 2; j++) {
 				for(int k = 0; k < 3; k++) {
-					ofBox(2 * i, 2 * j, -2 * k, 1);
+					ofDrawBox(2 * i, 2 * j, -2 * k, 1);
 				}
 			}
 		}
-		glDisable(GL_DEPTH_TEST);
-		ofDisableLighting();
+        ofDisableDepthTest();
+        ofDisableLighting();
 	}
 }
