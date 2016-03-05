@@ -6,6 +6,8 @@ using namespace cv;
 void ofApp::setup() {
     distorted.load("distorted.jpg");
     
+    // These parameters can be found in the .lpc files that come with some cameras.
+    
     float imageWidth = distorted.getWidth(); // ImageWidth, pixels
     float imageHeight = distorted.getHeight(); // ImageLength, pixels
     float focalLength = 28; // FocalLength, mm
