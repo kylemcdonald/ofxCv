@@ -5,13 +5,12 @@
 
 class ofApp : public ofBaseApp {
 public:
-	void setup();
-	void update();
-	void draw();
-	
-	ofImage distorted;
+    void setup();
+    void update();
+    void draw();
+    
+    ofImage distorted;
     ofImage undistorted;
-    ofImage undistortedReference;
-	
-	ofxCv::Calibration calibration;
+    
+    ofxCv::Calibration calibration;
 };

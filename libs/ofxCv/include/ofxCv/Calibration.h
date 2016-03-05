@@ -70,8 +70,8 @@ namespace ofxCv {
 		void setIntrinsics(Intrinsics& distortedIntrinsics);
         void setDistortionCoefficients(float k1, float k2, float p1, float p2, float k3=0, float k4=0, float k5=0, float k6=0);
         
-		void undistort(cv::Mat img, int interpolationMode = cv::INTER_NEAREST);
-		void undistort(cv::Mat src, cv::Mat dst, int interpolationMode = cv::INTER_NEAREST);
+		void undistort(cv::Mat img, int interpolationMode = cv::INTER_LINEAR);
+		void undistort(cv::Mat src, cv::Mat dst, int interpolationMode = cv::INTER_LINEAR);
 		
 		ofVec2f undistort(ofVec2f& src) const;
 		void undistort(std::vector<ofVec2f>& src, std::vector<ofVec2f>& dst) const;

@@ -226,7 +226,5 @@ namespace ofxCv {
 	static const ofColor cyanPrint = ofColor::fromHex(0x00abec);
 	static const ofColor magentaPrint = ofColor::fromHex(0xec008c);
 	static const ofColor yellowPrint = ofColor::fromHex(0xffee00);
-	
-	void drawHighlightString(string text, ofPoint position, ofColor background = ofColor::black, ofColor foreground = ofColor::white);
-	void drawHighlightString(string text, int x, int y, ofColor background = ofColor::black, ofColor foreground = ofColor::white);
+    
 }
