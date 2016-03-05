@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxCv.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -9,11 +10,12 @@ public:
 	void update();
 	void draw();
 	void mousePressed(int x, int y, int button);
-	void keyPressed(int key);
 	
 	ofVideoGrabber cam;	
 	ofxCv::ContourFinder contourFinder;
-	float threshold;
-	ofxCv::TrackingColorMode trackingColorMode;
 	ofColor targetColor;
+    
+    ofxPanel gui;
+    ofParameter<float> threshold;
+    ofParameter<bool> trackHs;
 };

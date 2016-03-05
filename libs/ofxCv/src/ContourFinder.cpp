@@ -42,6 +42,9 @@ namespace ofxCv {
 			if(trackingColorMode == TRACK_COLOR_RGB) {
 				inRange(img, base - offset, base + offset, thresh);
 			} else {
+                // all the HSV modes are broken incorrect,
+                // because opencv uses hue 0-180 not 0-255
+                // which means that the math doesn't wrap.
 				if(trackingColorMode == TRACK_COLOR_H) {
 					offset[1] = 255;
 					offset[2] = 255;

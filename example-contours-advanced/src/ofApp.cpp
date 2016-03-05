@@ -8,13 +8,16 @@ void ofApp::setup() {
 	contourFinder.setMinAreaRadius(10);
 	contourFinder.setMaxAreaRadius(150);
 	//contourFinder.setInvert(true); // find black instead of white
-	trackingColorMode = TRACK_COLOR_RGB;
+    
+    gui.setup();
+    gui.add(threshold.set("Threshold", 128, 0, 255));
+    gui.add(trackHs.set("Track Hue/Saturation", false));
 }
 
 void ofApp::update() {
 	cam.update();
-	if(cam.isFrameNew()) {
-		threshold = ofMap(mouseX, 0, ofGetWidth(), 0, 255);
+    if(cam.isFrameNew()) {
+        contourFinder.setTargetColor(targetColor, trackHs ? TRACK_COLOR_HS : TRACK_COLOR_RGB);
 		contourFinder.setThreshold(threshold);
 		contourFinder.findContours(cam);
 	}
@@ -32,8 +35,8 @@ void ofApp::draw() {
 	for(int i = 0; i < n; i++) {
 		// smallest rectangle that fits the contour
 		ofSetColor(cyanPrint);
-		ofPolyline minAreRect = toOf(contourFinder.getMinAreaRect(i));
-		minAreRect.draw();
+		ofPolyline minAreaRect = toOf(contourFinder.getMinAreaRect(i));
+		minAreaRect.draw();
 		
 		// ellipse that best fits the contour
 		ofSetColor(magentaPrint);
@@ -90,11 +93,8 @@ void ofApp::draw() {
 		ofPopMatrix();
 	}
 
-	ofSetColor(255);
-	drawHighlightString(ofToString((int) ofGetFrameRate()) + " fps", 10, 10);
-	drawHighlightString(ofToString((int) threshold) + " threshold", 10, 30);
-	drawHighlightString(trackingColorMode == TRACK_COLOR_RGB ? "RGB tracking" : "hue tracking", 10, 50);
-	
+    gui.draw();
+    
 	ofTranslate(8, 75);
 	ofFill();
 	ofSetColor(0);
@@ -105,15 +105,4 @@ void ofApp::draw() {
 
 void ofApp::mousePressed(int x, int y, int button) {
 	targetColor = cam.getPixels().getColor(x, y);
-	contourFinder.setTargetColor(targetColor, trackingColorMode);
-}
-
-void ofApp::keyPressed(int key) {
-	if(key == 'h') {
-		trackingColorMode = TRACK_COLOR_HS;
-	}
-	if(key == 'r') {
-		trackingColorMode = TRACK_COLOR_RGB;
-	}
-	contourFinder.setTargetColor(targetColor, trackingColorMode);
 }
