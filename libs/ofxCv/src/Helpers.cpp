@@ -74,7 +74,7 @@ namespace ofxCv {
 		float angleSum = 0;
 		ofVec2f start, end;
 		float weights = 0;
-		for(int i = 0; i < lines.size(); i++) {
+		for(size_t i = 0; i < lines.size(); i++) {
 			start.set(lines[i][0], lines[i][1]);
 			end.set(lines[i][2], lines[i][3]);
 			ofVec2f diff = end - start;
@@ -98,7 +98,7 @@ namespace ofxCv {
 		
 		// unbounded binary search to simplify the convex hull until it's targetPoints
 		if(result.size() > targetPoints) {
-			for(int i = 0; i < maxIterations; i++) {
+			for(size_t i = 0; i < maxIterations; i++) {
 				approxPolyDP(Mat(convexHull), result, curEpsilon, true);
 				if(result.size() == targetPoints) {
 					break;
@@ -128,7 +128,7 @@ namespace ofxCv {
 	void drawHighlightString(string text, int x, int y, ofColor background, ofColor foreground) {
 		vector<string> lines = ofSplitString(text, "\n");
 		int textLength = 0;
-		for(int i = 0; i < lines.size(); i++) {
+		for(size_t i = 0; i < lines.size(); i++) {
 			// tabs are not rendered
 			int tabs = count(lines[i].begin(), lines[i].end(), '\t');
 			int curLength = lines[i].length() - tabs;

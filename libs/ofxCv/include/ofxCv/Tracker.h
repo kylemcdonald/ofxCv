@@ -321,7 +321,7 @@ namespace ofxCv {
 		const std::vector<unsigned int>& track(const std::vector<cv::Rect>& objects) {
 			const std::vector<unsigned int>& labels = Tracker<cv::Rect>::track(objects);
 			// add new objects, update old objects
-			for(int i = 0; i < labels.size(); i++) {
+			for(size_t i = 0; i < labels.size(); i++) {
 				unsigned int label = labels[i];
 				const cv::Rect& cur = getCurrent(label);
 				if(smoothed.count(label) > 0) {
