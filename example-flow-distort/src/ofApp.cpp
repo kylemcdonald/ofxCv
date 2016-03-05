@@ -57,9 +57,9 @@ void ofApp::update() {
 void ofApp::draw() {
 	ofBackground(0);
 	ofScale(2, 2);
-	cam.getTextureReference().bind();
+	cam.getTexture().bind();
 	mesh.draw();
-	cam.getTextureReference().unbind();
+	cam.getTexture().unbind();
 	if(ofGetMousePressed()) {
 		mesh.drawWireframe();
 	}

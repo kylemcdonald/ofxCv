@@ -6,7 +6,7 @@ using namespace cv;
 void ofApp::setup() {
 	ofSetVerticalSync(true);
 	
-	kalman.init(1e-4, 1e-1); // invert of (smoothness, rapidness)
+	kalman.init(1/10000., 1/10.); // inverse of (smoothness, rapidness)
 	
 	line.setMode(OF_PRIMITIVE_LINE_STRIP);
 	predicted.setMode(OF_PRIMITIVE_LINE_STRIP);

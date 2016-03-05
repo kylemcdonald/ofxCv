@@ -17,7 +17,7 @@ void ofApp::update() {
 	cam.update();
 	if(cam.isFrameNew()) {
 		// take the absolute difference of prev and cam and save it inside diff
-		absdiff(previous, cam, diff);
+		absdiff(cam, previous, diff);
 		diff.update();
 		
 		// like ofSetPixels, but more concise and cross-toolkit
