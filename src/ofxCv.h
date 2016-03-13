@@ -1,7 +1,7 @@
 #pragma once
 
 // cv
-#include "opencv2/opencv.hpp"
+#include <opencv2/opencv.hpp>
 
 // ofxCv
 
@@ -26,5 +26,6 @@
 #include "ofxCv/Flow.h" // optical flow, from james george
 #include "ofxCv/ObjectFinder.h" // object finding (e.g., face detection)
 #include "ofxCv/Kalman.h" // Kalman filter for smoothing
+#include "ofxCv/MOG2BackgroundSubtractor.h" // MOG2
 
 // <3 kyle
