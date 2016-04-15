@@ -12,6 +12,7 @@ void ofApp::setup() {
     gui.setup();
     gui.add(threshold.set("Threshold", 128, 0, 255));
     gui.add(trackHs.set("Track Hue/Saturation", false));
+    gui.add(holes.set("Holes", false));
 }
 
 void ofApp::update() {
@@ -19,6 +20,7 @@ void ofApp::update() {
     if(cam.isFrameNew()) {
         contourFinder.setTargetColor(targetColor, trackHs ? TRACK_COLOR_HS : TRACK_COLOR_RGB);
 		contourFinder.setThreshold(threshold);
+        contourFinder.setFindHoles(holes);
 		contourFinder.findContours(cam);
 	}
 }
@@ -91,11 +93,15 @@ void ofApp::draw() {
 		ofScale(5, 5);
 		ofDrawLine(0, 0, balance.x, balance.y);
 		ofPopMatrix();
+        
+        if(contourFinder.getHole(i)) {
+            ofDrawBitmapStringHighlight("hole", center.x, center.y);
+        }
 	}
 
     gui.draw();
     
-	ofTranslate(8, 75);
+	ofTranslate(8, 90);
 	ofFill();
 	ofSetColor(0);
 	ofDrawRectangle(-3, -3, 64+6, 64+6);

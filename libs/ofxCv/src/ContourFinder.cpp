@@ -75,12 +75,19 @@ namespace ofxCv {
 		bool needMaxFilter = maxAreaNorm ? (maxArea < 1) : (maxArea < numeric_limits<float>::infinity());
 		vector<size_t> allIndices;
 		vector<double> allAreas;
+        vector<bool> allHoles;
 		if(needMinFilter || needMaxFilter) {
 			double imgArea = img.rows * img.cols;
 			double imgMinArea = minAreaNorm ? (minArea * imgArea) : minArea;
 			double imgMaxArea = maxAreaNorm ? (maxArea * imgArea) : maxArea;
 			for(size_t i = 0; i < allContours.size(); i++) {
-				double curArea = contourArea(Mat(allContours[i]));
+				double curArea = contourArea(Mat(allContours[i]), true);
+                bool hole = true;
+                if(curArea < 0) {
+                    curArea = -curArea;
+                    hole = false;
+                }
+                allHoles.push_back(hole);
 				allAreas.push_back(curArea);
 				if((!needMinFilter || curArea >= imgMinArea) &&
 					 (!needMaxFilter || curArea <= imgMaxArea)) {
@@ -104,11 +111,13 @@ namespace ofxCv {
 		// generate polylines and bounding boxes from the contours
 		contours.clear();
 		polylines.clear();
-		boundingRects.clear();
+        boundingRects.clear();
+        holes.clear();
 		for(size_t i = 0; i < allIndices.size(); i++) {
 			contours.push_back(allContours[allIndices[i]]);
 			polylines.push_back(toOf(contours[i]));
 			boundingRects.push_back(boundingRect(contours[i]));
+            holes.push_back(allHoles[allIndices[i]]);
 		}
 		
 		// track bounding boxes
@@ -248,12 +257,16 @@ namespace ofxCv {
 		}
 		
 		return quad;
-	}
+    }
+    
+    bool ContourFinder::getHole(unsigned int i) const {
+        return holes[i];
+    }
 	
 	cv::Vec2f ContourFinder::getVelocity(unsigned int i) const {
 		return tracker.getVelocity(i);
 	}
-	
+    
 	unsigned int ContourFinder::getLabel(unsigned int i) const {
 		return tracker.getCurrentLabels()[i];
 	}
