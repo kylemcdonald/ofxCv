@@ -123,7 +123,7 @@ namespace ofxCv {
         fs << "distCoeffs" << distCoeffs;
         fs << "reprojectionError" << reprojectionError;
         fs << "features" << "[";
-        for(int i = 0; i < (int)imagePoints.size(); i++) {
+        for(std::size_t i = 0; i < imagePoints.size(); i++) {
             fs << "[:" << imagePoints[i] << "]";
         }
         fs << "]";
@@ -294,7 +294,7 @@ namespace ofxCv {
         ofDirectory dirList;
         ofImage cur;
         dirList.listDir(directory);
-        for(int i = 0; i < (int)dirList.size(); i++) {
+        for(std::size_t i = 0; i < dirList.size(); i++) {
             cur.load(dirList.getPath(i));
             if(!add(toCv(cur))) {
                 ofLog(OF_LOG_ERROR, "Calibration::add() failed on " + dirList.getPath(i));
@@ -454,7 +454,7 @@ namespace ofxCv {
         perViewErrors.clear();
         perViewErrors.resize(objectPoints.size());
         
-        for(int i = 0; i < (int)objectPoints.size(); i++) {
+        for(std::size_t i = 0; i < objectPoints.size(); i++) {
             projectPoints(Mat(objectPoints[i]), boardRotations[i], boardTranslations[i], distortedIntrinsics.getCameraMatrix(), distCoeffs, imagePoints2);
             double err = norm(Mat(imagePoints[i]), Mat(imagePoints2), CV_L2);
             int n = objectPoints[i].size();

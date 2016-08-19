@@ -291,7 +291,7 @@ namespace ofxCv {
 	void ContourFinder::draw() const {
 		ofPushStyle();
 		ofNoFill();
-		for(int i = 0; i < (int)polylines.size(); i++) {
+        for(std::size_t i = 0; i < polylines.size(); i++) {
 			polylines[i].draw();
 			ofDrawRectangle(toOf(getBoundingRect(i)));
 		}

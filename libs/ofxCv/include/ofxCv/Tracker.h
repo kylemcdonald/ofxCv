@@ -231,12 +231,12 @@ namespace ofxCv {
 		
 		// build label maps
 		currentLabelMap.clear();
-		for(int i = 0; i < (int)current.size(); i++) {
+        for(std::size_t i = 0; i < current.size(); i++) {
 			unsigned int label = current[i].getLabel();
 			currentLabelMap[label] = &(current[i]);
 		}
 		previousLabelMap.clear();
-		for(int i = 0; i < (int)previous.size(); i++) {
+        for(std::size_t i = 0; i < previous.size(); i++) {
 			unsigned int label = previous[i].getLabel();
 			previousLabelMap[label] = &(previous[i]);
 		}

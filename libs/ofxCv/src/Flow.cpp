@@ -154,7 +154,7 @@ namespace ofxCv {
 	
 	void FlowPyrLK::setFeaturesToTrack(const vector<glm::vec2> & features){
 		nextPts.resize(features.size());
-		for(int i=0;i<(int)features.size();i++){
+		for(std::size_t i=0;i<features.size();i++){
 			nextPts[i]=toCv(features[i]);
 		}
 		calcFeaturesNextFrame = false;
@@ -172,7 +172,7 @@ namespace ofxCv {
 	
 	vector<glm::vec2> FlowPyrLK::getCurrent(){
 		vector<glm::vec2> ret;
-		for(int i = 0; i < (int)nextPts.size(); i++) {
+        for(std::size_t i = 0; i < nextPts.size(); i++) {
 			if(status[i]){
                 ret.push_back(toOf(nextPts[i]));
 			}
@@ -182,7 +182,7 @@ namespace ofxCv {
 	
 	vector<glm::vec2> FlowPyrLK::getMotion(){
 		vector<glm::vec2> ret(prevPts.size());
-		for(int i = 0; i < (int)prevPts.size(); i++) {
+		for(std::size_t i = 0; i < prevPts.size(); i++) {
 			if(status[i]){
 				ret.push_back(toOf(nextPts[i])-toOf(prevPts[i]));
 			}
@@ -193,7 +193,7 @@ namespace ofxCv {
 	void FlowPyrLK::drawFlow(ofRectangle rect) {
 		glm::vec2 offset(rect.x,rect.y);
 		glm::vec2 scale(rect.width/getWidth(),rect.height/getHeight());
-		for(int i = 0; i < (int)prevPts.size(); i++) {
+		for(std::size_t i = 0; i < prevPts.size(); i++) {
 			if(status[i]){
 				ofDrawLine(toOf(prevPts[i])*scale+offset, toOf(nextPts[i])*scale+offset);
 			}

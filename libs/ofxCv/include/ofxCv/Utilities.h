@@ -282,7 +282,7 @@ namespace ofxCv {
 	template <class T> inline ofPolyline toOf(const std::vector<cv::Point_<T> >& contour) {
 		ofPolyline polyline;
 		polyline.resize(contour.size());
-		for(int i = 0; i < (int)contour.size(); i++) {
+        for(std::size_t i = 0; i < contour.size(); i++) {
 			polyline[i].x = contour[i].x;
 			polyline[i].y = contour[i].y;
 		}
