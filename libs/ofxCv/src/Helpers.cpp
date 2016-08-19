@@ -72,13 +72,13 @@ namespace ofxCv {
 	
 	float weightedAverageAngle(const vector<Vec4i>& lines) {
 		float angleSum = 0;
-		ofVec2f start, end;
+		glm::vec2 start, end;
 		float weights = 0;
 		for(int i = 0; i < lines.size(); i++) {
-			start.set(lines[i][0], lines[i][1]);
-			end.set(lines[i][2], lines[i][3]);
-			ofVec2f diff = end - start;
-			float length = diff.length();
+            start = glm::vec2(lines[i][0], lines[i][1]);
+			end = glm::vec2(lines[i][2], lines[i][3]);
+			glm::vec2 diff = end - start;
+            float length = glm::length(diff);
 			float weight = length * length;
 			float angle = atan2f(diff.y, diff.x);
 			angleSum += angle * weight;

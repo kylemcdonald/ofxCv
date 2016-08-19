@@ -379,7 +379,7 @@ cv::name(xMat, yMat, resultMat);\
 	std::vector<cv::Vec4i> convexityDefects(const ofPolyline& polyline);
 	cv::RotatedRect minAreaRect(const ofPolyline& polyline);
 	cv::RotatedRect fitEllipse(const ofPolyline& polyline);
-	void fitLine(const ofPolyline& polyline, ofVec2f& point, ofVec2f& direction);
+	void fitLine(const ofPolyline& polyline, glm::vec2& point, glm::vec2& direction);
 
 	// kind of obscure function, draws filled polygons on the CPU
 	template <class D>
@@ -439,6 +439,6 @@ cv::name(xMat, yMat, resultMat);\
     }
 
 	// finds the 3x4 matrix that best describes the (premultiplied) affine transformation between two point clouds
-	ofMatrix4x4 estimateAffine3D(std::vector<ofVec3f>& from, std::vector<ofVec3f>& to, float accuracy = .99);
-	ofMatrix4x4 estimateAffine3D(std::vector<ofVec3f>& from, std::vector<ofVec3f>& to, std::vector<unsigned char>& outliers, float accuracy = .99);
+	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, float accuracy = .99);
+	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, std::vector<unsigned char>& outliers, float accuracy = .99);
 }

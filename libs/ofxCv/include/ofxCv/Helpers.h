@@ -19,12 +19,12 @@ namespace ofxCv {
 	void drawMat(cv::Mat& mat, float x, float y, float width, float height);
 	
 	template <class T>
-	ofVec2f findMaxLocation(T& img) {
+	glm::vec2 findMaxLocation(T& img) {
 		cv::Mat mat = toCv(img);
 		double minVal, maxVal;
 		cv::Point minLoc, maxLoc;
 		minMaxLoc(mat, &minVal, &maxVal, &minLoc, &maxLoc);
-		return ofVec2f(maxLoc.x, maxLoc.y);
+		return glm::vec2(maxLoc.x, maxLoc.y);
 	}
 	
 	template <class T>

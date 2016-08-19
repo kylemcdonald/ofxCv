@@ -73,13 +73,13 @@ namespace ofxCv {
 		void setPyramidLevels(int levels);
 		
 		//returns tracking features for this image
-		std::vector<ofPoint> getFeatures();
-		std::vector<ofPoint> getCurrent();
-		std::vector<ofVec2f> getMotion();
+		std::vector<glm::vec3> getFeatures();
+		std::vector<glm::vec2> getCurrent();
+		std::vector<glm::vec2> getMotion();
 		
 		// recalculates features to track
 		void resetFeaturesToTrack();
-		void setFeaturesToTrack(const std::vector<ofVec2f> & features);
+		void setFeaturesToTrack(const std::vector<glm::vec2> & features);
 		void setFeaturesToTrack(const std::vector<cv::Point2f> & features);
         void resetFlow();
 	protected:
@@ -129,12 +129,12 @@ namespace ofxCv {
 		void setUseGaussian(bool gaussian);
 		
 		cv::Mat& getFlow();
-		ofVec2f getTotalFlow();
-		ofVec2f getAverageFlow();		
-		ofVec2f getFlowOffset(int x, int y);
-		ofVec2f getFlowPosition(int x, int y);
-		ofVec2f getTotalFlowInRegion(ofRectangle region);
-		ofVec2f getAverageFlowInRegion(ofRectangle region);
+		glm::vec2 getTotalFlow();
+		glm::vec2 getAverageFlow();
+		glm::vec2 getFlowOffset(int x, int y);
+		glm::vec2 getFlowPosition(int x, int y);
+		glm::vec2 getTotalFlowInRegion(ofRectangle region);
+		glm::vec2 getAverageFlowInRegion(ofRectangle region);
 		
         //call this if you switch to a new video file to reset internal caches
         void resetFlow();

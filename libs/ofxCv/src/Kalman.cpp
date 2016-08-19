@@ -48,7 +48,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	void KalmanPosition_<T>::update(const ofVec3f& p) {
+	void KalmanPosition_<T>::update(const glm::vec3& p) {
 		// First predict, to update the internal statePre variable
 		prediction = KF.predict();
 		
@@ -60,21 +60,21 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	ofVec3f KalmanPosition_<T>::getPrediction()
+	glm::vec3 KalmanPosition_<T>::getPrediction()
 	{
-		return ofVec3f(prediction(0), prediction(1), prediction(2));
+		return glm::vec3(prediction(0), prediction(1), prediction(2));
 	}
 	
 	template <class T>
-	ofVec3f KalmanPosition_<T>::getEstimation()
+	glm::vec3 KalmanPosition_<T>::getEstimation()
 	{
-		return ofVec3f(estimated(0), estimated(1), estimated(2));
+		return glm::vec3(estimated(0), estimated(1), estimated(2));
 	}
 	
 	template <class T>
-	ofVec3f KalmanPosition_<T>::getVelocity()
+	glm::vec3 KalmanPosition_<T>::getVelocity()
 	{
-		return ofVec3f(estimated(3), estimated(4), estimated(5));
+		return glm::vec3(estimated(3), estimated(4), estimated(5));
 	}
 	
 	template class KalmanPosition_<float>;
@@ -90,7 +90,7 @@ namespace ofxCv {
 	template <class T>
 	void KalmanEuler_<T>::update(const ofQuaternion& q) {
 		// warp to appropriate dimension
-		ofVec3f euler = q.getEuler();
+		glm::vec3 euler = q.getEuler();
 		for( int i = 0; i < 3; i++ ) {
 			float rev = floorf((eulerPrev[i] + 180) / 360.f) * 360;
 			euler[i] += rev;
@@ -107,9 +107,9 @@ namespace ofxCv {
 	{
 		ofQuaternion q;
 		q.set(0, 0, 0, 1);
-		ofVec3f euler = KalmanPosition_<T>::getPrediction();
+		glm::vec3 euler = KalmanPosition_<T>::getPrediction();
 		
-		q.makeRotate(euler.x, ofVec3f(1, 0, 0), euler.z, ofVec3f(0, 0, 1), euler.y, ofVec3f(0, 1, 0));
+		q.makeRotate(euler.x, glm::vec3(1, 0, 0), euler.z, glm::vec3(0, 0, 1), euler.y, glm::vec3(0, 1, 0));
 		
 		return q;
 	}
@@ -119,9 +119,9 @@ namespace ofxCv {
 	{
 		ofQuaternion q;
 		q.set(0, 0, 0, 1);
-		ofVec3f euler = KalmanPosition_<T>::getEstimation();
+		glm::vec3 euler = KalmanPosition_<T>::getEstimation();
 		
-		q.makeRotate(euler.x, ofVec3f(1, 0, 0), euler.z, ofVec3f(0, 0, 1), euler.y, ofVec3f(0, 1, 0));
+		q.makeRotate(euler.x, glm::vec3(1, 0, 0), euler.z, glm::vec3(0, 0, 1), euler.y, glm::vec3(0, 1, 0));
 		
 		return q;
 	}
