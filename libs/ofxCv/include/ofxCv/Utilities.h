@@ -28,7 +28,7 @@ namespace ofxCv {
 	template <class T> inline int getHeight(const T& src) {return src.getHeight();}
 	inline int getWidth(const cv::Mat& src) {return src.cols;}
 	inline int getHeight(const cv::Mat& src) {return src.rows;}
-	template <class T> inline bool getAllocated(T& src) {
+	template <class T> inline bool getAllocated(const T& src) {
 		return getWidth(src) > 0 && getHeight(src) > 0;
 	}
 	
