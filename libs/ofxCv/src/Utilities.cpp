@@ -14,7 +14,11 @@ namespace ofxCv {
 	Mat toCv(Mat& mat) {
 		return mat;
 	}
-	
+
+    Mat toCv(const Mat& mat) {
+        return mat.clone();
+    }
+
 	Point2f toCv(glm::vec2 vec) {
 		return Point2f(vec.x, vec.y);
 	}

@@ -24,10 +24,10 @@ namespace ofxCv {
 	// they're very important for imitate().
 	
 	// width, height
-	template <class T> inline int getWidth(T& src) {return src.getWidth();}
-	template <class T> inline int getHeight(T& src) {return src.getHeight();}
-	inline int getWidth(cv::Mat& src) {return src.cols;}
-	inline int getHeight(cv::Mat& src) {return src.rows;}
+	template <class T> inline int getWidth(const T& src) {return src.getWidth();}
+	template <class T> inline int getHeight(const T& src) {return src.getHeight();}
+	inline int getWidth(const cv::Mat& src) {return src.cols;}
+	inline int getHeight(const cv::Mat& src) {return src.rows;}
 	template <class T> inline bool getAllocated(T& src) {
 		return getWidth(src) > 0 && getHeight(src) > 0;
 	}
@@ -36,10 +36,12 @@ namespace ofxCv {
     inline int getDepth(int cvImageType) {
         return CV_MAT_DEPTH(cvImageType);
     }
-	inline int getDepth(cv::Mat& mat) {
-		return mat.depth();
-	}
-    inline int getDepth(ofTexture& tex) {
+
+    inline int getDepth(const cv::Mat& mat) {
+        return mat.depth();
+    }
+
+    inline int getDepth(const ofTexture& tex) {
         // avoid "texture not allocated" warning
         if(!tex.isAllocated()) {
             return CV_8U;
@@ -51,14 +53,14 @@ namespace ofxCv {
             case GL_LUMINANCE_ALPHA:
             case GL_LUMINANCE:
                 return CV_8U;
-                
+
 #ifndef TARGET_OPENGLES
             case GL_RGBA8:
             case GL_RGB8:
             case GL_LUMINANCE8:
             case GL_LUMINANCE8_ALPHA8:
                 return CV_8U;
-                
+
             case GL_RGBA32F_ARB:
             case GL_RGB32F_ARB:
             case GL_LUMINANCE32F_ARB:
@@ -67,20 +69,20 @@ namespace ofxCv {
             default: return 0;
         }
     }
-	template <class T> inline int getDepth(ofPixels_<T>& pixels) {
+    template <class T> inline int getDepth(const ofPixels_<T>& pixels) {
 		switch(pixels.getBytesPerChannel()) {
 			case 4: return CV_32F;
 			case 2: return CV_16U;
 			case 1: default: return CV_8U;
 		}
 	}
-	template <> inline int getDepth(ofPixels_<signed short>& pixels) {
+	template <> inline int getDepth(const ofPixels_<signed short>& pixels) {
 		return CV_16S;
 	}
-	template <> inline int getDepth(ofPixels_<signed char>& pixels) {
+	template <> inline int getDepth(const ofPixels_<signed char>& pixels) {
 		return CV_8S;
 	}
-	template <class T> inline int getDepth(ofBaseHasPixels_<T>& img) {
+	template <class T> inline int getDepth(const ofBaseHasPixels_<T>& img) {
 		return getDepth(img.getPixels());
 	}
 	
@@ -95,10 +97,10 @@ namespace ofxCv {
 			case OF_IMAGE_GRAYSCALE: default: return 1;
 		}
 	}
-	inline int getChannels(cv::Mat& mat) {
+	inline int getChannels(const cv::Mat& mat) {
 		return mat.channels();
 	}
-    inline int getChannels(ofTexture& tex) {
+    inline int getChannels(const ofTexture& tex) {
         // avoid "texture not allocated" warning
         if(!tex.isAllocated()) {
             return GL_RGB;
@@ -123,10 +125,10 @@ namespace ofxCv {
             default: return 0;
         }
     }
-	template <class T> inline int getChannels(ofPixels_<T>& pixels) {
+	template <class T> inline int getChannels(const ofPixels_<T>& pixels) {
 		return pixels.getNumChannels();
 	}
-	template <class T> inline int getChannels(ofBaseHasPixels_<T>& img) {
+	template <class T> inline int getChannels(const ofBaseHasPixels_<T>& img) {
 		return getChannels(img.getPixels());
 	}
 	
@@ -137,7 +139,7 @@ namespace ofxCv {
 	inline int getCvImageType(ofImageType imageType, int cvDepth = CV_8U) {
 		return CV_MAKETYPE(cvDepth, getChannels(imageType));
 	}
-	template <class T> inline int getCvImageType(T& img) {
+	template <class T> inline int getCvImageType(const T& img) {
 		return CV_MAKETYPE(getDepth(img), getChannels(img));
 	}
 	inline ofImageType getOfImageType(int cvImageType) {
@@ -200,22 +202,36 @@ namespace ofxCv {
     inline void allocate(ofBaseVideoDraws & img, int width, int height, int cvType) {}
     inline void allocate(ofVideoPlayer & img, int width, int height, int cvType) {}
     inline void allocate(ofVideoGrabber & img, int width, int height, int cvType) {}
-	
+
+    inline void allocate(const ofBaseVideoDraws & img, int width, int height, int cvType) {}
+    inline void allocate(const ofVideoPlayer & img, int width, int height, int cvType) {}
+    inline void allocate(const ofVideoGrabber & img, int width, int height, int cvType) {}
+
 	// imitate() is good for preparing buffers
 	// it's like allocate(), but uses the size and type of the original as a reference
 	// like allocate(), the image being allocated is the first argument	
 	
 	// this version copies size, but manually specifies mirror's image type
-	template <class M, class O> void imitate(M& mirror, O& original, int mirrorCvImageType) {
+	template <class M, class O> void imitate(M& mirror, const O& original, int mirrorCvImageType) {
 		int ow = getWidth(original), oh = getHeight(original);
 		allocate(mirror, ow, oh, mirrorCvImageType);
 	}
-	
+
+    template <class M, class O> void imitate(M& mirror, O& original, int mirrorCvImageType) {
+        int ow = getWidth(original), oh = getHeight(original);
+        allocate(mirror, ow, oh, mirrorCvImageType);
+    }
+
 	// this version copies size and image type
-	template <class M, class O> void imitate(M& mirror, O& original) {
+	template <class M, class O> void imitate(M& mirror, const O& original) {
 		imitate(mirror, original, getCvImageType(original));
 	}
-	
+
+    // this version copies size and image type
+    template <class M, class O> void imitate(M& mirror, O& original) {
+        imitate(mirror, original, getCvImageType(original));
+    }
+
 	// maximum possible values for that depth or matrix
 	float getMaxVal(int cvDepth);
 	float getMaxVal(const cv::Mat& mat);
@@ -231,13 +247,25 @@ namespace ofxCv {
 	// is used for small objects where the compiler can optimize the copying if
 	// necessary. the reference is avoided to make inline toCv/toOf use easier.
 	
-	cv::Mat toCv(cv::Mat& mat);
+    cv::Mat toCv(cv::Mat& mat);
+    cv::Mat toCv(const cv::Mat& mat);
+
 	template <class T> inline cv::Mat toCv(ofPixels_<T>& pix) {
 		return cv::Mat(pix.getHeight(), pix.getWidth(), getCvImageType(pix), pix.getData(), 0);
 	}
+
+    template <class T> inline cv::Mat toCv(const ofPixels_<T>& pix) {
+        return cv::Mat(pix.getHeight(), pix.getWidth(), getCvImageType(pix), const_cast<T*>(pix.getData()), 0).clone();
+    }
+
 	template <class T> inline cv::Mat toCv(ofBaseHasPixels_<T>& img) {
 		return toCv(img.getPixels());
 	}
+
+    template <class T> inline cv::Mat toCv(const ofBaseHasPixels_<T>& img) {
+        return toCv(img.getPixels());
+    }
+
 	cv::Mat toCv(ofMesh& mesh);
 	cv::Point2f toCv(glm::vec2 vec);
 	cv::Point3f toCv(glm::vec3 vec);
@@ -249,9 +277,10 @@ namespace ofxCv {
 	
 	// cross-toolkit, cross-bitdepth copying
 	template <class S, class D>
-	void copy(S& src, D& dst, int dstDepth) {
+	void copy(const S& src, D& dst, int dstDepth) {
 		imitate(dst, src, getCvImageType(getChannels(src), dstDepth));
-		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+        cv::Mat srcMat = toCv(src);
+        cv::Mat dstMat = toCv(dst);
 		if(srcMat.type() == dstMat.type()) {
 			srcMat.copyTo(dstMat);
 		} else {
@@ -259,13 +288,26 @@ namespace ofxCv {
 			srcMat.convertTo(dstMat, dstMat.depth(), alpha);
 		}
 	}
-	
+
+    template <class S, class D>
+    void copy(S& src, D& dst, int dstDepth) {
+        imitate(dst, src, getCvImageType(getChannels(src), dstDepth));
+        cv::Mat srcMat = toCv(src);
+        cv::Mat dstMat = toCv(dst);
+        if(srcMat.type() == dstMat.type()) {
+            srcMat.copyTo(dstMat);
+        } else {
+            double alpha = getMaxVal(dstMat) / getMaxVal(srcMat);
+            srcMat.convertTo(dstMat, dstMat.depth(), alpha);
+        }
+    }
+
 	// most of the time you want the destination to be the same as the source. but
 	// sometimes your destination is a different depth, and copy() will notice and
 	// do the conversion for you.
 	template <class S, class D>
-	void copy(S& src, D& dst) {
-		int dstDepth;
+	void copy(const S& src, D& dst) {
+		int dstDepth = 0;
 		if(getAllocated(dst)) {
 			dstDepth = getDepth(dst);
 		} else {
@@ -273,13 +315,24 @@ namespace ofxCv {
 		}
 		copy(src, dst, dstDepth);
 	}
-	
+
+    template <class S, class D>
+    void copy(S& src, D& dst) {
+        int dstDepth = 0;
+        if(getAllocated(dst)) {
+            dstDepth = getDepth(dst);
+        } else {
+            dstDepth = getDepth(src);
+        }
+        copy(src, dst, dstDepth);
+    }
+
 	// toOf functions
 	glm::vec2 toOf(cv::Point2f point);
 	glm::vec3 toOf(cv::Point3f point);
 	ofRectangle toOf(cv::Rect rect);
 	ofPolyline toOf(cv::RotatedRect rect);
-	template <class T> inline ofPolyline toOf(const std::vector<cv::Point_<T> >& contour) {
+	template <class T> inline ofPolyline toOf(const std::vector<cv::Point_<T>>& contour) {
 		ofPolyline polyline;
 		polyline.resize(contour.size());
         for(std::size_t i = 0; i < contour.size(); i++) {
