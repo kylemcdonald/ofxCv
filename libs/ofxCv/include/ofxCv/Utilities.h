@@ -218,8 +218,7 @@ namespace ofxCv {
 	}
 
     template <class M, class O> void imitate(M& mirror, O& original, int mirrorCvImageType) {
-        int ow = getWidth(original), oh = getHeight(original);
-        allocate(mirror, ow, oh, mirrorCvImageType);
+        imitate(mirror, original, mirrorCvImageType);
     }
 
 	// this version copies size and image type
@@ -229,7 +228,7 @@ namespace ofxCv {
 
     // this version copies size and image type
     template <class M, class O> void imitate(M& mirror, O& original) {
-        imitate(mirror, original, getCvImageType(original));
+        imitate(mirror, original);
     }
 
 	// maximum possible values for that depth or matrix
