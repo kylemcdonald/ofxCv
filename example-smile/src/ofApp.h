@@ -62,7 +62,7 @@ public:
 class LineGraph {
 protected:
     ofMesh mesh;
-    ofVec2f min, max;
+    glm::vec3 min, max;
     int n;
     
 public:
@@ -71,18 +71,18 @@ public:
     }
     void reset() {
         n = 0;
-        min = ofVec2f();
-        max = ofVec2f();
+        min = glm::vec3();
+        max = glm::vec3();
     }
     void add(float y) {
-        ofVec2f cur(n, y);
+        glm::vec3 cur(n, y, 0.0);
         mesh.addVertex(cur);
         if(n == 0) {
             min = cur;
             max = cur;
         } else {
-            min.set(MIN(min.x, cur.x), MIN(min.y, cur.y));
-            max.set(MAX(max.x, cur.x), MAX(max.y, cur.y));
+            min = {MIN(min.x, cur.x), MIN(min.y, cur.y), 0.0};
+            max = {MAX(max.x, cur.x), MAX(max.y, cur.y), 0.0};
         }
         n++;
     }
