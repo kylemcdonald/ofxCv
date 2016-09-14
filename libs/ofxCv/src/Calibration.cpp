@@ -3,6 +3,7 @@
 #include "ofFileUtils.h"
 #include "ofGraphics.h"
 #include "ofMesh.h"
+#include "ofXml.h"
 
 namespace ofxCv {
     
