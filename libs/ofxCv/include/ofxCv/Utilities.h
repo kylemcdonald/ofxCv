@@ -276,7 +276,7 @@ namespace ofxCv {
 	
 	// cross-toolkit, cross-bitdepth copying
 	template <class S, class D>
-	void copy(const S& src, D& dst, int dstDepth) {
+	void copy(S& src, D& dst, int dstDepth) {
 		imitate(dst, src, getCvImageType(getChannels(src), dstDepth));
         cv::Mat srcMat = toCv(src);
         cv::Mat dstMat = toCv(dst);
@@ -289,7 +289,7 @@ namespace ofxCv {
 	}
 
     template <class S, class D>
-    void copy(S& src, D& dst, int dstDepth) {
+    void copy(const S& src, D& dst, int dstDepth) {
         imitate(dst, src, getCvImageType(getChannels(src), dstDepth));
         cv::Mat srcMat = toCv(src);
         cv::Mat dstMat = toCv(dst);
@@ -305,7 +305,7 @@ namespace ofxCv {
 	// sometimes your destination is a different depth, and copy() will notice and
 	// do the conversion for you.
 	template <class S, class D>
-	void copy(const S& src, D& dst) {
+	void copy(S& src, D& dst) {
 		int dstDepth = 0;
 		if(getAllocated(dst)) {
 			dstDepth = getDepth(dst);
@@ -316,7 +316,7 @@ namespace ofxCv {
 	}
 
     template <class S, class D>
-    void copy(S& src, D& dst) {
+    void copy(const S& src, D& dst) {
         int dstDepth = 0;
         if(getAllocated(dst)) {
             dstDepth = getDepth(dst);

@@ -16,7 +16,7 @@ namespace ofxCv {
 		
 		//call with two contiguous images
         template <class T>
-		void calcOpticalFlow(T& lastImage, T& currentImage) {
+		void calcOpticalFlow(const T& lastImage, const T& currentImage) {
             calcOpticalFlow(toCv(lastImage), toCv(currentImage));
         }
 		void calcOpticalFlow(cv::Mat lastImage, cv::Mat currentImage);
@@ -24,7 +24,7 @@ namespace ofxCv {
 		//call with subsequent images to do running optical flow. 
 		//the Flow class internally stores the last image for convenience
         template <class T>
-		void calcOpticalFlow(T& currentImage) {
+		void calcOpticalFlow(const T& currentImage) {
             calcOpticalFlow(toCv(currentImage));
         }
 		void calcOpticalFlow(cv::Mat nextImage);

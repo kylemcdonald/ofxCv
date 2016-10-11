@@ -21,13 +21,13 @@ namespace ofxCv {
 											 tm[0], tm[1], tm[2], 1.0f);
 	}
 	
-	void drawMat(Mat& mat, float x, float y) {
+	void drawMat(const Mat& mat, float x, float y) {
 		drawMat(mat, x, y, mat.cols, mat.rows);
 	}
 	
     // special case for copying into ofTexture
     template <class S>
-    void copy(S& src, ofTexture& tex) {
+    void copy(const S& src, ofTexture& tex) {
         imitate(tex, src);
         int w = tex.getWidth(), h = tex.getHeight();
         int glType = tex.getTextureData().glInternalFormat;
@@ -35,7 +35,7 @@ namespace ofxCv {
 		tex.loadData(mat.ptr(), w, h, glType);
     }
     
-	void drawMat(Mat& mat, float x, float y, float width, float height) {
+	void drawMat(const Mat& mat, float x, float y, float width, float height) {
         if(mat.empty()) {
             return;
         }
