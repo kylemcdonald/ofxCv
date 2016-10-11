@@ -299,7 +299,16 @@ namespace ofxCv {
 	}
 	
 	glm::vec2 FlowFarneback::getAverageFlowInRegion(ofRectangle rect){
-		return getTotalFlowInRegion(rect)/(rect.width*rect.height);
+        float area = rect.getArea();
+
+        if (area > 0)
+        {
+            return getTotalFlowInRegion(rect) / area;
+        }
+        else
+        {
+            return glm::vec2(0, 0);
+        }
 	}
 	
 	glm::vec2 FlowFarneback::getTotalFlowInRegion(ofRectangle region){
