@@ -11,19 +11,27 @@ example-tsp/
 *.pbxuser
 *.app*
 *.DS_*
-*.xcworkspacedata
-xcuserdata/
-project.xcworkspace
-
-*.opensdf
-*.sdf
-*.suo
-*.ipch
+._*.*
 
 .svn/
 obj/
 bin/
 build/
 !data/
+xcuserdata/
+
+ipch/
+*.suo
+*.opensdf
+*.vcxproj.user
+
+*.obj
+*.tlog
+*.sdf
+*.pdb
+*.idb
+*.pch
+Debug/
+Release/
 
 ofxCv.wiki/
