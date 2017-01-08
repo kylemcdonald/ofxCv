@@ -239,12 +239,12 @@ namespace ofxCv {
 		return toCv(img.getPixels());
 	}
 	cv::Mat toCv(ofMesh& mesh);
-	cv::Point2f toCv(ofVec2f vec);
-	cv::Point3f toCv(ofVec3f vec);
+	cv::Point2f toCv(glm::vec2 vec);
+	cv::Point3f toCv(glm::vec3 vec);
 	cv::Rect toCv(ofRectangle rect);
 	std::vector<cv::Point2f> toCv(const ofPolyline& polyline);
-	std::vector<cv::Point2f> toCv(const std::vector<ofVec2f>& points);
-	std::vector<cv::Point3f> toCv(const std::vector<ofVec3f>& points);
+	std::vector<cv::Point2f> toCv(const std::vector<glm::vec2>& points);
+	std::vector<cv::Point3f> toCv(const std::vector<glm::vec3>& points);
 	cv::Scalar toCv(ofColor color);
 	
 	// cross-toolkit, cross-bitdepth copying
@@ -275,8 +275,8 @@ namespace ofxCv {
 	}
 	
 	// toOf functions
-	ofVec2f toOf(cv::Point2f point);
-	ofVec3f toOf(cv::Point3f point);
+	glm::vec2 toOf(cv::Point2f point);
+	glm::vec3 toOf(cv::Point3f point);
 	ofRectangle toOf(cv::Rect rect);
 	ofPolyline toOf(cv::RotatedRect rect);
 	template <class T> inline ofPolyline toOf(const std::vector<cv::Point_<T> >& contour) {
