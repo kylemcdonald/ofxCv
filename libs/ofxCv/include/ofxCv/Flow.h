@@ -135,7 +135,10 @@ namespace ofxCv {
 		ofVec2f getFlowPosition(int x, int y);
 		ofVec2f getTotalFlowInRegion(ofRectangle region);
 		ofVec2f getAverageFlowInRegion(ofRectangle region);
-		
+
+        float getNormalizedAverageFlow();
+        void setFlowAvgMinCalibrationRate(float r);
+        void setFlowAvgMaxCalibrationRate(float r);
         //call this if you switch to a new video file to reset internal caches
         void resetFlow();
     
@@ -152,6 +155,11 @@ namespace ofxCv {
 		int polyN;
 		float polySigma;
 		bool farnebackGaussian;
+
+        float flowAvgPrev;
+        float flowMinCalibrationRate, flowMaxCalibrationRate;
+        float flowAvgMin, flowAvgMax;
+
 	};
 	
 }

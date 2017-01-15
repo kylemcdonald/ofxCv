@@ -214,6 +214,11 @@ namespace ofxCv {
 	,polyN(7)
 	,polySigma(1.5)
 	,farnebackGaussian(false)
+    ,flowAvgPrev(0.f)
+    ,flowMinCalibrationRate(0.0005)
+    ,flowMaxCalibrationRate(0.0005)
+    ,flowAvgMin(0.f)
+    ,flowAvgMax(1.f)
 	{
 	}
 	
@@ -297,7 +302,6 @@ namespace ofxCv {
 	ofVec2f FlowFarneback::getAverageFlow(){
 		return getAverageFlowInRegion(ofRectangle(0,0,flow.cols,flow.rows));
 	}
-	
 	ofVec2f FlowFarneback::getAverageFlowInRegion(ofRectangle rect){
 		return getTotalFlowInRegion(rect)/(rect.width*rect.height);
 	}
@@ -310,7 +314,40 @@ namespace ofxCv {
 		const Scalar& sc = sum(flow(toCv(region)));
 		return ofVec2f(sc[0], sc[1]);
 	}
-	
+
+    float FlowFarneback::getNormalizedAverageFlow(){
+        // update flow
+        ofVec2f avg = getAverageFlow();
+        float mean = abs(avg.x) + abs(avg.y) / 2;
+
+        // normalise to 0.0-1.0
+        mean = ofMap(mean, flowAvgMin, flowAvgMax, 0.f, 1.f, true);
+
+        // update min/max
+        flowAvgMin = fmin(mean, flowAvgMin);
+        flowAvgMax = fmax(mean, flowAvgMax);
+
+        // calibrate: constantly reduce the max and increase the min to account
+        // for any tiny/huge anomolies
+        flowAvgMin += flowMinCalibrationRate;
+        flowAvgMax -= flowMaxCalibrationRate;
+
+        // smooth by averaging with previous value
+         mean = (mean + flowAvgPrev) / 2;
+        // store value for next time
+        flowAvgPrev = mean;
+
+        return mean;
+    }
+
+    void FlowFarneback::setFlowAvgMinCalibrationRate(float r){
+        flowMinCalibrationRate = r;
+    }
+
+    void FlowFarneback::setFlowAvgMaxCalibrationRate(float r){
+        flowMaxCalibrationRate = r;
+    }
+
 	void FlowFarneback::drawFlow(ofRectangle rect){
 		if(!hasFlow){
 			return;
