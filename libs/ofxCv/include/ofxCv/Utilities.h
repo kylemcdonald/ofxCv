@@ -226,11 +226,6 @@ namespace ofxCv {
 		imitate(mirror, original, getCvImageType(original));
 	}
 
-    // this version copies size and image type
-    template <class M, class O> void imitate(M& mirror, O& original) {
-        imitate(mirror, original);
-    }
-
 	// maximum possible values for that depth or matrix
 	float getMaxVal(int cvDepth);
 	float getMaxVal(const cv::Mat& mat);
