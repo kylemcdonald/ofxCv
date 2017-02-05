@@ -92,7 +92,7 @@ namespace ofxCv {
         ofLoadIdentityMatrix();
         
         ofMatrix4x4 lookAt;
-        lookAt.makeLookAtViewMatrix(ofVec3f(0,0,0), ofVec3f(0,0,1), ofVec3f(0,-1,0));
+        lookAt.makeLookAtViewMatrix(glm::vec3(0,0,0), glm::vec3(0,0,1), glm::vec3(0,-1,0));
         ofMultMatrix(lookAt);
     }
     
@@ -124,7 +124,7 @@ namespace ofxCv {
         fs << "distCoeffs" << distCoeffs;
         fs << "reprojectionError" << reprojectionError;
         fs << "features" << "[";
-        for(int i = 0; i < (int)imagePoints.size(); i++) {
+        for(std::size_t i = 0; i < imagePoints.size(); i++) {
             fs << "[:" << imagePoints[i] << "]";
         }
         fs << "]";
@@ -394,7 +394,7 @@ namespace ofxCv {
         ofDirectory dirList;
         ofImage cur;
         dirList.listDir(directory);
-        for(int i = 0; i < (int)dirList.size(); i++) {
+        for(std::size_t i = 0; i < dirList.size(); i++) {
             cur.load(dirList.getPath(i));
             if(!add(toCv(cur))) {
                 ofLog(OF_LOG_ERROR, "Calibration::add() failed on " + dirList.getPath(i));
@@ -410,15 +410,15 @@ namespace ofxCv {
         remap(src, dst, undistortMapX, undistortMapY, interpolationMode);
     }
     
-    ofVec2f Calibration::undistort(ofVec2f& src) const {
-        ofVec2f dst;
+    glm::vec2 Calibration::undistort(glm::vec2& src) const {
+        glm::vec2 dst;
         Mat matSrc = Mat(1, 1, CV_32FC2, &src.x);
         Mat matDst = Mat(1, 1, CV_32FC2, &dst.x);;
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
         return dst;
     }
     
-    void Calibration::undistort(vector<ofVec2f>& src, vector<ofVec2f>& dst) const {
+    void Calibration::undistort(vector<glm::vec2>& src, vector<glm::vec2>& dst) const {
         int n = src.size();
         dst.resize(n);
         Mat matSrc = Mat(n, 1, CV_32FC2, &src[0].x);
@@ -489,11 +489,11 @@ namespace ofxCv {
     // this won't work until undistort() is in pixel coordinates
     /*
      void Calibration::drawUndistortion() const {
-     vector<ofVec2f> src, dst;
+     vector<glm::vec2> src, dst;
      cv::Point2i divisions(32, 24);
      for(int y = 0; y < divisions.y; y++) {
      for(int x = 0; x < divisions.x; x++) {
-     src.push_back(ofVec2f(
+     src.push_back(glm::vec2(
 					ofMap(x, -1, divisions.x, 0, addedImageSize.width),
 					ofMap(y, -1, divisions.y, 0, addedImageSize.height)));
      }
@@ -534,7 +534,7 @@ namespace ofxCv {
         ofMesh mesh;
         mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
         for(int j = 0; j < (int)objectPoints[i].size(); j++) {
-            ofVec3f cur = toOf(objectPoints[i][j]);
+            glm::vec3 cur = toOf(objectPoints[i][j]);
             mesh.addVertex(cur);
         }
         mesh.draw();
@@ -554,7 +554,7 @@ namespace ofxCv {
         perViewErrors.clear();
         perViewErrors.resize(objectPoints.size());
         
-        for(int i = 0; i < (int)objectPoints.size(); i++) {
+        for(std::size_t i = 0; i < objectPoints.size(); i++) {
             projectPoints(Mat(objectPoints[i]), boardRotations[i], boardTranslations[i], distortedIntrinsics.getCameraMatrix(), distCoeffs, imagePoints2);
             double err = norm(Mat(imagePoints[i]), Mat(imagePoints2), CV_L2);
             int n = objectPoints[i].size();

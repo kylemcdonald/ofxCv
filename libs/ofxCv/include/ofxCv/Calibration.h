@@ -74,8 +74,8 @@ namespace ofxCv {
 		void undistort(cv::Mat img, int interpolationMode = cv::INTER_LINEAR);
 		void undistort(cv::Mat src, cv::Mat dst, int interpolationMode = cv::INTER_LINEAR);
 		
-		ofVec2f undistort(ofVec2f& src) const;
-		void undistort(std::vector<ofVec2f>& src, std::vector<ofVec2f>& dst) const;
+		glm::vec2 undistort(glm::vec2& src) const;
+		void undistort(std::vector<glm::vec2>& src, std::vector<glm::vec2>& dst) const;
 		
 		bool getTransformation(Calibration& dst, cv::Mat& rotation, cv::Mat& translation);
 		

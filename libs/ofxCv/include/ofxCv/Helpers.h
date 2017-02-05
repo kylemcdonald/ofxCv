@@ -15,20 +15,20 @@ namespace ofxCv {
 	ofMatrix4x4 makeMatrix(cv::Mat rotation, cv::Mat translation);
 	void applyMatrix(const ofMatrix4x4& matrix);
 	
-	void drawMat(cv::Mat& mat, float x, float y);
-	void drawMat(cv::Mat& mat, float x, float y, float width, float height);
+	void drawMat(const cv::Mat& mat, float x, float y);
+	void drawMat(const cv::Mat& mat, float x, float y, float width, float height);
 	
 	template <class T>
-	ofVec2f findMaxLocation(T& img) {
+	glm::vec2 findMaxLocation(const T& img) {
 		cv::Mat mat = toCv(img);
 		double minVal, maxVal;
 		cv::Point minLoc, maxLoc;
 		minMaxLoc(mat, &minVal, &maxVal, &minLoc, &maxLoc);
-		return ofVec2f(maxLoc.x, maxLoc.y);
+		return glm::vec2(maxLoc.x, maxLoc.y);
 	}
 	
 	template <class T>
-	cv::Mat meanCols(T& img) {
+	cv::Mat meanCols(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat colMat(mat.cols, 1, mat.type());
 		for(int i = 0; i < mat.cols; i++) {
@@ -38,7 +38,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat meanRows(T& img) {
+	cv::Mat meanRows(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat rowMat(mat.rows, 1, mat.type());
 		for(int i = 0; i < mat.rows; i++) {
@@ -48,7 +48,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat sumCols(T& img) {
+	cv::Mat sumCols(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat colMat(mat.cols, 1, CV_32FC1);
 		for(int i = 0; i < mat.cols; i++) {
@@ -58,7 +58,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat sumRows(T& img) {
+	cv::Mat sumRows(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat rowMat(mat.rows, 1, CV_32FC1);
 		for(int i = 0; i < mat.rows; i++) {
@@ -68,7 +68,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat minCols(T& img) {
+	cv::Mat minCols(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat colMat(mat.cols, 1, CV_32FC1);
 		double minVal, maxVal;
@@ -80,7 +80,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat minRows(T& img) {
+	cv::Mat minRows(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat rowMat(mat.rows, 1, CV_32FC1);
 		double minVal, maxVal;
@@ -92,7 +92,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat maxCols(T& img) {
+	cv::Mat maxCols(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat colMat(mat.cols, 1, CV_32FC1);
 		double minVal, maxVal;
@@ -104,7 +104,7 @@ namespace ofxCv {
 	}
 	
 	template <class T>
-	cv::Mat maxRows(T& img) {
+	cv::Mat maxRows(const T& img) {
 		cv::Mat mat = toCv(img);
 		cv::Mat rowMat(mat.rows, 1, CV_32FC1);
 		double minVal, maxVal;
@@ -119,7 +119,7 @@ namespace ofxCv {
 	int findLast(const cv::Mat& arr, unsigned char target);
 	
 	template <class T>
-	void getBoundingBox(T& img, ofRectangle& box, int thresh, bool invert) {
+	void getBoundingBox(const T& img, ofRectangle& box, int thresh, bool invert) {
 		cv::Mat mat = toCv(img);
 		int flags = (invert ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
 		
@@ -198,14 +198,14 @@ namespace ofxCv {
 	// returns the average rotation. you can supply your own thresholded image
 	// for hough lines, or let it run canny detection for you.
 	template <class S, class T, class D>
-	float autorotate(S& src, D& dst, float threshold1 = 50, float threshold2 = 200) {
+	float autorotate(const S& src, D& dst, float threshold1 = 50, float threshold2 = 200) {
 		cv::Mat thresh;
 		cv::Canny(src, thresh, threshold1, threshold2);
 		return autorotate(src, thresh, dst);
 	}
 	
 	template <class S, class T, class D>
-	float autorotate(S& src, T& thresh, D& dst) {
+	float autorotate(const S& src, T& thresh, D& dst) {
 		imitate(dst, src);
 		cv::Mat srcMat = toCv(src), threshMat = toCv(thresh);
 		std::vector<cv::Vec4i> lines;
