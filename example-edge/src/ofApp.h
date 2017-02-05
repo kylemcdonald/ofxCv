@@ -5,10 +5,10 @@
 
 class ofApp : public ofBaseApp {
 public:
-	void setup();
-	void update();
-	void draw();
-
-	ofVideoGrabber cam;
-	ofImage gray, edge, sobel;
+    void setup();
+    void update();
+    void draw();
+    
+    ofVideoGrabber cam;
+    ofImage gray, edge, sobel;
 };

@@ -45,9 +45,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 			keypointsInside.push_back(keypoints[i]);
 		}
 	}
-    #if CV_MAJOR_VERSION>=2 && (CV_MINOR_VERSION>4 || (CV_MINOR_VERSION==4 && CV_SUBMINOR_VERSION>=1))
 	KeyPointsFilter::retainBest(keypointsInside,30);
-    #endif
 	KeyPoint::convert(keypointsInside,featuresToTrack);
 	flow.setFeaturesToTrack(featuresToTrack);
 }

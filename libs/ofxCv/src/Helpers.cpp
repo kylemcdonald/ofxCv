@@ -1,5 +1,6 @@
 #include "ofxCv/Helpers.h"
 #include "ofxCv/Utilities.h"
+#include "ofGraphics.h"
 
 namespace ofxCv {
 	
@@ -20,13 +21,13 @@ namespace ofxCv {
 											 tm[0], tm[1], tm[2], 1.0f);
 	}
 	
-	void drawMat(Mat& mat, float x, float y) {
+	void drawMat(const Mat& mat, float x, float y) {
 		drawMat(mat, x, y, mat.cols, mat.rows);
 	}
 	
     // special case for copying into ofTexture
     template <class S>
-    void copy(S& src, ofTexture& tex) {
+    void copy(const S& src, ofTexture& tex) {
         imitate(tex, src);
         int w = tex.getWidth(), h = tex.getHeight();
         int glType = tex.getTextureData().glInternalFormat;
@@ -34,7 +35,7 @@ namespace ofxCv {
 		tex.loadData(mat.ptr(), w, h, glType);
     }
     
-	void drawMat(Mat& mat, float x, float y, float width, float height) {
+	void drawMat(const Mat& mat, float x, float y, float width, float height) {
         if(mat.empty()) {
             return;
         }
@@ -71,13 +72,13 @@ namespace ofxCv {
 	
 	float weightedAverageAngle(const vector<Vec4i>& lines) {
 		float angleSum = 0;
-		ofVec2f start, end;
+		glm::vec2 start, end;
 		float weights = 0;
 		for(int i = 0; i < lines.size(); i++) {
-			start.set(lines[i][0], lines[i][1]);
-			end.set(lines[i][2], lines[i][3]);
-			ofVec2f diff = end - start;
-			float length = diff.length();
+            start = glm::vec2(lines[i][0], lines[i][1]);
+			end = glm::vec2(lines[i][2], lines[i][3]);
+			glm::vec2 diff = end - start;
+            float length = glm::length(diff);
 			float weight = length * length;
 			float angle = atan2f(diff.y, diff.x);
 			angleSum += angle * weight;
@@ -118,53 +119,5 @@ namespace ofxCv {
 		}
 		
 		return result;
-	}
-	
-	void drawHighlightString(string text, ofPoint position, ofColor background, ofColor foreground) {
-		drawHighlightString(text, position.x, position.y, background, foreground);
-	}
-	
-	void drawHighlightString(string text, int x, int y, ofColor background, ofColor foreground) {
-		vector<string> lines = ofSplitString(text, "\n");
-		int textLength = 0;
-		for(int i = 0; i < lines.size(); i++) {
-			// tabs are not rendered
-			int tabs = count(lines[i].begin(), lines[i].end(), '\t');
-			int curLength = lines[i].length() - tabs;
-			// after the first line, everything is indented with one space
-			if(i > 0) {
-				curLength++;
-			}
-			if(curLength > textLength) {
-				textLength = curLength;
-			}
-		}
-		
-		int padding = 4;
-		int fontSize = 8;
-		float leading = 1.7;
-		int height = lines.size() * fontSize * leading - 1;
-		int width = textLength * fontSize;
-		
-#ifdef TARGET_OPENGLES
-		// This needs to be refactored to support OpenGLES
-		// Else it will work correctly
-#else
-		glPushAttrib(GL_DEPTH_BUFFER_BIT);
-		glDisable(GL_DEPTH_TEST);
-		ofPushStyle();
-		ofSetColor(background);
-		ofFill();
-		ofDrawRectangle(x, y, width + 2 * padding, height + 2 * padding);
-		ofSetColor(foreground);
-		ofNoFill();
-		ofPushMatrix();
-		ofTranslate(padding, padding);
-		ofDrawBitmapString(text, x + 1, y + fontSize + 2);
-		ofPopMatrix();
-		ofPopStyle();
-		glPopAttrib();
-#endif         
-         
 	}
 }

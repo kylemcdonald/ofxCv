@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxCv.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -11,4 +12,7 @@ public:
 	
 	ofVideoGrabber cam;	
 	ofxCv::ContourFinder contourFinder;
+    
+    ofxPanel gui;
+    ofParameter<float> minArea, maxArea, threshold;
 };

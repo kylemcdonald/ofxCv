@@ -1,5 +1,6 @@
 #include "ofxCv/ContourFinder.h"
 #include "ofxCv/Wrappers.h"
+#include "ofGraphics.h"
 
 namespace ofxCv {
 
@@ -41,6 +42,9 @@ namespace ofxCv {
 			if(trackingColorMode == TRACK_COLOR_RGB) {
 				inRange(img, base - offset, base + offset, thresh);
 			} else {
+                // all the HSV modes are broken incorrect,
+                // because opencv uses hue 0-180 not 0-255
+                // which means that the math doesn't wrap.
 				if(trackingColorMode == TRACK_COLOR_H) {
 					offset[1] = 255;
 					offset[2] = 255;
@@ -159,7 +163,11 @@ namespace ofxCv {
 	
 	cv::Point2f ContourFinder::getCentroid(unsigned int i) const {
 		Moments m = moments(contours[i]);
-		return cv::Point2f(m.m10 / m.m00, m.m01 / m.m00);
+		if(m.m00!=0){
+			return cv::Point2f(m.m10 / m.m00, m.m01 / m.m00);
+		}else{
+			return cv::Point2f(0, 0);
+		}
 	}
 	
 	cv::Point2f ContourFinder::getAverage(unsigned int i) const {
@@ -280,10 +288,10 @@ namespace ofxCv {
 		this->simplify = simplify;
 	}
 	
-	void ContourFinder::draw() {
+	void ContourFinder::draw() const {
 		ofPushStyle();
 		ofNoFill();
-		for(int i = 0; i < (int)polylines.size(); i++) {
+        for(std::size_t i = 0; i < polylines.size(); i++) {
 			polylines[i].draw();
 			ofDrawRectangle(toOf(getBoundingRect(i)));
 		}

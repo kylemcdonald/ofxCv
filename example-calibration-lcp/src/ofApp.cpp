@@ -5,10 +5,11 @@ using namespace cv;
 
 void ofApp::setup() {
     distorted.load("distorted.jpg");
-    undistortedReference.load("undistorted.jpg");
-	
-    float imageWidth = 5616; // ImageWidth, pixels
-    float imageHeight = 3744; // ImageLength, pixels
+    
+    // These parameters can be found in the .lpc files that come with some cameras.
+    
+    float imageWidth = distorted.getWidth(); // ImageWidth, pixels
+    float imageHeight = distorted.getHeight(); // ImageLength, pixels
     float focalLength = 28; // FocalLength, mm
     float cropFactor = 0.975939; // SensorFormatFactor, "focal length multiplier", "crop factor"
     float focalLengthX = 0.778962; // FocalLengthX
@@ -21,13 +22,13 @@ void ofApp::setup() {
     calibration.setDistortionCoefficients(k1, k2, 0, 0);
     
     Intrinsics intrinsics;
-    cv::Point2d sensorSize(35 * cropFactor, 35 * cropFactor * imageHeight / imageWidth);
+    cv::Point2f sensorSize(35 * cropFactor, 35 * cropFactor * imageHeight / imageWidth);
     cv::Size imageSize(distorted.getWidth(), distorted.getHeight());
     intrinsics.setup(focalLength, imageSize, sensorSize);
     calibration.setFillFrame(false);
     calibration.setIntrinsics(intrinsics);
     
-	imitate(undistorted, distorted);
+    imitate(undistorted, distorted);
     
     Mat distortedMat = toCv(distorted);
     Mat undistortedMat = toCv(undistorted);
@@ -42,10 +43,8 @@ void ofApp::draw() {
     float scale = ofGetHeight() / distorted.getHeight();
     ofScale(scale, scale);
     distorted.draw(0, 0);
-    if(ofGetKeyPressed('r')) {
-        undistortedReference.draw(0, 0);
-    }
-    if(ofGetKeyPressed('u')) {
+    if(ofGetKeyPressed()) {
         undistorted.draw(0, 0);
     }
+    ofDrawBitmapStringHighlight("Hold any key to see undistorted.", 10, 20);
 }

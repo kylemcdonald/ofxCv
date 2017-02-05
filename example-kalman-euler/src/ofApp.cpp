@@ -6,7 +6,7 @@ using namespace cv;
 void ofApp::setup() {
 	ofSetVerticalSync(true);
 	
-	kalman.init(1e-5, 1e-1); // invert of (smoothness, rapidness)
+	kalman.init(1/100000., 1/10.); // inverse of (smoothness, rapidness)
 }
 
 void ofApp::update() {

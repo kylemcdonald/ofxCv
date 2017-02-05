@@ -27,9 +27,10 @@
 
 #pragma once
 
-#include "ofMain.h"
 #include "opencv2/opencv.hpp"
 #include "ofxCv/Utilities.h"
+#include "ofVectorMath.h"
+#include "ofImage.h"
 
 // coherent line drawing
 #include "imatrix.h"
@@ -39,11 +40,9 @@
 
 namespace ofxCv {
 
-	using namespace cv;
-
-	void loadMat(Mat& mat, string filename);
-	void saveMat(Mat mat, string filename);
-	void saveImage(Mat& mat, string filename, ofImageQualityType qualityLevel = OF_IMAGE_QUALITY_BEST);
+	void loadMat(cv::Mat& mat, std::string filename);
+	void saveMat(cv::Mat mat, std::string filename);
+	void saveImage(cv::Mat& mat, std::string filename, ofImageQualityType qualityLevel = OF_IMAGE_QUALITY_BEST);
 
 	// wrapThree are based on functions that operate on three Mat objects.
 	// the first two are inputs, and the third is an output. for example,
@@ -59,8 +58,8 @@ template <class X, class Y, class Result>\
 void name(X& x, Y& y, Result& result) {\
 imitate(y, x);\
 imitate(result, x);\
-Mat xMat = toCv(x), yMat = toCv(y);\
-Mat resultMat = toCv(result);\
+cv::Mat xMat = toCv(x), yMat = toCv(y);\
+cv::Mat resultMat = toCv(result);\
 cv::name(xMat, yMat, resultMat);\
 }
 	wrapThree(max);
@@ -76,7 +75,7 @@ cv::name(xMat, yMat, resultMat);\
 
 	// inverting non-floating point images is a just a bitwise not operation
 	template <class S, class D> void invert(S& src, D& dst) {
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		bitwise_not(srcMat, dstMat);
 	}
 
@@ -88,8 +87,8 @@ cv::name(xMat, yMat, resultMat);\
 	template <class X, class Y, class R>
 	void lerp(X& x, Y& y, R& result, float amt = .5) {
 		imitate(result, x);
-		Mat xMat = toCv(x), yMat = toCv(y);
-		Mat resultMat = toCv(result);
+		cv::Mat xMat = toCv(x), yMat = toCv(y);
+		cv::Mat resultMat = toCv(result);
 		if(yMat.cols == 0) {
 			copy(x, result);
 		} else if(xMat.cols == 0) {
@@ -103,8 +102,8 @@ cv::name(xMat, yMat, resultMat);\
 	template <class S, class D>
 	void normalize(S& src, D& dst) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		cv::normalize(srcMat, dstMat, 0, getMaxVal(getDepth(dst)), NORM_MINMAX);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::normalize(srcMat, dstMat, 0, getMaxVal(getDepth(dst)), cv::NORM_MINMAX);
 	}
 
 	// normalize the min/max to [0, max for this type] in place
@@ -117,8 +116,8 @@ cv::name(xMat, yMat, resultMat);\
 	template <class S, class D>
 	void threshold(S& src, D& dst, float thresholdValue, bool invert = false) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		int thresholdType = invert ? THRESH_BINARY_INV : THRESH_BINARY;
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+		int thresholdType = invert ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY;
 		float maxVal = getMaxVal(dstMat);
 		cv::threshold(srcMat, dstMat, thresholdValue, maxVal, thresholdType);
 	}
@@ -133,8 +132,8 @@ cv::name(xMat, yMat, resultMat);\
 	template <class S, class D>
 	void erode(S& src, D& dst, int iterations = 1) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		cv::erode(srcMat, dstMat, Mat(), cv::Point(-1, -1), iterations);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::erode(srcMat, dstMat, cv::Mat(), cv::Point(-1, -1), iterations);
 	}
 
 	// erode in place
@@ -145,10 +144,10 @@ cv::name(xMat, yMat, resultMat);\
 
 	// dilate out of place
 	template <class S, class D>
-	void dilate(S& src, D& dst, int iterations = 1) {
+	void dilate(const S& src, D& dst, int iterations = 1) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		cv::dilate(srcMat, dstMat, Mat(), cv::Point(-1, -1), iterations);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::dilate(srcMat, dstMat, cv::Mat(), cv::Point(-1, -1), iterations);
 	}
 
 	// dilate in place
@@ -159,10 +158,10 @@ cv::name(xMat, yMat, resultMat);\
 
 	// automatic threshold (grayscale 8-bit only) out of place
 	template <class S, class D>
-	void autothreshold(S& src, D& dst, bool invert = false) {
+	void autothreshold(const S& src, D& dst, bool invert = false) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		int flags = THRESH_OTSU | (invert ? THRESH_BINARY_INV : THRESH_BINARY);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+		int flags = cv::THRESH_OTSU | (invert ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
 		threshold(srcMat, dstMat, 0, 255, flags);
 	}
 
@@ -175,21 +174,21 @@ cv::name(xMat, yMat, resultMat);\
 	// CV_RGB2GRAY, CV_HSV2RGB, etc. with [RGB, BGR, GRAY, HSV, HLS, XYZ, YCrCb, Lab, Luv]
 	// you can convert whole images...
 	template <class S, class D>
-	void convertColor(S& src, D& dst, int code) {
+	void convertColor(const S& src, D& dst, int code) {
 		// cvtColor allocates Mat for you, but we need this to handle ofImage etc.
 		int targetChannels = getTargetChannelsFromCode(code);
 		imitate(dst, src, getCvImageType(targetChannels, getDepth(src)));
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		cvtColor(srcMat, dstMat, code);
 	}
 	// ...or single colors.
-	Vec3b convertColor(Vec3b color, int code);
+	cv::Vec3b convertColor(cv::Vec3b color, int code);
 	ofColor convertColor(ofColor color, int code);
 
     // a common cv task is to convert something to grayscale. this function will
     // do that quickly for RGBA, RGB, and 1-channel images.
     template <class S, class D>
-    void copyGray(S& src, D& dst) {
+    void copyGray(const S& src, D& dst) {
         int channels = getChannels(src);
         if(channels == 4) {
             convertColor(src, dst, CV_RGBA2GRAY);
@@ -204,10 +203,10 @@ cv::name(xMat, yMat, resultMat);\
 
 	// box blur
 	template <class S, class D>
-	void blur(S& src, D& dst, int size) {
+	void blur(const S& src, D& dst, int size) {
 		imitate(dst, src);
 		size = forceOdd(size);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		cv::blur(srcMat, dstMat, cv::Size(size, size));
 	}
 
@@ -219,10 +218,10 @@ cv::name(xMat, yMat, resultMat);\
 
     // Gaussian blur
     template <class S, class D>
-    void GaussianBlur(S& src, D& dst, int size) {
+    void GaussianBlur(const S& src, D& dst, int size) {
         imitate(dst, src);
         size = forceOdd(size);
-        Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
         cv::GaussianBlur(srcMat, dstMat, cv::Size(size, size), 0, 0);
     }
 
@@ -234,10 +233,10 @@ cv::name(xMat, yMat, resultMat);\
 
 	// Median blur
 	template <class S, class D>
-	void medianBlur(S& src, D& dst, int size) {
+	void medianBlur(const S& src, D& dst, int size) {
 		imitate(dst, src);
 		size = forceOdd(size);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		cv::medianBlur(srcMat, dstMat, size);
 	}
 
@@ -249,11 +248,11 @@ cv::name(xMat, yMat, resultMat);\
 
 	// histogram equalization, adds support for color images
 	template <class S, class D>
-	void equalizeHist(S& src, D& dst) {
+	void equalizeHist(const S& src, D& dst) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		if(srcMat.channels() > 1) {
-			vector<Mat> srcEach, dstEach;
+			std::vector<cv::Mat> srcEach, dstEach;
 			split(srcMat, srcEach);
 			split(dstMat, dstEach);
 			for(int i = 0; i < srcEach.size(); i++) {
@@ -274,17 +273,17 @@ cv::name(xMat, yMat, resultMat);\
 	// Canny edge detection assumes your input and output are grayscale 8-bit
 	// example thresholds might be 0,30 or 50,200
 	template <class S, class D>
-	void Canny(S& src, D& dst, double threshold1, double threshold2, int apertureSize=3, bool L2gradient=false) {
+	void Canny(const S& src, D& dst, double threshold1, double threshold2, int apertureSize=3, bool L2gradient=false) {
 		imitate(dst, src, CV_8UC1);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		cv::Canny(srcMat, dstMat, threshold1, threshold2, apertureSize, L2gradient);
 	}
 
 	// Sobel edge detection
 	template <class S, class D>
-	void Sobel(S& src, D& dst, int ddepth=-1, int dx=1, int dy=1, int ksize=3, double scale=1, double delta=0, int borderType=BORDER_DEFAULT ) {
+	void Sobel(const S& src, D& dst, int ddepth=-1, int dx=1, int dy=1, int ksize=3, double scale=1, double delta=0, int borderType=cv::BORDER_DEFAULT ) {
 		imitate(dst, src, CV_8UC1);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		cv::Sobel(srcMat, dstMat, ddepth, dx, dy, ksize, scale, delta, borderType );
 	}
 
@@ -293,12 +292,12 @@ cv::name(xMat, yMat, resultMat);\
 	// tau between .8 and 1.0
 	// this could be rewritten into a class so we're not doing an allocate and copy each time
 	template <class S, class D>
-	void CLD(S& src, D& dst, int halfw = 4, int smoothPasses = 2, double sigma1 = .4, double sigma2 = 3, double tau = .97, int black = 0) {
+	void CLD(const S& src, D& dst, int halfw = 4, int smoothPasses = 2, double sigma1 = .4, double sigma2 = 3, double tau = .97, int black = 0) {
 		copy(src, dst);
 		int width = getWidth(src), height = getHeight(src);
 		imatrix img;
 		img.init(height, width);
-		Mat dstMat = toCv(dst);
+		cv::Mat dstMat = toCv(dst);
 		if(black != 0) {
 			add(dstMat, cv::Scalar(black), dstMat);
 		}
@@ -323,98 +322,98 @@ cv::name(xMat, yMat, resultMat);\
 
 	// dst does not imitate src
 	template <class S, class D>
-	void warpPerspective(S& src, D& dst, vector<Point2f>& dstPoints, int flags = INTER_LINEAR) {
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+	void warpPerspective(const S& src, D& dst, std::vector<cv::Point2f>& dstPoints, int flags = cv::INTER_LINEAR) {
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		int w = srcMat.cols;
 		int h = srcMat.rows;
-		vector<Point2f> srcPoints(4);
-		srcPoints[0] = Point2f(0, 0);
-		srcPoints[1] = Point2f(w, 0);
-		srcPoints[2] = Point2f(w, h);
-		srcPoints[3] = Point2f(0, h);
-		Mat transform = getPerspectiveTransform(&srcPoints[0], &dstPoints[0]);
+		std::vector<cv::Point2f> srcPoints(4);
+		srcPoints[0] = cv::Point2f(0, 0);
+		srcPoints[1] = cv::Point2f(w, 0);
+		srcPoints[2] = cv::Point2f(w, h);
+		srcPoints[3] = cv::Point2f(0, h);
+		cv::Mat transform = getPerspectiveTransform(&srcPoints[0], &dstPoints[0]);
 		warpPerspective(srcMat, dstMat, transform, dstMat.size(), flags);
 	}
 
 	// dst does not imitate src
 	template <class S, class D>
-	void unwarpPerspective(S& src, D& dst, vector<Point2f>& srcPoints, int flags = INTER_LINEAR) {
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+	void unwarpPerspective(const S& src, D& dst, std::vector<cv::Point2f>& srcPoints, int flags = cv::INTER_LINEAR) {
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		int w = dstMat.cols;
 		int h = dstMat.rows;
-		vector<Point2f> dstPoints(4);
-		dstPoints[0] = Point2f(0, 0);
-		dstPoints[1] = Point2f(w, 0);
-		dstPoints[2] = Point2f(w, h);
-		dstPoints[3] = Point2f(0, h);
-		Mat transform = getPerspectiveTransform(&srcPoints[0], &dstPoints[0]);
+		std::vector<cv::Point2f> dstPoints(4);
+		dstPoints[0] = cv::Point2f(0, 0);
+		dstPoints[1] = cv::Point2f(w, 0);
+		dstPoints[2] = cv::Point2f(w, h);
+		dstPoints[3] = cv::Point2f(0, h);
+		cv::Mat transform = getPerspectiveTransform(&srcPoints[0], &dstPoints[0]);
 		warpPerspective(srcMat, dstMat, transform, dstMat.size(), flags);
 	}
 
 	// dst does not imitate src
 	template <class S, class D>
-	void warpPerspective(S& src, D& dst, Mat& transform, int flags = INTER_LINEAR) {
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+	void warpPerspective(const S& src, D& dst, cv::Mat& transform, int flags = cv::INTER_LINEAR) {
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		warpPerspective(srcMat, dstMat, transform, dstMat.size(), flags);
 	}
 
 	template <class S, class D>
-	void resize(S& src, D& dst, int interpolation = INTER_LINEAR) { // also: INTER_NEAREST, INTER_AREA, INTER_CUBIC, INTER_LANCZOS4
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+	void resize(const S& src, D& dst, int interpolation = cv::INTER_LINEAR) { // also: INTER_NEAREST, INTER_AREA, INTER_CUBIC, INTER_LANCZOS4
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		resize(srcMat, dstMat, dstMat.size(), 0, 0, interpolation);
 	}
 
 	template <class S, class D>
-	void resize(S& src, D& dst, float xScale, float yScale, int interpolation = INTER_LINEAR) { // also: INTER_NEAREST, INTER_AREA, INTER_CUBIC, INTER_LANCZOS4
+	void resize(const S& src, D& dst, float xScale, float yScale, int interpolation = cv::INTER_LINEAR) { // also: INTER_NEAREST, INTER_AREA, INTER_CUBIC, INTER_LANCZOS4
 		int dstWidth = getWidth(src) * xScale, dstHeight = getHeight(src) * yScale;
 		if(getWidth(dst) != dstWidth || getHeight(dst) != dstHeight) {
 			allocate(dst, dstWidth, dstHeight, getCvImageType(src));
 		}
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		resize(src, dst, interpolation);
 	}
 
 	// for contourArea() and arcLength(), see ofPolyline::getArea() and getPerimiter()
 	ofPolyline convexHull(const ofPolyline& polyline);
-	vector<cv::Vec4i> convexityDefects(const vector<cv::Point>& contour);
-	vector<cv::Vec4i> convexityDefects(const ofPolyline& polyline);
+	std::vector<cv::Vec4i> convexityDefects(const std::vector<cv::Point>& contour);
+	std::vector<cv::Vec4i> convexityDefects(const ofPolyline& polyline);
 	cv::RotatedRect minAreaRect(const ofPolyline& polyline);
 	cv::RotatedRect fitEllipse(const ofPolyline& polyline);
-	void fitLine(const ofPolyline& polyline, ofVec2f& point, ofVec2f& direction);
+	void fitLine(const ofPolyline& polyline, glm::vec2& point, glm::vec2& direction);
 
 	// kind of obscure function, draws filled polygons on the CPU
 	template <class D>
-	void fillPoly(vector<cv::Point>& points, D& dst) {
+	void fillPoly(const std::vector<cv::Point>& points, D& dst) {
 		cv::Mat dstMat = toCv(dst);
 		const cv::Point* ppt[1] = { &(points[0]) };
 		int npt[] = { (int) points.size() };
-		dstMat.setTo(Scalar(0));
-		fillPoly(dstMat, ppt, npt, 1, Scalar(255));
+		dstMat.setTo(cv::Scalar(0));
+		fillPoly(dstMat, ppt, npt, 1, cv::Scalar(255));
 	}
 
 	template <class S, class D>
-	void flip(S& src, D& dst, int code) {
+	void flip(const S& src, D& dst, int code) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		cv::flip(srcMat, dstMat, code);
 	}
 
 	// if you're doing the same rotation multiple times, it's better to precompute
 	// the displacement and use remap.
 	template <class S, class D>
-	void rotate(S& src, D& dst, double angle, ofColor fill = ofColor::black, int interpolation = INTER_LINEAR) {
+	void rotate(const S& src, D& dst, double angle, ofColor fill = ofColor::black, int interpolation = cv::INTER_LINEAR) {
 		imitate(dst, src);
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
-		Point2f center(srcMat.cols / 2, srcMat.rows / 2);
-		Mat rotationMatrix = getRotationMatrix2D(center, angle, 1);
-		warpAffine(srcMat, dstMat, rotationMatrix, srcMat.size(), interpolation, BORDER_CONSTANT, toCv(fill));
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+		cv::Point2f center(srcMat.cols / 2, srcMat.rows / 2);
+		cv::Mat rotationMatrix = getRotationMatrix2D(center, angle, 1);
+		warpAffine(srcMat, dstMat, rotationMatrix, srcMat.size(), interpolation, cv::BORDER_CONSTANT, toCv(fill));
 	}
 
 	// efficient version of rotate that only operates on 0, 90, 180, 270 degrees
 	// the output is allocated to contain all pixels of the input.
 	template <class S, class D>
-	void rotate90(S& src, D& dst, int angle) {
-		Mat srcMat = toCv(src), dstMat = toCv(dst);
+	void rotate90(const S& src, D& dst, int angle) {
+		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		if(angle == 0) {
 			copy(src, dst);
 		} else if(angle == 90) {
@@ -432,14 +431,14 @@ cv::name(xMat, yMat, resultMat);\
 	}
 
     template <class S, class D>
-    void transpose(S& src, D& dst) {
-        Mat srcMat = toCv(src);
+    void transpose(const S& src, D& dst) {
+		cv::Mat srcMat = toCv(src);
         allocate(dst, srcMat.rows, srcMat.cols, srcMat.type());
-        Mat dstMat = toCv(dst);
+		cv::Mat dstMat = toCv(dst);
         cv::transpose(srcMat, dstMat);
     }
 
 	// finds the 3x4 matrix that best describes the (premultiplied) affine transformation between two point clouds
-	ofMatrix4x4 estimateAffine3D(vector<ofVec3f>& from, vector<ofVec3f>& to, float accuracy = .99);
-	ofMatrix4x4 estimateAffine3D(vector<ofVec3f>& from, vector<ofVec3f>& to, vector<unsigned char>& outliers, float accuracy = .99);
+	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, float accuracy = .99);
+	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, std::vector<unsigned char>& outliers, float accuracy = .99);
 }
