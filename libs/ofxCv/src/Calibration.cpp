@@ -166,36 +166,33 @@ namespace ofxCv {
             return;
         }
         
-        if(xml.getNumChildren() == 0){
-            xml.remove(); // Remove the processing instruction in the top
-        }
+        // Remove the processing instruction in the top?
         
         // Find the camera profiles in the xml
-        xml.setToChild(0);
-        xml.setTo("rdf:RDF/rdf:Description/photoshop:CameraProfiles/rdf:Seq");
+        auto profiles = xml.find("rdf:RDF/rdf:Description/photoshop:CameraProfiles/rdf:Seq");
         
-        int numProfiles = xml.getNumChildren();
-        if(numProfiles == 0){
-            ofLogError()<<"No camera profiles found at "<<filename;
-            return;
-        };
+//        int numProfiles = xml.getNumChildren();
+//        if(numProfiles == 0){
+//            ofLogError()<<"No camera profiles found at "<<filename;
+//            return;
+//        };
         
         // Find the best matches of camera profiles
         // TODO: Not taking focus distance in account
         int bestMatchLt = -1, bestMatchGt = -1;
         float bestMatchLtVal, bestMatchGtVal;
-        for(int i=0;i<numProfiles;i++){
-            xml.setToChild(i);
-            float curFocalLength = xml.getFloatValue("stCamera:FocalLength");
-            if(curFocalLength <= focalLength  && (bestMatchLt == -1 || curFocalLength > bestMatchLtVal)){
-                bestMatchLt = i;
-                bestMatchLtVal = curFocalLength;
+        for(auto& profile : profiles) {
+            for(auto& child : profile.getChildren()){
+                float curFocalLength = child.getFloatValue("stCamera:FocalLength");
+                if(curFocalLength <= focalLength  && (bestMatchLt == -1 || curFocalLength > bestMatchLtVal)){
+                    bestMatchLt = i;
+                    bestMatchLtVal = curFocalLength;
+                }
+                if(curFocalLength > focalLength && (bestMatchGt == -1 || curFocalLength < bestMatchGtVal)){
+                    bestMatchGt = i;
+                    bestMatchGtVal = curFocalLength;
+                }
             }
-            if(curFocalLength > focalLength && (bestMatchGt == -1 || curFocalLength < bestMatchGtVal)){
-                bestMatchGt = i;
-                bestMatchGtVal = curFocalLength;
-            }
-            xml.setToParent();
         }
         
         // Get the values out of the profile

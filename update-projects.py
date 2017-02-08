@@ -38,38 +38,39 @@ for example in examples:
 		upper = re.sub("-([a-z])", toUpper, sansExample)
 		targetProjectName = upper + "Example"
 		
-		#linux
-		targetDir = "{0}/".format(example, targetProjectName)
-		emptyDir = "example-empty"
-		shutil.copy(sourceMakefile, targetDir)
-		shutil.copy(sourceConfigs, targetDir)
-		shutil.copy(sourceAddons, targetDir)
+		# #linux
+		# targetDir = "{0}/".format(example, targetProjectName)
+		# emptyDir = "example-empty"
+		# shutil.copy(sourceMakefile, targetDir)
+		# shutil.copy(sourceConfigs, targetDir)
+		# shutil.copy(sourceAddons, targetDir)
 
-		# windows code::blocks
-		targetCbp = "{0}/{1}.cbp".format(example, targetProjectName)
-		targetWorkspace = "{0}/{1}.workspace".format(example, targetProjectName)
-		shutil.copy(sourceCbp, targetCbp)
-		shutil.copy(sourceWorkspace, targetWorkspace)
-		replaceInFile(targetCbp, sourceProjectName, targetProjectName)
-		replaceInFile(targetWorkspace, sourceProjectName, targetProjectName)
+		# # windows code::blocks
+		# targetCbp = "{0}/{1}.cbp".format(example, targetProjectName)
+		# targetWorkspace = "{0}/{1}.workspace".format(example, targetProjectName)
+		# shutil.copy(sourceCbp, targetCbp)
+		# shutil.copy(sourceWorkspace, targetWorkspace)
+		# replaceInFile(targetCbp, sourceProjectName, targetProjectName)
+		# replaceInFile(targetWorkspace, sourceProjectName, targetProjectName)
 
-		# windows vs2010
-		targetSln = "{0}/{1}.sln".format(example, targetProjectName)
-		targetVcxproj = "{0}/{1}.vcxproj".format(example, targetProjectName)
-		targetVcxprojFilters = "{0}/{1}.vcxproj.filters".format(example, targetProjectName)
-		targetVcxprojUser = "{0}/{1}.vcxproj.user".format(example, targetProjectName)
-		shutil.copy(sourceSln, targetSln)
-		shutil.copy(sourceVcxproj, targetVcxproj)
-		shutil.copy(sourceVcxprojFilters, targetVcxprojFilters)
-		shutil.copy(sourceVcxprojUser, targetVcxprojUser)
-		replaceInFile(targetSln, sourceProjectName, targetProjectName)
-		replaceInFile(targetVcxproj, sourceProjectName, targetProjectName)
+		# # windows vs2010
+		# targetSln = "{0}/{1}.sln".format(example, targetProjectName)
+		# targetVcxproj = "{0}/{1}.vcxproj".format(example, targetProjectName)
+		# targetVcxprojFilters = "{0}/{1}.vcxproj.filters".format(example, targetProjectName)
+		# targetVcxprojUser = "{0}/{1}.vcxproj.user".format(example, targetProjectName)
+		# shutil.copy(sourceSln, targetSln)
+		# shutil.copy(sourceVcxproj, targetVcxproj)
+		# shutil.copy(sourceVcxprojFilters, targetVcxprojFilters)
+		# shutil.copy(sourceVcxprojUser, targetVcxprojUser)
+		# replaceInFile(targetSln, sourceProjectName, targetProjectName)
+		# replaceInFile(targetVcxproj, sourceProjectName, targetProjectName)
 
 		# xcode osx
-		targetXcodeproj = "{0}/ofApp.xcodeproj".format(example)
+		targetXcodeproj = "{0}/ofApp.xcodeproj".format(example, example)
 		shutil.copy(sourceXcconfig, example)
 		shutil.copy(sourcePlist, example)
 		try: shutil.rmtree(targetXcodeproj)
 		except: pass
 		shutil.copytree(sourceXcodeproj, targetXcodeproj)
-				print "Copied into " + targetProjectName + "."
+		
+		print "Copied into " + targetProjectName + "."
