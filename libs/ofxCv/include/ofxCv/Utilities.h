@@ -217,10 +217,6 @@ namespace ofxCv {
 		allocate(mirror, ow, oh, mirrorCvImageType);
 	}
 
-    template <class M, class O> void imitate(M& mirror, O& original, int mirrorCvImageType) {
-        imitate(mirror, original, mirrorCvImageType);
-    }
-
 	// this version copies size and image type
 	template <class M, class O> void imitate(M& mirror, const O& original) {
 		imitate(mirror, original, getCvImageType(original));
