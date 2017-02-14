@@ -4,6 +4,11 @@ ofxCv represents an alternative approach to wrapping OpenCV for openFrameworks.
 
 # Installation
 
+First, pick the branch that matches your version of openFrameworks:
+
+* OF [stable](https://github.com/openframeworks/openFrameworks/tree/stable) (0.9.8): use [ofxCv/stable](https://github.com/kylemcdonald/ofxCv/tree/stable)
+* OF [master](https://github.com/openframeworks/openFrameworks) (0.10.0): use [ofxCv/master](https://github.com/kylemcdonald/ofxCv/)
+
 Either clone out the source code using git:
 
 	> cd openFrameworks/addons/

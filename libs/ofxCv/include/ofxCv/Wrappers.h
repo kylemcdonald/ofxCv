@@ -409,21 +409,23 @@ cv::name(xMat, yMat, resultMat);\
 		warpAffine(srcMat, dstMat, rotationMatrix, srcMat.size(), interpolation, cv::BORDER_CONSTANT, toCv(fill));
 	}
 
-	// efficient version of rotate that only operates on 0, 90, 180, 270 degrees
+	// efficient version of rotate that only operates on:
+    // +0, 90, 180, 270 degrees
+    // -90, -180, -270, -360 degrees
 	// the output is allocated to contain all pixels of the input.
 	template <class S, class D>
 	void rotate90(const S& src, D& dst, int angle) {
 		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
-		if(angle == 0) {
+		if(angle == 0 || angle == 360) {
 			copy(src, dst);
-		} else if(angle == 90) {
+		} else if(angle == 90 || angle == -270) {
 			allocate(dst, srcMat.rows, srcMat.cols, srcMat.type());
 			cv::transpose(srcMat, dstMat);
 			cv::flip(dstMat, dstMat, 1);
-		} else if(angle == 180) {
+		} else if(angle == 180 || angle == -180) {
 			imitate(dst, src);
 			cv::flip(srcMat, dstMat, -1);
-		} else if(angle == 270) {
+		} else if(angle == 270 || angle == -90) {
 			allocate(dst, srcMat.rows, srcMat.cols, srcMat.type());
 			cv::transpose(srcMat, dstMat);
 			cv::flip(dstMat, dstMat, 0);

@@ -3,6 +3,7 @@
 #include "ofFileUtils.h"
 #include "ofGraphics.h"
 #include "ofMesh.h"
+#include "ofXml.h"
 
 namespace ofxCv {
     
@@ -153,6 +154,22 @@ namespace ofxCv {
         updateUndistortion();
         ready = true;
     }
+    
+    void Calibration::loadLcp(string filename, float focalLength, bool absolute){
+        imagePoints.clear();
+        
+        // Load the XML
+        ofXml xml;
+        bool loaded = xml.load(ofToDataPath(filename, absolute));
+        if(!loaded){
+            ofLogError()<<"No camera profile file found at "<<filename;
+            return;
+        }
+        
+        ofLogError("https://github.com/kylemcdonald/ofxCv/issues/207");
+    }
+    
+    
     void Calibration::setIntrinsics(Intrinsics& distortedIntrinsics){
         this->distortedIntrinsics = distortedIntrinsics;
         this->addedImageSize = distortedIntrinsics.getImageSize();

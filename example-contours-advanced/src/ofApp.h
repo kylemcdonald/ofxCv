@@ -18,4 +18,5 @@ public:
     ofxPanel gui;
     ofParameter<float> threshold;
     ofParameter<bool> trackHs;
+    ofParameter<bool> holes;
 };

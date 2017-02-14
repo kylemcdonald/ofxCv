@@ -9,6 +9,7 @@ void ofApp::setup() {
     gui.add(minArea.set("Min area", 10, 1, 100));
     gui.add(maxArea.set("Max area", 200, 1, 500));
     gui.add(threshold.set("Threshold", 128, 0, 255));
+    gui.add(holes.set("Holes", false));
 }
 
 void ofApp::update() {
@@ -18,6 +19,7 @@ void ofApp::update() {
         contourFinder.setMaxAreaRadius(maxArea);
 		contourFinder.setThreshold(threshold);
 		contourFinder.findContours(cam);
+        contourFinder.setFindHoles(holes);
 	}
 }
 
