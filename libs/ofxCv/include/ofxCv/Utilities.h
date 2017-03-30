@@ -72,8 +72,14 @@ namespace ofxCv {
     template <class T> inline int getDepth(const ofPixels_<T>& pixels) {
 		switch(pixels.getBytesPerChannel()) {
 			case 4: return CV_32F;
-			case 2: return CV_16U;
-			case 1: default: return CV_8U;
+			case 2:{
+				if(pixels.getColor(0,0).limit()==numeric_limits<signed short>::max()) return CV_16S;
+				else return CV_16U;
+			}
+			case 1: default:{
+				if(pixels.getColor(0,0).limit()==numeric_limits<signed short>::max()) return CV_8S;
+				else return CV_8U;
+			}
 		}
 	}
 	template <> inline int getDepth(const ofPixels_<signed short>& pixels) {
