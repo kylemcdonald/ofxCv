@@ -19,8 +19,6 @@ namespace ofxCv {
 
 		const std::vector<double>& mAreaVec;
 	};
-
-	using namespace cv;
 	
 	ContourFinder::ContourFinder()
 	:autoThreshold(true)
@@ -34,11 +32,11 @@ namespace ofxCv {
 		resetMaxArea();
 	}
 	
-	void ContourFinder::findContours(Mat img) {
+	void ContourFinder::findContours(cv::Mat img) {
 		// threshold the image using a tracked color or just binary grayscale
 		if(useTargetColor) {
-			Scalar offset(thresholdValue, thresholdValue, thresholdValue);
-			Scalar base = toCv(targetColor);
+			cv::Scalar offset(thresholdValue, thresholdValue, thresholdValue);
+			cv::Scalar base = toCv(targetColor);
 			if(trackingColorMode == TRACK_COLOR_RGB) {
 				inRange(img, base - offset, base + offset, thresh);
 			} else {
@@ -54,8 +52,8 @@ namespace ofxCv {
 				}
 				cvtColor(img, hsvBuffer, CV_RGB2HSV);
 				base = toCv(convertColor(targetColor, CV_RGB2HSV));
-				Scalar lowerb = base - offset;
-				Scalar upperb = base + offset;
+				cv::Scalar lowerb = base - offset;
+				cv::Scalar upperb = base + offset;
 				inRange(hsvBuffer, lowerb, upperb, thresh);
 			}
 		} else {
@@ -81,7 +79,7 @@ namespace ofxCv {
 			double imgMinArea = minAreaNorm ? (minArea * imgArea) : minArea;
 			double imgMaxArea = maxAreaNorm ? (maxArea * imgArea) : maxArea;
 			for(size_t i = 0; i < allContours.size(); i++) {
-				double curArea = contourArea(Mat(allContours[i]), true);
+				double curArea = cv::contourArea(cv::Mat(allContours[i]), true);
                 bool hole = true;
                 if(curArea < 0) {
                     curArea = -curArea;
@@ -97,7 +95,7 @@ namespace ofxCv {
 			}
 		} else {
 			for(size_t i = 0; i < allContours.size(); i++) {
-                double curArea = contourArea(Mat(allContours[i]), true);
+                double curArea = cv::contourArea(cv::Mat(allContours[i]), true);
                 allAreas.push_back(abs(curArea));
                 allHoles.push_back(curArea > 0);
 				allIndices.push_back(i);
@@ -172,7 +170,7 @@ namespace ofxCv {
 	}
 	
 	cv::Point2f ContourFinder::getCentroid(unsigned int i) const {
-		Moments m = moments(contours[i]);
+		cv::Moments m = moments(contours[i]);
 		if(m.m00!=0){
 			return cv::Point2f(m.m10 / m.m00, m.m01 / m.m00);
 		}else{
@@ -181,7 +179,7 @@ namespace ofxCv {
 	}
 	
 	cv::Point2f ContourFinder::getAverage(unsigned int i) const {
-		Scalar average = mean(contours[i]);
+		cv::Scalar average = mean(contours[i]);
 		return cv::Point2f(average[0], average[1]);
 	}
 	
@@ -238,7 +236,7 @@ namespace ofxCv {
 		// unbounded binary search to simplify the convex hull until it's 4 points
 		if(quad.size() > 4) {
 			for(int i = 0; i <(int) maxIterations; i++) {
-				approxPolyDP(Mat(convexHull), quad, curEpsilon, true);
+                cv::approxPolyDP(cv::Mat(convexHull), quad, curEpsilon, true);
 				if(quad.size() == targetPoints) {
 					break;
 				}
