@@ -15,7 +15,7 @@ namespace ofxCv {
     void PutAt (int *pOrigin, int col, int row, int nCols, int x);
 	};
 	
-    const std::string& mostRepresentative(const std::vector<std::string>& strs) {
+	const std::string& mostRepresentative(const std::vector<std::string>& strs) {
 		int bestScore;
 		int besti;
 		int n = strs.size();

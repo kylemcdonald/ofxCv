@@ -54,7 +54,7 @@ namespace ofxCv {
 		
 		void save(const std::string& filename, bool absolute = false) const;
 		void load(const std::string& filename, bool absolute = false);
-        void loadLcp(const std::string& filename, float focalLength, bool absolutePath = false);
+		void loadLcp(const std::string& filename, float focalLength, bool absolutePath = false);
 		void reset();
 
 		void setPatternType(CalibrationPattern patternType);
