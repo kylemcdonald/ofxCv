@@ -24,7 +24,7 @@ void ofApp::update() {
 			quads[i] = contourFinder.getFitQuad(i);
 			
 			// convert integer image coordinates Point2i to unwarp positions Point2f
-			vector<Point2f> warpPoints;
+			std::vector<Point2f> warpPoints;
 			copy(quads[i].begin(), quads[i].end(), back_inserter(warpPoints));
 			unwarpPerspective(cam, unwarped, warpPoints);
 			unwarped.update();

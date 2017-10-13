@@ -12,7 +12,7 @@ void ofApp::setup() {
 	rigid.translate(translation);
 	rigid.rotate(rotation);
 	
-	vector<ofVec3f> from;
+	std::vector<ofVec3f> from;
 	for(int i = 0; i < 4; i++) {
 		from.push_back(ofVec3f(ofRandom(1,2), ofRandom(1,2), ofRandom(5,6)));
 		from.push_back(ofVec3f(ofRandom(3,4), ofRandom(3,4), ofRandom(5,6)));
@@ -20,7 +20,7 @@ void ofApp::setup() {
 		from.push_back(ofVec3f(ofRandom(3,4), ofRandom(1,2), ofRandom(5,6)));
 	}
 	
-	vector<ofVec3f> to;
+	std::vector<ofVec3f> to;
 	for(int i = 0; i < from.size(); i++) {
 		// opencv assumes you're doing premultiplication
 		to.push_back(rigid.preMult(from[i]));

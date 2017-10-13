@@ -42,7 +42,7 @@ void ofApp::draw() {
 			ofPushMatrix();
 			ofTranslate(center.x, center.y);
 			int label = contourFinder.getLabel(i);
-			string msg = ofToString(label) + ":" + ofToString(tracker.getAge(label));
+			std::string msg = ofToString(label) + ":" + ofToString(tracker.getAge(label));
 			ofDrawBitmapString(msg, 0, 0);
 			ofVec2f velocity = toOf(contourFinder.getVelocity(i));
 			ofScale(5, 5);
@@ -69,10 +69,10 @@ void ofApp::draw() {
 	}
 	
 	// this chunk of code visualizes the creation and destruction of labels
-	const vector<unsigned int>& currentLabels = tracker.getCurrentLabels();
-	const vector<unsigned int>& previousLabels = tracker.getPreviousLabels();
-	const vector<unsigned int>& newLabels = tracker.getNewLabels();
-	const vector<unsigned int>& deadLabels = tracker.getDeadLabels();
+	const std::vector<unsigned int>& currentLabels = tracker.getCurrentLabels();
+	const std::vector<unsigned int>& previousLabels = tracker.getPreviousLabels();
+	const std::vector<unsigned int>& newLabels = tracker.getNewLabels();
+	const std::vector<unsigned int>& deadLabels = tracker.getDeadLabels();
 	ofSetColor(cyanPrint);
 	for(int i = 0; i < currentLabels.size(); i++) {
 		int j = currentLabels[i];

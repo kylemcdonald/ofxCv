@@ -25,7 +25,7 @@ void ofApp::setup() {
 
 void ofApp::update() {
 	if(leftPoints.size() >= 4) {
-		vector<Point2f> srcPoints, dstPoints;
+		std::vector<Point2f> srcPoints, dstPoints;
 		for(int i = 0; i < leftPoints.size(); i++) {
 			srcPoints.push_back(Point2f(rightPoints[i].x - left.getWidth(), rightPoints[i].y));
 			dstPoints.push_back(Point2f(leftPoints[i].x, leftPoints[i].y));
@@ -50,7 +50,7 @@ void ofApp::update() {
 	}
 }
 
-void drawPoints(vector<ofVec2f>& points) {
+void drawPoints(std::vector<ofVec2f>& points) {
 	ofNoFill();
 	for(int i = 0; i < points.size(); i++) {
 		ofDrawCircle(points[i], 10);
@@ -83,7 +83,7 @@ void ofApp::draw() {
 	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
 }
 
-bool ofApp::movePoint(vector<ofVec2f>& points, ofVec2f point) {
+bool ofApp::movePoint(std::vector<ofVec2f>& points, ofVec2f point) {
 	for(int i = 0; i < points.size(); i++) {
 		if(points[i].distance(point) < 20) {
 			movingPoint = true;
