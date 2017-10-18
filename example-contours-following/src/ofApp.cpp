@@ -73,7 +73,7 @@ void ofApp::draw() {
 	ofSetColor(255);
 	movie.draw(0, 0);
 	contourFinder.draw();
-	vector<Glow>& followers = tracker.getFollowers();
+	std::vector<Glow>& followers = tracker.getFollowers();
 	for(int i = 0; i < followers.size(); i++) {
 		followers[i].draw();
 	}

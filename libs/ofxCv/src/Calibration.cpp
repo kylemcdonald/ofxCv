@@ -108,7 +108,7 @@ namespace ofxCv {
         
     }
     
-    void Calibration::save(string filename, bool absolute) const {
+    void Calibration::save(std::string filename, bool absolute) const {
         if(!ready){
             ofLog(OF_LOG_ERROR, "Calibration::save() failed, because your calibration isn't ready yet!");
         }
@@ -130,7 +130,7 @@ namespace ofxCv {
         fs << "]";
     }
     
-    void Calibration::load(string filename, bool absolute) {
+    void Calibration::load(std::string filename, bool absolute) {
         imagePoints.clear();
         FileStorage fs(ofToDataPath(filename, absolute), FileStorage::READ);
         cv::Size imageSize;
@@ -145,7 +145,7 @@ namespace ofxCv {
         fs["reprojectionError"] >> reprojectionError;
         FileNode features = fs["features"];
         for(FileNodeIterator it = features.begin(); it != features.end(); it++) {
-            vector<Point2f> cur;
+            std::vector<Point2f> cur;
             (*it) >> cur;
             imagePoints.push_back(cur);
         }
@@ -155,7 +155,7 @@ namespace ofxCv {
         ready = true;
     }
     
-    void Calibration::loadLcp(string filename, float focalLength, bool absolute){
+    void Calibration::loadLcp(std::string filename, float focalLength, bool absolute){
         imagePoints.clear();
         
         // Load the XML
@@ -212,7 +212,7 @@ namespace ofxCv {
     bool Calibration::add(Mat img) {
         addedImageSize = img.size();
         
-        vector<Point2f> pointBuf;
+        std::vector<Point2f> pointBuf;
         
         // find corners
         bool found = findBoard(img, pointBuf);
@@ -223,7 +223,7 @@ namespace ofxCv {
             ofLog(OF_LOG_ERROR, "Calibration::add() failed, maybe your patternSize is wrong or the image has poor lighting?");
         return found;
     }
-    bool Calibration::findBoard(Mat img, vector<Point2f>& pointBuf, bool refine) {
+    bool Calibration::findBoard(Mat img, std::vector<Point2f>& pointBuf, bool refine) {
         bool found=false;
         if(patternType == CHESSBOARD) {
             // no CV_CALIB_CB_FAST_CHECK, because it breaks on dark images (e.g., dark IR images from kinect)
@@ -307,7 +307,7 @@ namespace ofxCv {
         return ready;
     }
     
-    bool Calibration::calibrateFromDirectory(string directory) {
+    bool Calibration::calibrateFromDirectory(std::string directory) {
         ofDirectory dirList;
         ofImage cur;
         dirList.listDir(directory);
@@ -335,7 +335,7 @@ namespace ofxCv {
         return dst;
     }
     
-    void Calibration::undistort(vector<glm::vec2>& src, vector<glm::vec2>& dst) const {
+    void Calibration::undistort(std::vector<glm::vec2>& src, std::vector<glm::vec2>& dst) const {
         int n = src.size();
         dst.resize(n);
         Mat matSrc = Mat(n, 1, CV_32FC2, &src[0].x);
@@ -406,7 +406,7 @@ namespace ofxCv {
     // this won't work until undistort() is in pixel coordinates
     /*
      void Calibration::drawUndistortion() const {
-     vector<glm::vec2> src, dst;
+     std::vector<glm::vec2> src, dst;
      cv::Point2i divisions(32, 24);
      for(int y = 0; y < divisions.y; y++) {
      for(int x = 0; x < divisions.x; x++) {
@@ -460,11 +460,11 @@ namespace ofxCv {
         ofPopStyle();
     }
     void Calibration::updateObjectPoints() {
-        vector<Point3f> points = createObjectPoints(patternSize, squareSize, patternType);
+        std::vector<Point3f> points = createObjectPoints(patternSize, squareSize, patternType);
         objectPoints.resize(imagePoints.size(), points);
     }
     void Calibration::updateReprojectionError() {
-        vector<Point2f> imagePoints2;
+        std::vector<Point2f> imagePoints2;
         int totalPoints = 0;
         double totalErr = 0;
         
@@ -491,8 +491,8 @@ namespace ofxCv {
         undistortedIntrinsics.setup(undistortedCameraMatrix, distortedIntrinsics.getImageSize());
     }
     
-    vector<Point3f> Calibration::createObjectPoints(cv::Size patternSize, float squareSize, CalibrationPattern patternType) {
-        vector<Point3f> corners;
+    std::vector<Point3f> Calibration::createObjectPoints(cv::Size patternSize, float squareSize, CalibrationPattern patternType) {
+        std::vector<Point3f> corners;
         switch(patternType) {
             case CHESSBOARD:
             case CIRCLES_GRID:

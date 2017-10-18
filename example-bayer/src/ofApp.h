@@ -12,5 +12,5 @@ public:
 	
 	ofImage bayer, rgb;
 	int bayerType;
-    string bayerName;
+    std::string bayerName;
 };

@@ -72,9 +72,9 @@ void ofApp::draw() {
 	cam.draw(0, 0);
 	undistorted.draw(640, 0);
 	
-	stringstream intrinsics;
+	std::stringstream intrinsics;
 	intrinsics << "fov: " << toOf(calibration.getDistortedIntrinsics().getFov()) << " distCoeffs: " << calibration.getDistCoeffs();
-    string oneLine = intrinsics.str();
+    std::string oneLine = intrinsics.str();
     ofStringReplace(oneLine, "\n", "");
 	ofDrawBitmapStringHighlight(oneLine, 10, 20, yellowPrint, ofColor(0));
 	ofDrawBitmapStringHighlight("movement: " + ofToString(diffMean), 10, 40, cyanPrint);

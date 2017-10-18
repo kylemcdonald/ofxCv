@@ -35,9 +35,9 @@ void ofApp::mousePressed(int x, int y, int button){
 void ofApp::mouseReleased(int x, int y, int button){
 	ofVec2f p2(x,y);
 	rect.set(p1,p2.x-p1.x,p2.y-p1.y);
-	vector<KeyPoint> keypoints;
-	vector<KeyPoint> keypointsInside;
-	vector<cv::Point2f> featuresToTrack;
+	std::vector<KeyPoint> keypoints;
+	std::vector<KeyPoint> keypointsInside;
+	std::vector<cv::Point2f> featuresToTrack;
     copyGray(grabber, grabberGray);
 	FAST(grabberGray,keypoints,2);
 	for(int i=0;i<keypoints.size();i++){

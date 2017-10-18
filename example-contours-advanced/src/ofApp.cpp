@@ -63,7 +63,7 @@ void ofApp::draw() {
 		convexHull.draw();
 		
 		// defects of the convex hull
-		vector<cv::Vec4i> defects = contourFinder.getConvexityDefects(i);
+		std::vector<cv::Vec4i> defects = contourFinder.getConvexityDefects(i);
 		for(int j = 0; j < defects.size(); j++) {
 			ofDrawLine(defects[j][0], defects[j][1], defects[j][2], defects[j][3]);
 		}
