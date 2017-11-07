@@ -136,7 +136,7 @@ namespace ofxCv {
 		box.width -= box.x;
 	}
 	
-	float weightedAverageAngle(const vector<cv::Vec4i>& lines);
+    float weightedAverageAngle(const std::vector<cv::Vec4i>& lines);
 	
 	// (nearest point) to the two given lines
 	template <class T>
@@ -192,7 +192,7 @@ namespace ofxCv {
 	}
 	
 	// given a vector of lines, this function will find the average angle
-	float weightedAverageAngle(const vector<cv::Vec4i>& lines);
+	float weightedAverageAngle(const std::vector<cv::Vec4i>& lines);
 	
 	// finds the average angle of hough lines, unrotates by that amount and
 	// returns the average rotation. you can supply your own thresholded image
