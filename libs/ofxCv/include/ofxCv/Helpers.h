@@ -171,7 +171,7 @@ namespace ofxCv {
 		int w = mat.cols, h = mat.rows;
 		int ia1=-w-1,ia2=-w-0,ia3=-w+1,ib1=-0-1,ib3=-0+1,ic1=+w-1,ic2=+w-0,ic3=+w+1;
 		unsigned char* p = mat.ptr<unsigned char>();
-		vector<unsigned int> q;
+		std::vector<unsigned int> q;
 		for(int y = 1; y + 1 < h; y++) {
 			for(int x = 1; x + 1 < w; x++) {
 				int i = y * w + x;

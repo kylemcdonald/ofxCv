@@ -4,17 +4,17 @@ namespace ofxCv {
 	
 	using namespace cv;
 	
-	void loadMat(Mat& mat, string filename) {
+	void loadMat(Mat& mat, std::string filename) {
 		FileStorage fs(ofToDataPath(filename), FileStorage::READ);
 		fs["Mat"] >> mat;
 	}
 	
-	void saveMat(Mat mat, string filename) {
+	void saveMat(Mat mat, std::string filename) {
 		FileStorage fs(ofToDataPath(filename), FileStorage::WRITE);
 		fs << "Mat" << mat;
 	}
 	
-	void saveImage(Mat& mat, string filename, ofImageQualityType qualityLevel) {
+	void saveImage(Mat& mat, std::string filename, ofImageQualityType qualityLevel) {
 		if(mat.depth() == CV_8U) {
 			ofPixels pix8u;
 			toOf(mat, pix8u);
@@ -44,17 +44,17 @@ namespace ofxCv {
 	}	
 	
 	ofPolyline convexHull(const ofPolyline& polyline) {
-		vector<cv::Point2f> contour = toCv(polyline);
-		vector<cv::Point2f> hull;
+		std::vector<cv::Point2f> contour = toCv(polyline);
+		std::vector<cv::Point2f> hull;
 		convexHull(Mat(contour), hull);
 		return toOf(hull);
 	}
 	
 	// this should be replaced by c++ 2.0 api style code once available
-	vector<cv::Vec4i> convexityDefects(const vector<cv::Point>& contour) {
-		vector<int> hullIndices;
+	std::vector<cv::Vec4i> convexityDefects(const std::vector<cv::Point>& contour) {
+		std::vector<int> hullIndices;
 		convexHull(Mat(contour), hullIndices, false, false);
-		vector<cv::Vec4i> convexityDefects;
+		std::vector<cv::Vec4i> convexityDefects;
 		if(hullIndices.size() > 0 && contour.size() > 0) {		
 			CvMat contourMat = cvMat(1, contour.size(), CV_32SC2, (void*) &contour[0]);
 			CvMat hullMat = cvMat(1, hullIndices.size(), CV_32SC1, (void*) &hullIndices[0]);
@@ -74,9 +74,9 @@ namespace ofxCv {
 		return convexityDefects;
 	}
 	
-	vector<cv::Vec4i> convexityDefects(const ofPolyline& polyline) {
-		vector<cv::Point2f> contour2f = toCv(polyline);
-		vector<cv::Point2i> contour2i;
+	std::vector<cv::Vec4i> convexityDefects(const ofPolyline& polyline) {
+		std::vector<cv::Point2f> contour2f = toCv(polyline);
+		std::vector<cv::Point2i> contour2i;
 		Mat(contour2f).copyTo(contour2i);
 		return convexityDefects(contour2i);
 	}
@@ -97,15 +97,15 @@ namespace ofxCv {
         point = glm::vec2(line[2], line[3]);
 	}
     
-	ofMatrix4x4 estimateAffine3D(vector<glm::vec3>& from, vector<glm::vec3>& to, float accuracy) {
+	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, float accuracy) {
 		if(from.size() != to.size() || from.size() == 0 || to.size() == 0) {
 			return ofMatrix4x4();
 		}
-		vector<unsigned char> outliers;
+		std::vector<unsigned char> outliers;
 		return estimateAffine3D(from, to, outliers, accuracy);
 	}
     
-	ofMatrix4x4 estimateAffine3D(vector<glm::vec3>& from, vector<glm::vec3>& to, vector<unsigned char>& outliers, float accuracy) {
+	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, std::vector<unsigned char>& outliers, float accuracy) {
 		Mat fromMat(1, from.size(), CV_32FC3, &from[0]);
 		Mat toMat(1, to.size(), CV_32FC3, &to[0]);
 		Mat affine;

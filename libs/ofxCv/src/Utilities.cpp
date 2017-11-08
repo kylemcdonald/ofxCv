@@ -32,13 +32,13 @@ namespace ofxCv {
 	}
 	
 	Mat toCv(ofMesh& mesh) {
-		vector<glm::vec3>& vertices = mesh.getVertices();
+		std::vector<glm::vec3>& vertices = mesh.getVertices();
 		return Mat(1, vertices.size(), CV_32FC3, &vertices[0]);
 	}
 	
-	vector<cv::Point2f> toCv(const ofPolyline& polyline) {
+    std::vector<cv::Point2f> toCv(const ofPolyline& polyline) {
 		// if polyline.getVertices() were const, this could wrap toCv(vec<vec2f>)
-		vector<cv::Point2f> contour(polyline.size());
+		std::vector<cv::Point2f> contour(polyline.size());
 		for(int i = 0; i < polyline.size(); i++) {
 			contour[i].x = polyline[i].x;
 			contour[i].y = polyline[i].y;
@@ -46,8 +46,8 @@ namespace ofxCv {
 		return contour;		
 	}
 	
-	vector<cv::Point2f> toCv(const vector<glm::vec2>& points) {
-		vector<cv::Point2f> out(points.size());
+	std::vector<cv::Point2f> toCv(const std::vector<glm::vec2>& points) {
+		std::vector<cv::Point2f> out(points.size());
 		for(int i = 0; i < points.size(); i++) {
 			out[i].x = points[i].x;
 			out[i].y = points[i].y;
@@ -55,8 +55,8 @@ namespace ofxCv {
 		return out;		
 	}
 	
-	vector<cv::Point3f> toCv(const vector<glm::vec3>& points) {
-		vector<cv::Point3f> out(points.size());
+	std::vector<cv::Point3f> toCv(const std::vector<glm::vec3>& points) {
+		std::vector<cv::Point3f> out(points.size());
 		for(int i = 0; i < points.size(); i++) {
 			out[i].x = points[i].x;
 			out[i].y = points[i].y;
@@ -82,7 +82,7 @@ namespace ofxCv {
 	}
 	
 	ofPolyline toOf(cv::RotatedRect rect) {
-		vector<cv::Point2f> corners(4);
+		std::vector<cv::Point2f> corners(4);
 		rect.points(&corners[0]);
 		ofPolyline polyline = toOf(corners);
 		return polyline;
@@ -90,12 +90,12 @@ namespace ofxCv {
 	
 	float getMaxVal(int cvDepth) {
 		switch(cvDepth) {
-			case CV_8U: return numeric_limits<uint8_t>::max();
-			case CV_16U: return numeric_limits<uint16_t>::max();
+			case CV_8U: return std::numeric_limits<uint8_t>::max();
+			case CV_16U: return std::numeric_limits<uint16_t>::max();
 				
-			case CV_8S: return numeric_limits<int8_t>::max();
-			case CV_16S: return numeric_limits<int16_t>::max();
-			case CV_32S: return numeric_limits<int32_t>::max();
+			case CV_8S: return std::numeric_limits<int8_t>::max();
+			case CV_16S: return std::numeric_limits<int16_t>::max();
+			case CV_32S: return std::numeric_limits<int32_t>::max();
 				
 			case CV_32F: return 1;
 			case CV_64F: default: return 1;
