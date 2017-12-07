@@ -8,6 +8,7 @@
 namespace ofxCv {
     
     using namespace cv;
+    using namespace std;
     
     void Intrinsics::setup(float focalLength, cv::Size imageSize, cv::Size2f sensorSize, cv::Point2d principalPoint) {
         float focalPixels = (focalLength / sensorSize.width) * imageSize.width;
@@ -391,17 +392,23 @@ namespace ofxCv {
     }
     void Calibration::customDraw() {
         for(int i = 0; i < size(); i++) {
-            draw(i);
+            draw();
         }
     }
-    void Calibration::draw(int i) const {
+    void Calibration::draw() const {
         ofPushStyle();
         ofNoFill();
         ofSetColor(ofColor::red);
-        for(int j = 0; j < (int)imagePoints[i].size(); j++) {
-            ofDrawCircle(toOf(imagePoints[i][j]), 5);
+        for (int i = 0; i < (int) imagePoints.size(); i++) {
+           draw(i);
         }
         ofPopStyle();
+    }
+
+    void Calibration::draw(int i) const {
+        for (int j = 0; j < (int) imagePoints[i].size(); j++) {
+                ofDrawCircle(toOf(imagePoints[i][j]), 5);
+        }
     }
     // this won't work until undistort() is in pixel coordinates
     /*

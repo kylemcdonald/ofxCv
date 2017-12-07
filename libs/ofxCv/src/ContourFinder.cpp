@@ -3,6 +3,7 @@
 #include "ofGraphics.h"
 
 namespace ofxCv {
+    using namespace std;
 
 	struct CompareContourArea
 	{
