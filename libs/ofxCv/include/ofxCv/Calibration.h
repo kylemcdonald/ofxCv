@@ -54,7 +54,7 @@ namespace ofxCv {
 		
 		void save(std::string filename, bool absolute = false) const;
 		void load(std::string filename, bool absolute = false);
-        void loadLcp(string filename, float focalLength, bool absolutePath = false);
+        void loadLcp(std::string filename, float focalLength, bool absolutePath = false);
 		void reset();
 
 		void setPatternType(CalibrationPattern patternType);
@@ -96,6 +96,7 @@ namespace ofxCv {
 		
 		void customDraw();
 		void draw(int i) const;
+		void draw() const;
 		void draw3d() const;
 		void draw3d(int i) const;
 		

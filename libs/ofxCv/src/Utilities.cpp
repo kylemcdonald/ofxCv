@@ -10,7 +10,8 @@
 namespace ofxCv {
 	
 	using namespace cv;
-	
+	using namespace std;
+
 	Mat toCv(Mat& mat) {
 		return mat;
 	}
