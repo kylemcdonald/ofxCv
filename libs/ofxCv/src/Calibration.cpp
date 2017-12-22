@@ -402,7 +402,7 @@ namespace ofxCv {
     void Calibration::undistort(Mat img, int interpolationMode) {
         if(img.rows != undistortMapX.rows || img.cols != undistortMapX.cols){
             ofLog(OF_LOG_ERROR, "undistort() Input image and undistort map not same size");
-            return false;
+            return;
         }
         
         img.copyTo(undistortBuffer);
