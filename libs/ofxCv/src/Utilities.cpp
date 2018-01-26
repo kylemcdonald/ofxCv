@@ -1,6 +1,7 @@
 #include "ofxCv/Utilities.h"
 
 #include "ofMath.h"
+#include "ofMesh.h"
 
 // vs2010 support (this should be added to the OF core)
 #if (_MSC_VER)
