@@ -37,10 +37,10 @@ namespace ofxCv {
 		cv::Point2d getPrincipalPoint() const;
 		void loadProjectionMatrix(float nearDist = 10., float farDist = 10000., cv::Point2d viewportOffset = cv::Point2d(0, 0)) const;
 	protected:
-        void updateValues();
+		void updateValues();
 		cv::Mat cameraMatrix;
-        cv::Size imageSize;
-        cv::Size2f sensorSize;
+		cv::Size imageSize;
+		cv::Size2f sensorSize;
 		cv::Point2d fov;
 		double focalLength, aspectRatio;
 		cv::Point2d principalPoint;
@@ -52,9 +52,9 @@ namespace ofxCv {
 	public:
 		Calibration();
 		
-        void save(const std::string& filename, bool absolute = false) const;
-        void load(const std::string&  filename, bool absolute = false);
-        void loadLcp(const std::string&  filename, float focalLength, int imageWidth=0, int imageHeight=0, bool absolutePath = false);
+		void save(const std::string& filename, bool absolute = false) const;
+		void load(const std::string&  filename, bool absolute = false);
+		void loadLcp(const std::string&  filename, float focalLength, int imageWidth=0, int imageHeight=0, bool absolutePath = false);
 		void reset();
 
 		void setPatternType(CalibrationPattern patternType);
@@ -69,8 +69,8 @@ namespace ofxCv {
 		bool calibrateFromDirectory(std::string directory);
 		bool findBoard(cv::Mat img, std::vector<cv::Point2f> &pointBuf, bool refine = true);
 		void setIntrinsics(Intrinsics& distortedIntrinsics);
-        void setDistortionCoefficients(float k1, float k2, float p1, float p2, float k3=0, float k4=0, float k5=0, float k6=0);
-        
+		void setDistortionCoefficients(float k1, float k2, float p1, float p2, float k3=0, float k4=0, float k5=0, float k6=0);
+
 		void undistort(cv::Mat img, int interpolationMode = cv::INTER_LINEAR);
 		void undistort(cv::Mat src, cv::Mat dst, int interpolationMode = cv::INTER_LINEAR);
 		
@@ -89,16 +89,16 @@ namespace ofxCv {
 		// if you want a wider fov, say setFillFrame(false) before load() or calibrate()
 		void setFillFrame(bool fillFrame);
 		
-        std::size_t size() const;
+		std::size_t size() const;
 		cv::Size getPatternSize() const;
 		float getSquareSize() const;
 		static std::vector<cv::Point3f> createObjectPoints(cv::Size patternSize, float squareSize, CalibrationPattern patternType);
 		
 		void customDraw();
-        void draw(std::size_t i) const;
+		void draw(std::size_t i) const;
 		void draw() const;
 		void draw3d() const;
-        void draw3d(std::size_t i) const;
+		void draw3d(std::size_t i) const;
 		
 		bool isReady();
 		std::vector<std::vector<cv::Point2f> > imagePoints;
