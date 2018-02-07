@@ -52,9 +52,9 @@ namespace ofxCv {
 	public:
 		Calibration();
 		
-		void save(const std::string& filename, bool absolute = false) const;
-		void load(const std::string& filename, bool absolute = false);
-		void loadLcp(const std::string& filename, float focalLength, bool absolutePath = false);
+        void save(const std::string& filename, bool absolute = false) const;
+        void load(const std::string&  filename, bool absolute = false);
+        void loadLcp(const std::string&  filename, float focalLength, int imageWidth=0, int imageHeight=0, bool absolutePath = false);
 		void reset();
 
 		void setPatternType(CalibrationPattern patternType);
@@ -89,15 +89,16 @@ namespace ofxCv {
 		// if you want a wider fov, say setFillFrame(false) before load() or calibrate()
 		void setFillFrame(bool fillFrame);
 		
-		int size() const;
+        std::size_t size() const;
 		cv::Size getPatternSize() const;
 		float getSquareSize() const;
 		static std::vector<cv::Point3f> createObjectPoints(cv::Size patternSize, float squareSize, CalibrationPattern patternType);
 		
 		void customDraw();
-		void draw(int i) const;
+        void draw(std::size_t i) const;
+		void draw() const;
 		void draw3d() const;
-		void draw3d(int i) const;
+        void draw3d(std::size_t i) const;
 		
 		bool isReady();
 		std::vector<std::vector<cv::Point2f> > imagePoints;

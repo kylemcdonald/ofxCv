@@ -156,7 +156,7 @@ namespace ofxCv {
         ready = true;
     }
     
-    void Calibration::loadLcp(const std::string& filename, float focalLength, bool absolute){
+    void Calibration::loadLcp(const std::string& filename, float focalLength, int imageWidth, int imageHeight, bool absolute){
         imagePoints.clear();
         
         // Load the XML
@@ -167,7 +167,86 @@ namespace ofxCv {
             return;
         }
         
-        ofLogError("https://github.com/kylemcdonald/ofxCv/issues/207");
+        
+        // Remove the processing instruction in the top?
+        
+        // Find the camera profiles in the xml
+        auto profiles = xml.find("//rdf:RDF/rdf:Description/photoshop:CameraProfiles/rdf:Seq");
+
+        // Find the best matches of camera profiles
+        // TODO: Not taking focus distance in account
+        int bestMatchLt = -1, bestMatchGt = -1;
+        float bestMatchLtVal, bestMatchGtVal;
+        ofXml bestMatchLtXml, bestMatchGtXml;
+        for(auto& profile : profiles) {
+            int i=0;
+            for(auto& child : profile.getChildren()){
+                float curFocalLength = child.getChild("stCamera:FocalLength").getFloatValue();
+                if(curFocalLength <= focalLength  && (bestMatchLt == -1 || curFocalLength > bestMatchLtVal)){
+                    bestMatchLt = i;
+                    bestMatchLtVal = curFocalLength;
+                    bestMatchLtXml = child;
+                }
+                if(curFocalLength > focalLength && (bestMatchGt == -1 || curFocalLength < bestMatchGtVal)){
+                    bestMatchGt = i;
+                    bestMatchGtVal = curFocalLength;
+                    bestMatchGtXml = child;
+                }
+                i++;
+            }
+        }
+        
+        // Get the values out of the profile
+        float lcpImageWidth; // ImageWidth, pixels
+        float lcpImageHeight; // ImageLength, pixels
+        float cropFactor; // SensorFormatFactor, "focal length multiplier", "crop factor"
+        float principalPointX = 0.5; // ImageXCenter, ratio
+        float principalPointY = 0.5; // ImageYCenter, ratio
+        
+        float interpolation = 0;
+        if(bestMatchGt != -1) {
+            interpolation = ofMap(focalLength, bestMatchLtVal, bestMatchGtVal, 0, 1);
+        }
+        
+        lcpImageWidth = bestMatchLtXml.getChild("stCamera:ImageWidth").getFloatValue();
+        lcpImageHeight = bestMatchLtXml.getChild("stCamera:ImageLength").getFloatValue();
+        cropFactor = bestMatchLtXml.getChild("stCamera:SensorFormatFactor").getFloatValue();
+        
+        float principalPointXLt = bestMatchLtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:ImageXCenter").getFloatValue();
+        float principalPointYLt = bestMatchLtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:ImageYCenter").getFloatValue();
+        float k1Lt = bestMatchLtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:RadialDistortParam1").getFloatValue();
+        float k2Lt = bestMatchLtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:RadialDistortParam2").getFloatValue();
+        float k3Lt = bestMatchLtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:RadialDistortParam3").getFloatValue();
+        
+        float k1 = k1Lt;
+        float k2 = k2Lt;
+        float k3 = k3Lt;
+        
+        if(bestMatchGt != -1){
+            float principalPointXGt = bestMatchGtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:ImageXCenter").getFloatValue() ;
+            float principalPointYGt = bestMatchGtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:ImageYCenter").getFloatValue();
+            float k1Gt = bestMatchGtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:RadialDistortParam1").getFloatValue();
+            float k2Gt = bestMatchGtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:RadialDistortParam2").getFloatValue();
+            float k3Gt = bestMatchGtXml.getChild("stCamera:PerspectiveModel").getChild("stCamera:RadialDistortParam3").getFloatValue();
+            
+            k1 = k1Gt * interpolation + k1Lt * (1-interpolation);
+            k2 = k2Gt * interpolation + k2Lt * (1-interpolation);
+            k3 = k3Gt * interpolation + k3Lt * (1-interpolation);
+        }
+        
+        setDistortionCoefficients(k1, k2, k3, 0);
+        
+        float sensorWidthMM = 35.0 / cropFactor;
+        
+        Intrinsics intrinsics;
+        cv::Size2f sensorSize(sensorWidthMM, sensorWidthMM * lcpImageHeight / lcpImageWidth);
+        
+        if(imageWidth == 0) imageWidth = lcpImageWidth;
+        if(imageHeight == 0) imageHeight = lcpImageHeight;
+        cv::Size imageSize(imageWidth,imageHeight);
+        
+        intrinsics.setup(focalLength, imageSize, sensorSize);
+        setIntrinsics(intrinsics);
     }
     
     
@@ -321,6 +400,11 @@ namespace ofxCv {
         return calibrate();
     }
     void Calibration::undistort(cv::Mat img, int interpolationMode) {
+        if(img.rows != undistortMapX.rows || img.cols != undistortMapX.cols){
+            ofLog(OF_LOG_ERROR, "undistort() Input image and undistort map not same size");
+            return;
+        }
+
         img.copyTo(undistortBuffer);
         undistort(undistortBuffer, img, interpolationMode);
     }
@@ -381,7 +465,7 @@ namespace ofxCv {
     cv::Mat Calibration::getDistCoeffs() const {
         return distCoeffs;
     }
-    int Calibration::size() const {
+    std::size_t Calibration::size() const {
         return imagePoints.size();
     }
     cv::Size Calibration::getPatternSize() const {
@@ -392,17 +476,23 @@ namespace ofxCv {
     }
     void Calibration::customDraw() {
         for(int i = 0; i < size(); i++) {
-            draw(i);
+            draw();
         }
     }
-    void Calibration::draw(int i) const {
+    void Calibration::draw() const {
         ofPushStyle();
         ofNoFill();
         ofSetColor(ofColor::red);
-        for(std::size_t j = 0; j < imagePoints[i].size(); j++) {
-            ofDrawCircle(toOf(imagePoints[i][j]), 5);
+        for (std::size_t i = 0; i < imagePoints.size(); i++) {
+           draw(i);
         }
         ofPopStyle();
+    }
+
+    void Calibration::draw(std::size_t i) const {
+        for (std::size_t j = 0; j < imagePoints[i].size(); j++) {
+                ofDrawCircle(toOf(imagePoints[i][j]), 5);
+        }
     }
     // this won't work until undistort() is in pixel coordinates
     /*
@@ -427,11 +517,11 @@ namespace ofxCv {
      }
      */
     void Calibration::draw3d() const {
-        for(int i = 0; i < size(); i++) {
+        for(std::size_t i = 0; i < size(); i++) {
             draw3d(i);
         }
     }
-    void Calibration::draw3d(int i) const {
+    void Calibration::draw3d(std::size_t i) const {
         ofPushStyle();
         ofPushMatrix();
         ofNoFill();
@@ -442,7 +532,7 @@ namespace ofxCv {
         
         ofDrawBitmapString(ofToString(i), 0, 0);
         
-        for(int j = 0; j < (int)objectPoints[i].size(); j++) {
+        for(std::size_t j = 0; j < objectPoints[i].size(); j++) {
             ofPushMatrix();
             ofTranslate(toOf(objectPoints[i][j]));
             ofDrawCircle(0, 0, .5);
@@ -451,7 +541,7 @@ namespace ofxCv {
         
         ofMesh mesh;
         mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-        for(int j = 0; j < (int)objectPoints[i].size(); j++) {
+        for(std::size_t j = 0; j < objectPoints[i].size(); j++) {
             glm::vec3 cur = toOf(objectPoints[i][j]);
             mesh.addVertex(cur);
         }

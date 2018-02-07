@@ -138,7 +138,7 @@ namespace ofxCv {
 		box.width -= box.x;
 	}
 	
-    float weightedAverageAngle(const std::vector<cv::Vec4i>& lines);
+	float weightedAverageAngle(const std::vector<cv::Vec4i>& lines);
 	
 	// (nearest point) to the two given lines
 	template <class T>
