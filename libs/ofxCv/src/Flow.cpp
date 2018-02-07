@@ -4,7 +4,7 @@
 namespace ofxCv {
 	
 	using namespace cv;
-	
+	using namespace std;
 	Flow::Flow()
     :hasFlow(false) {
 	}

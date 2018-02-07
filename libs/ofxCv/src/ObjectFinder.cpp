@@ -3,6 +3,7 @@
 
 namespace ofxCv {
 	using namespace cv;
+	using namespace std;
 
 	ObjectFinder::ObjectFinder()
 	:rescale(1)

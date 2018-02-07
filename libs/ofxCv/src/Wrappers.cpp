@@ -3,6 +3,7 @@
 namespace ofxCv {
 	
 	using namespace cv;
+	using namespace std;
 	
 	void loadMat(Mat& mat, std::string filename) {
 		FileStorage fs(ofToDataPath(filename), FileStorage::READ);

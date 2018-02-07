@@ -5,6 +5,7 @@
 namespace ofxCv {
 	
 	using namespace cv;
+	using namespace std;
 	
 	ofMatrix4x4 makeMatrix(Mat rotation, Mat translation) {
 		Mat rot3x3;

@@ -6,7 +6,10 @@
 #include "ofXml.h"
 
 namespace ofxCv {
-
+    
+    using namespace cv;
+    using namespace std;
+    
     void Intrinsics::setup(float focalLength, cv::Size imageSize, cv::Size2f sensorSize, cv::Point2d principalPoint) {
         float focalPixels = (focalLength / sensorSize.width) * imageSize.width;
         float fx = focalPixels; // focal length in pixels on x
