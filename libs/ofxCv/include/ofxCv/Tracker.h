@@ -231,19 +231,19 @@ namespace ofxCv {
 		
 		// build label maps
 		currentLabelMap.clear();
-        for(std::size_t i = 0; i < current.size(); i++) {
+		for(std::size_t i = 0; i < current.size(); i++) {
 			unsigned int label = current[i].getLabel();
 			currentLabelMap[label] = &(current[i]);
 		}
 		previousLabelMap.clear();
-        for(std::size_t i = 0; i < previous.size(); i++) {
+		for(std::size_t i = 0; i < previous.size(); i++) {
 			unsigned int label = previous[i].getLabel();
 			previousLabelMap[label] = &(previous[i]);
 		}
 		
 		return currentLabels;
 	}
-	
+
 	template <class T>
 	const std::vector<unsigned int>& Tracker<T>::getCurrentLabels() const {
 		return currentLabels;
@@ -258,9 +258,9 @@ namespace ofxCv {
 	const std::vector<unsigned int>& Tracker<T>::getNewLabels() const {
 		return newLabels;
 	}
-	
+
 	template <class T>
-    const std::vector<unsigned int>& Tracker<T>::getDeadLabels() const {
+	const std::vector<unsigned int>& Tracker<T>::getDeadLabels() const {
 		return deadLabels;
 	}
 
@@ -298,7 +298,7 @@ namespace ofxCv {
 	int Tracker<T>::getAge(unsigned int label) const{
 		return currentLabelMap.find(label)->second->getAge();
 	}
-    
+
 	template <class T>
 	int Tracker<T>::getLastSeen(unsigned int label) const{
 		return currentLabelMap.find(label)->second->getLastSeen();
