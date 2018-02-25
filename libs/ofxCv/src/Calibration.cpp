@@ -125,8 +125,8 @@ namespace ofxCv {
         fs << "distCoeffs" << distCoeffs;
         fs << "reprojectionError" << reprojectionError;
         fs << "features" << "[";
-        for(std::size_t i = 0; i < imagePoints.size(); i++) {
-            fs << "[:" << imagePoints[i] << "]";
+        for(int i = 0; i < (int)imagePoints.size(); i++) {
+            fs << imagePoints[i];
         }
         fs << "]";
     }
