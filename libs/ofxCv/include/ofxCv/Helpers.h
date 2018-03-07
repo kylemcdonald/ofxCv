@@ -183,15 +183,26 @@ namespace ofxCv {
 				}
 			}
 		}
-		int n = q.size();	
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ia1]&&!p[j+ia2]&&!p[j+ia3]&&p[j+ic1]&&p[j+ic2]&&p[j+ic3]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ia3]&&!p[j+ib3]&&!p[j+ic3]&&p[j+ia1]&&p[j+ib1]&&p[j+ic1]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ic1]&&!p[j+ic2]&&!p[j+ic3]&&p[j+ia1]&&p[j+ia2]&&p[j+ia3]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ia1]&&!p[j+ib1]&&!p[j+ic1]&&p[j+ia3]&&p[j+ib3]&&p[j+ic3]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ia2]&&!p[j+ia3]&&!p[j+ib3]&&p[j+ib1]&&p[j+ic2]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ib3]&&!p[j+ic3]&&!p[j+ic2]&&p[j+ib1]&&p[j+ia2]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ic2]&&!p[j+ic1]&&!p[j+ib1]&&p[j+ia2]&&p[j+ib3]){p[j]=0;}}
-		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ib1]&&!p[j+ia1]&&!p[j+ia2]&&p[j+ic2]&&p[j+ib3]){p[j]=0;}}
+		vector<unsigned char> d;
+		d.resize(w* h);
+		size_t s = w*h*sizeof(unsigned char);
+		memcpy( &d[0], mat.ptr<unsigned char>(), s);
+		int n = q.size();
+		bool bThinned = true;
+		while (bThinned){
+			bThinned = false;
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ia1]&&!p[j+ia2]&&!p[j+ia3]&&p[j+ic1]&&p[j+ic2]&&p[j+ic3]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ia3]&&!p[j+ib3]&&!p[j+ic3]&&p[j+ia1]&&p[j+ib1]&&p[j+ic1]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ic1]&&!p[j+ic2]&&!p[j+ic3]&&p[j+ia1]&&p[j+ia2]&&p[j+ia3]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ia1]&&!p[j+ib1]&&!p[j+ic1]&&p[j+ia3]&&p[j+ib3]&&p[j+ic3]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ia2]&&!p[j+ia3]&&!p[j+ib3]&&p[j+ib1]&&p[j+ic2]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ib3]&&!p[j+ic3]&&!p[j+ic2]&&p[j+ib1]&&p[j+ia2]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ic2]&&!p[j+ic1]&&!p[j+ib1]&&p[j+ia2]&&p[j+ib3]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			for(int i=0;i<n;i++){int j=q[i];if(p[j]){if(!p[j+ib1]&&!p[j+ia1]&&!p[j+ia2]&&p[j+ic2]&&p[j+ib3]){d[j]=0;bThinned = true;}}}memcpy(p, &d[0], s);
+			if(!bThinned){
+				break;
+			}
+		}
 	}
 	
 	// given a vector of lines, this function will find the average angle
