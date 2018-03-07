@@ -124,7 +124,7 @@ namespace ofxCv {
         fs << "reprojectionError" << reprojectionError;
         fs << "features" << "[";
         for(int i = 0; i < (int)imagePoints.size(); i++) {
-            fs << "[:" << imagePoints[i] << "]";
+            fs << imagePoints[i];
         }
         fs << "]";
     }
