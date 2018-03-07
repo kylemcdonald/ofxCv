@@ -117,10 +117,10 @@ namespace ofxCv {
 		std::map<unsigned int, TrackedObject<T>*> previousLabelMap, currentLabelMap;
 		
 		unsigned int persistence;
-    	unsigned long long curLabel;
+    	        unsigned long long curLabel;
 		float maximumDistance;
 		unsigned long long getNewLabel() {
-			curLabel = (curLabel+1) % std::numeric_limits<unsigned long long>::max();
+			curLabel++;
 			return curLabel;
 		}
 		
