@@ -9,6 +9,7 @@
 #include "ofVectorMath.h"
 #include "ofRectangle.h"
 #include "ofColor.h"
+#include "ofMath.h"
 
 namespace ofxCv {
 	
