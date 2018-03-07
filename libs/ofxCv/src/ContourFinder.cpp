@@ -113,11 +113,12 @@ namespace ofxCv {
 		polylines.clear();
         boundingRects.clear();
         holes.clear();
+
 		for(size_t i = 0; i < allIndices.size(); i++) {
 			contours.push_back(allContours[allIndices[i]]);
-			polylines.push_back(toOf(contours[i]));
-			boundingRects.push_back(boundingRect(contours[i]));
-            holes.push_back(allHoles[allIndices[i]]);
+			polylines.push_back(toOf(contours.back()));
+			boundingRects.push_back(boundingRect(contours.back()));
+            holes.push_back(allHoles[i]);
 		}
 		
 		// track bounding boxes
