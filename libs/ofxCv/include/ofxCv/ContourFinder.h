@@ -14,7 +14,7 @@
  by the input image area. to reset the min/max area call reset(Min/Max)Area.
  
  keeping with the ofxCv philosophy, no new objects (like ofxCvBlob) are used.
- you can get contours as vector<cv::Point> or ofPolyline. for other features,
+ you can get contours as std::vector<cv::Point> or ofPolyline. for other features,
  you can use methods of ofPolyline (getArea(), getPerimiter()) or cv methods
  by asking ContourFinder (getContourArea(), getArcLength()).
  */

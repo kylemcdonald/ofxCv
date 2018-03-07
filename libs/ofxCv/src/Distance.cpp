@@ -3,9 +3,7 @@
 
 namespace ofxCv {
 
-	using namespace std;
-	
-	// http://www.merriampark.com/ld.htm
+    // http://www.merriampark.com/ld.htm
 	
 	class Distance {
   public:
@@ -17,7 +15,7 @@ namespace ofxCv {
     void PutAt (int *pOrigin, int col, int row, int nCols, int x);
 	};
 	
-	const string& mostRepresentative(const vector<string>& strs) {
+	const std::string& mostRepresentative(const std::vector<std::string>& strs) {
 		int bestScore;
 		int besti;
 		int n = strs.size();
@@ -38,7 +36,7 @@ namespace ofxCv {
 		return strs[besti];
 	}
 	
-	int editDistance(const string& a, const string& b) {
+	int editDistance(const std::string& a, const std::string& b) {
 		Distance dist;
 		return dist.LD(a.c_str(), b.c_str());
 	}

@@ -20,8 +20,6 @@ namespace ofxCv {
 
 		const std::vector<double>& mAreaVec;
 	};
-
-	using namespace cv;
 	
 	ContourFinder::ContourFinder()
 	:autoThreshold(true)
@@ -35,11 +33,11 @@ namespace ofxCv {
 		resetMaxArea();
 	}
 	
-	void ContourFinder::findContours(Mat img) {
+	void ContourFinder::findContours(cv::Mat img) {
 		// threshold the image using a tracked color or just binary grayscale
 		if(useTargetColor) {
-			Scalar offset(thresholdValue, thresholdValue, thresholdValue);
-			Scalar base = toCv(targetColor);
+			cv::Scalar offset(thresholdValue, thresholdValue, thresholdValue);
+			cv::Scalar base = toCv(targetColor);
 			if(trackingColorMode == TRACK_COLOR_RGB) {
 				inRange(img, base - offset, base + offset, thresh);
 			} else {
@@ -55,8 +53,8 @@ namespace ofxCv {
 				}
 				cvtColor(img, hsvBuffer, CV_RGB2HSV);
 				base = toCv(convertColor(targetColor, CV_RGB2HSV));
-				Scalar lowerb = base - offset;
-				Scalar upperb = base + offset;
+				cv::Scalar lowerb = base - offset;
+				cv::Scalar upperb = base + offset;
 				inRange(hsvBuffer, lowerb, upperb, thresh);
 			}
 		} else {
@@ -67,22 +65,22 @@ namespace ofxCv {
 		}
 		
 		// run the contour finder
-		vector<vector<cv::Point> > allContours;
+		std::vector<std::vector<cv::Point> > allContours;
 		int simplifyMode = simplify ? CV_CHAIN_APPROX_SIMPLE : CV_CHAIN_APPROX_NONE;
 		cv::findContours(thresh, allContours, contourFindingMode, simplifyMode);
 		
 		// filter the contours
 		bool needMinFilter = (minArea > 0);
-		bool needMaxFilter = maxAreaNorm ? (maxArea < 1) : (maxArea < numeric_limits<float>::infinity());
-		vector<size_t> allIndices;
-		vector<double> allAreas;
-        vector<bool> allHoles;
+		bool needMaxFilter = maxAreaNorm ? (maxArea < 1) : (maxArea < std::numeric_limits<float>::infinity());
+		std::vector<size_t> allIndices;
+		std::vector<double> allAreas;
+        std::vector<bool> allHoles;
 		if(needMinFilter || needMaxFilter) {
 			double imgArea = img.rows * img.cols;
 			double imgMinArea = minAreaNorm ? (minArea * imgArea) : minArea;
 			double imgMaxArea = maxAreaNorm ? (maxArea * imgArea) : maxArea;
 			for(size_t i = 0; i < allContours.size(); i++) {
-				double curArea = contourArea(Mat(allContours[i]), true);
+				double curArea = cv::contourArea(cv::Mat(allContours[i]), true);
                 bool hole = true;
                 if(curArea < 0) {
                     curArea = -curArea;
@@ -98,7 +96,7 @@ namespace ofxCv {
 			}
 		} else {
 			for(size_t i = 0; i < allContours.size(); i++) {
-                double curArea = contourArea(Mat(allContours[i]), true);
+                double curArea = cv::contourArea(cv::Mat(allContours[i]), true);
                 allAreas.push_back(abs(curArea));
                 allHoles.push_back(curArea > 0);
 				allIndices.push_back(i);
@@ -139,15 +137,15 @@ namespace ofxCv {
 		sortBySize = sizeSort;
 	}
 
-	const vector<vector<cv::Point> >& ContourFinder::getContours() const {
+	const std::vector<std::vector<cv::Point> >& ContourFinder::getContours() const {
 		return contours;
 	}
 	
-	const vector<ofPolyline>& ContourFinder::getPolylines() const {
+	const std::vector<ofPolyline>& ContourFinder::getPolylines() const {
 		return polylines;
 	}
 	
-	const vector<cv::Rect>& ContourFinder::getBoundingRects() const {
+	const std::vector<cv::Rect>& ContourFinder::getBoundingRects() const {
 		return boundingRects;
 	}
 	
@@ -155,7 +153,7 @@ namespace ofxCv {
 		return contours.size();
 	}
 	
-	vector<cv::Point>& ContourFinder::getContour(unsigned int i) {
+	std::vector<cv::Point>& ContourFinder::getContour(unsigned int i) {
 		return contours[i];
 	}
 	
@@ -173,7 +171,7 @@ namespace ofxCv {
 	}
 	
 	cv::Point2f ContourFinder::getCentroid(unsigned int i) const {
-		Moments m = moments(contours[i]);
+		cv::Moments m = moments(contours[i]);
 		if(m.m00!=0){
 			return cv::Point2f(m.m10 / m.m00, m.m01 / m.m00);
 		}else{
@@ -182,7 +180,7 @@ namespace ofxCv {
 	}
 	
 	cv::Point2f ContourFinder::getAverage(unsigned int i) const {
-		Scalar average = mean(contours[i]);
+		cv::Scalar average = mean(contours[i]);
 		return cv::Point2f(average[0], average[1]);
 	}
 	
@@ -198,13 +196,13 @@ namespace ofxCv {
 		return arcLength(contours[i], true);
 	}
 	
-	vector<cv::Point> ContourFinder::getConvexHull(unsigned int i) const {
-		vector<cv::Point> hull;
+	std::vector<cv::Point> ContourFinder::getConvexHull(unsigned int i) const {
+		std::vector<cv::Point> hull;
 		convexHull(contours[i], hull);
 		return hull;
 	}
 	
-	vector<cv::Vec4i> ContourFinder::getConvexityDefects(unsigned int i) const {
+	std::vector<cv::Vec4i> ContourFinder::getConvexityDefects(unsigned int i) const {
 		return convexityDefects(contours[i]);
 	}
 	
@@ -225,13 +223,13 @@ namespace ofxCv {
 		return fitEllipse(contours[i]);
 	}
 	
-	vector<cv::Point> ContourFinder::getFitQuad(unsigned int i) const {
-		vector<cv::Point> convexHull = getConvexHull(i);		
-		vector<cv::Point> quad = convexHull;
+	std::vector<cv::Point> ContourFinder::getFitQuad(unsigned int i) const {
+		std::vector<cv::Point> convexHull = getConvexHull(i);
+		std::vector<cv::Point> quad = convexHull;
 		
 		static const unsigned int targetPoints = 4;
 		static const unsigned int maxIterations = 16;
-		static const double infinity = numeric_limits<double>::infinity();
+		static const double infinity = std::numeric_limits<double>::infinity();
 		double minEpsilon = 0;
 		double maxEpsilon = infinity;
 		double curEpsilon = 16; // good initial guess
@@ -239,7 +237,7 @@ namespace ofxCv {
 		// unbounded binary search to simplify the convex hull until it's 4 points
 		if(quad.size() > 4) {
 			for(int i = 0; i <(int) maxIterations; i++) {
-				approxPolyDP(Mat(convexHull), quad, curEpsilon, true);
+                cv::approxPolyDP(cv::Mat(convexHull), quad, curEpsilon, true);
 				if(quad.size() == targetPoints) {
 					break;
 				}
@@ -318,7 +316,7 @@ namespace ofxCv {
 	}
 	
 	void ContourFinder::resetMaxArea() {
-		setMaxArea(numeric_limits<float>::infinity());
+		setMaxArea(std::numeric_limits<float>::infinity());
 	}
 	
 	void ContourFinder::setMinArea(float minArea) {

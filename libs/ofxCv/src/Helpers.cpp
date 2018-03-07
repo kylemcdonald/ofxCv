@@ -71,7 +71,7 @@ namespace ofxCv {
 		return 0;
 	}
 	
-	float weightedAverageAngle(const vector<Vec4i>& lines) {
+	float weightedAverageAngle(const std::vector<Vec4i>& lines) {
 		float angleSum = 0;
 		glm::vec2 start, end;
 		float weights = 0;
@@ -88,11 +88,11 @@ namespace ofxCv {
 		return angleSum / weights;
 	}
 	
-	vector<cv::Point2f> getConvexPolygon(const vector<cv::Point2f>& convexHull, int targetPoints) {
-		vector<cv::Point2f> result = convexHull;
+    std::vector<cv::Point2f> getConvexPolygon(const std::vector<cv::Point2f>& convexHull, int targetPoints) {
+		std::vector<cv::Point2f> result = convexHull;
 		
 		static const unsigned int maxIterations = 16;
-		static const double infinity = numeric_limits<double>::infinity();
+		static const double infinity = std::numeric_limits<double>::infinity();
 		double minEpsilon = 0;
 		double maxEpsilon = infinity;
 		double curEpsilon = 16; // good initial guess

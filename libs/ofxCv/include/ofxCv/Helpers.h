@@ -7,9 +7,11 @@
 
 #include "opencv2/opencv.hpp"
 #include "ofVectorMath.h"
+#include "ofMath.h"
 #include "ofRectangle.h"
 #include "ofColor.h"
 #include "ofMath.h"
+
 
 namespace ofxCv {
 	

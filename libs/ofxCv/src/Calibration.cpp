@@ -16,13 +16,13 @@ namespace ofxCv {
         float fy = focalPixels;  // focal length in pixels on y
         float cx = imageSize.width * principalPoint.x;  // image center in pixels on x
         float cy = imageSize.height * principalPoint.y;  // image center in pixels on y
-        Mat cameraMatrix = (Mat1d(3, 3) <<
-                          fx, 0, cx,
-                          0, fy, cy,
-                          0, 0, 1);
+        cv::Mat cameraMatrix = (cv::Mat1d(3, 3) <<
+                                fx, 0, cx,
+                                0, fy, cy,
+                                0, 0, 1);
         setup(cameraMatrix, imageSize, sensorSize);
     }
-    void Intrinsics::setup(Mat cameraMatrix, cv::Size imageSize, cv::Size2f sensorSize) {
+    void Intrinsics::setup(cv::Mat cameraMatrix, cv::Size imageSize, cv::Size2f sensorSize) {
         this->cameraMatrix = cameraMatrix;
         this->imageSize = imageSize;
         this->sensorSize = sensorSize;
@@ -43,7 +43,7 @@ namespace ofxCv {
         imageSize = imgSize;
     }
     
-    Mat Intrinsics::getCameraMatrix() const {
+    cv::Mat Intrinsics::getCameraMatrix() const {
         return cameraMatrix;
     }
     
@@ -67,7 +67,7 @@ namespace ofxCv {
         return aspectRatio;
     }
     
-    Point2d Intrinsics::getPrincipalPoint() const {
+    cv::Point2d Intrinsics::getPrincipalPoint() const {
         return principalPoint;
     }
     
@@ -103,20 +103,20 @@ namespace ofxCv {
     subpixelSize(cv::Size(11,11)),
     squareSize(2.5),
     reprojectionError(0),
-    distCoeffs(Mat::zeros(8, 1, CV_64F)),
+    distCoeffs(cv::Mat::zeros(8, 1, CV_64F)),
     fillFrame(true),
     ready(false) {
         
     }
     
-    void Calibration::save(string filename, bool absolute) const {
+    void Calibration::save(const std::string& filename, bool absolute) const {
         if(!ready){
             ofLog(OF_LOG_ERROR, "Calibration::save() failed, because your calibration isn't ready yet!");
         }
-        FileStorage fs(ofToDataPath(filename, absolute), FileStorage::WRITE);
+        cv::FileStorage fs(ofToDataPath(filename, absolute), cv::FileStorage::WRITE);
         cv::Size imageSize = distortedIntrinsics.getImageSize();
         cv::Size sensorSize = distortedIntrinsics.getSensorSize();
-        Mat cameraMatrix = distortedIntrinsics.getCameraMatrix();
+        cv::Mat cameraMatrix = distortedIntrinsics.getCameraMatrix();
         fs << "cameraMatrix" << cameraMatrix;
         fs << "imageSize_width" << imageSize.width;
         fs << "imageSize_height" << imageSize.height;
@@ -131,12 +131,12 @@ namespace ofxCv {
         fs << "]";
     }
     
-    void Calibration::load(string filename, bool absolute) {
+    void Calibration::load(const std::string& filename, bool absolute) {
         imagePoints.clear();
-        FileStorage fs(ofToDataPath(filename, absolute), FileStorage::READ);
+        cv::FileStorage fs(ofToDataPath(filename, absolute), cv::FileStorage::READ);
         cv::Size imageSize;
         cv::Size2f sensorSize;
-        Mat cameraMatrix;
+        cv::Mat cameraMatrix;
         fs["cameraMatrix"] >> cameraMatrix;
         fs["imageSize_width"] >> imageSize.width;
         fs["imageSize_height"] >> imageSize.height;
@@ -144,9 +144,9 @@ namespace ofxCv {
         fs["sensorSize_height"] >> sensorSize.height;
         fs["distCoeffs"] >> distCoeffs;
         fs["reprojectionError"] >> reprojectionError;
-        FileNode features = fs["features"];
-        for(FileNodeIterator it = features.begin(); it != features.end(); it++) {
-            vector<Point2f> cur;
+        cv::FileNode features = fs["features"];
+        for(cv::FileNodeIterator it = features.begin(); it != features.end(); it++) {
+            std::vector<cv::Point2f> cur;
             (*it) >> cur;
             imagePoints.push_back(cur);
         }
@@ -156,7 +156,7 @@ namespace ofxCv {
         ready = true;
     }
     
-    void Calibration::loadLcp(string filename, float focalLength, int imageWidth, int imageHeight, bool absolute){
+    void Calibration::loadLcp(const std::string& filename, float focalLength, int imageWidth, int imageHeight, bool absolute){
         imagePoints.clear();
         
         // Load the XML
@@ -289,10 +289,10 @@ namespace ofxCv {
         subpixelSize = MAX(subpixelSize,2);
         this->subpixelSize = cv::Size(subpixelSize,subpixelSize);
     }
-    bool Calibration::add(Mat img) {
+    bool Calibration::add(cv::Mat img) {
         addedImageSize = img.size();
         
-        vector<Point2f> pointBuf;
+        std::vector<cv::Point2f> pointBuf;
         
         // find corners
         bool found = findBoard(img, pointBuf);
@@ -303,7 +303,7 @@ namespace ofxCv {
             ofLog(OF_LOG_ERROR, "Calibration::add() failed, maybe your patternSize is wrong or the image has poor lighting?");
         return found;
     }
-    bool Calibration::findBoard(Mat img, vector<Point2f>& pointBuf, bool refine) {
+    bool Calibration::findBoard(cv::Mat img, std::vector<cv::Point2f>& pointBuf, bool refine) {
         bool found=false;
         if(patternType == CHESSBOARD) {
             // no CV_CALIB_CB_FAST_CHECK, because it breaks on dark images (e.g., dark IR images from kinect)
@@ -321,7 +321,7 @@ namespace ofxCv {
                 if(refine) {
                     // the 11x11 dictates the smallest image space square size allowed
                     // in other words, if your smallest square is 11x11 pixels, then set this to 11x11
-                    cornerSubPix(grayMat, pointBuf, subpixelSize,  cv::Size(-1,-1), TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1 ));
+                    cornerSubPix(grayMat, pointBuf, subpixelSize,  cv::Size(-1,-1), cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1 ));
                 }
             }
         }
@@ -362,7 +362,7 @@ namespace ofxCv {
             return ready;
         }
         
-        Mat cameraMatrix = Mat::eye(3, 3, CV_64F);
+        cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
         
         updateObjectPoints();
         
@@ -387,7 +387,7 @@ namespace ofxCv {
         return ready;
     }
     
-    bool Calibration::calibrateFromDirectory(string directory) {
+    bool Calibration::calibrateFromDirectory(std::string directory) {
         ofDirectory dirList;
         ofImage cur;
         dirList.listDir(directory);
@@ -399,36 +399,36 @@ namespace ofxCv {
         }
         return calibrate();
     }
-    void Calibration::undistort(Mat img, int interpolationMode) {
+    void Calibration::undistort(cv::Mat img, int interpolationMode) {
         if(img.rows != undistortMapX.rows || img.cols != undistortMapX.cols){
             ofLog(OF_LOG_ERROR, "undistort() Input image and undistort map not same size");
-			return;
+            return;
         }
-        
+
         img.copyTo(undistortBuffer);
         undistort(undistortBuffer, img, interpolationMode);
     }
-    void Calibration::undistort(Mat src, Mat dst, int interpolationMode) {
+    void Calibration::undistort(cv::Mat src, cv::Mat dst, int interpolationMode) {
         remap(src, dst, undistortMapX, undistortMapY, interpolationMode);
     }
     
     glm::vec2 Calibration::undistort(glm::vec2& src) const {
         glm::vec2 dst;
-        Mat matSrc = Mat(1, 1, CV_32FC2, &src.x);
-        Mat matDst = Mat(1, 1, CV_32FC2, &dst.x);;
+        cv::Mat matSrc = cv::Mat(1, 1, CV_32FC2, &src.x);
+        cv::Mat matDst = cv::Mat(1, 1, CV_32FC2, &dst.x);;
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
         return dst;
     }
     
-    void Calibration::undistort(vector<glm::vec2>& src, vector<glm::vec2>& dst) const {
+    void Calibration::undistort(std::vector<glm::vec2>& src, std::vector<glm::vec2>& dst) const {
         int n = src.size();
         dst.resize(n);
-        Mat matSrc = Mat(n, 1, CV_32FC2, &src[0].x);
-        Mat matDst = Mat(n, 1, CV_32FC2, &dst[0].x);
+        cv::Mat matSrc = cv::Mat(n, 1, CV_32FC2, &src[0].x);
+        cv::Mat matDst = cv::Mat(n, 1, CV_32FC2, &dst[0].x);
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
     }
     
-    bool Calibration::getTransformation(Calibration& dst, Mat& rotation, Mat& translation) {
+    bool Calibration::getTransformation(Calibration& dst, cv::Mat& rotation, cv::Mat& translation) {
         //if(imagePoints.size() == 0 || dst.imagePoints.size() == 0) {
         if(!ready) {
             ofLog(OF_LOG_ERROR, "getTransformation() requires both Calibration objects to have just been calibrated");
@@ -438,9 +438,9 @@ namespace ofxCv {
             ofLog(OF_LOG_ERROR, "getTransformation() requires both Calibration objects to be trained simultaneously on the same board");
             return false;
         }
-        Mat fundamentalMatrix, essentialMatrix;
-        Mat cameraMatrix = distortedIntrinsics.getCameraMatrix();
-        Mat dstCameraMatrix = dst.getDistortedIntrinsics().getCameraMatrix();
+        cv::Mat fundamentalMatrix, essentialMatrix;
+        cv::Mat cameraMatrix = distortedIntrinsics.getCameraMatrix();
+        cv::Mat dstCameraMatrix = dst.getDistortedIntrinsics().getCameraMatrix();
         // uses CALIB_FIX_INTRINSIC by default
         stereoCalibrate(objectPoints,
                         imagePoints, dst.imagePoints,
@@ -462,10 +462,10 @@ namespace ofxCv {
     const Intrinsics& Calibration::getUndistortedIntrinsics() const {
         return undistortedIntrinsics;
     }
-    Mat Calibration::getDistCoeffs() const {
+    cv::Mat Calibration::getDistCoeffs() const {
         return distCoeffs;
     }
-    int Calibration::size() const {
+    std::size_t Calibration::size() const {
         return imagePoints.size();
     }
     cv::Size Calibration::getPatternSize() const {
@@ -483,21 +483,21 @@ namespace ofxCv {
         ofPushStyle();
         ofNoFill();
         ofSetColor(ofColor::red);
-        for (int i = 0; i < (int) imagePoints.size(); i++) {
+        for (std::size_t i = 0; i < imagePoints.size(); i++) {
            draw(i);
         }
         ofPopStyle();
     }
 
-    void Calibration::draw(int i) const {
-        for (int j = 0; j < (int) imagePoints[i].size(); j++) {
+    void Calibration::draw(std::size_t i) const {
+        for (std::size_t j = 0; j < imagePoints[i].size(); j++) {
                 ofDrawCircle(toOf(imagePoints[i][j]), 5);
         }
     }
     // this won't work until undistort() is in pixel coordinates
     /*
      void Calibration::drawUndistortion() const {
-     vector<glm::vec2> src, dst;
+     std::vector<glm::vec2> src, dst;
      cv::Point2i divisions(32, 24);
      for(int y = 0; y < divisions.y; y++) {
      for(int x = 0; x < divisions.x; x++) {
@@ -517,11 +517,11 @@ namespace ofxCv {
      }
      */
     void Calibration::draw3d() const {
-        for(int i = 0; i < size(); i++) {
+        for(std::size_t i = 0; i < size(); i++) {
             draw3d(i);
         }
     }
-    void Calibration::draw3d(int i) const {
+    void Calibration::draw3d(std::size_t i) const {
         ofPushStyle();
         ofPushMatrix();
         ofNoFill();
@@ -532,7 +532,7 @@ namespace ofxCv {
         
         ofDrawBitmapString(ofToString(i), 0, 0);
         
-        for(int j = 0; j < (int)objectPoints[i].size(); j++) {
+        for(std::size_t j = 0; j < objectPoints[i].size(); j++) {
             ofPushMatrix();
             ofTranslate(toOf(objectPoints[i][j]));
             ofDrawCircle(0, 0, .5);
@@ -541,7 +541,7 @@ namespace ofxCv {
         
         ofMesh mesh;
         mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-        for(int j = 0; j < (int)objectPoints[i].size(); j++) {
+        for(std::size_t j = 0; j < objectPoints[i].size(); j++) {
             glm::vec3 cur = toOf(objectPoints[i][j]);
             mesh.addVertex(cur);
         }
@@ -551,11 +551,11 @@ namespace ofxCv {
         ofPopStyle();
     }
     void Calibration::updateObjectPoints() {
-        vector<Point3f> points = createObjectPoints(patternSize, squareSize, patternType);
+        std::vector<cv::Point3f> points = createObjectPoints(patternSize, squareSize, patternType);
         objectPoints.resize(imagePoints.size(), points);
     }
     void Calibration::updateReprojectionError() {
-        vector<Point2f> imagePoints2;
+        std::vector<cv::Point2f> imagePoints2;
         int totalPoints = 0;
         double totalErr = 0;
         
@@ -563,8 +563,8 @@ namespace ofxCv {
         perViewErrors.resize(objectPoints.size());
         
         for(std::size_t i = 0; i < objectPoints.size(); i++) {
-            projectPoints(Mat(objectPoints[i]), boardRotations[i], boardTranslations[i], distortedIntrinsics.getCameraMatrix(), distCoeffs, imagePoints2);
-            double err = norm(Mat(imagePoints[i]), Mat(imagePoints2), CV_L2);
+            projectPoints(cv::Mat(objectPoints[i]), boardRotations[i], boardTranslations[i], distortedIntrinsics.getCameraMatrix(), distCoeffs, imagePoints2);
+            double err = norm(cv::Mat(imagePoints[i]), cv::Mat(imagePoints2), CV_L2);
             int n = objectPoints[i].size();
             perViewErrors[i] = sqrt(err * err / n);
             totalErr += err * err;
@@ -577,24 +577,24 @@ namespace ofxCv {
         ofLog(OF_LOG_VERBOSE, "all views have error of " + ofToString(reprojectionError));
     }
     void Calibration::updateUndistortion() {
-        Mat undistortedCameraMatrix = getOptimalNewCameraMatrix(distortedIntrinsics.getCameraMatrix(), distCoeffs, distortedIntrinsics.getImageSize(), fillFrame ? 0 : 1);
-        initUndistortRectifyMap(distortedIntrinsics.getCameraMatrix(), distCoeffs, Mat(), undistortedCameraMatrix, distortedIntrinsics.getImageSize(), CV_16SC2, undistortMapX, undistortMapY);
+        cv::Mat undistortedCameraMatrix = getOptimalNewCameraMatrix(distortedIntrinsics.getCameraMatrix(), distCoeffs, distortedIntrinsics.getImageSize(), fillFrame ? 0 : 1);
+        initUndistortRectifyMap(distortedIntrinsics.getCameraMatrix(), distCoeffs, cv::Mat(), undistortedCameraMatrix, distortedIntrinsics.getImageSize(), CV_16SC2, undistortMapX, undistortMapY);
         undistortedIntrinsics.setup(undistortedCameraMatrix, distortedIntrinsics.getImageSize());
     }
     
-    vector<Point3f> Calibration::createObjectPoints(cv::Size patternSize, float squareSize, CalibrationPattern patternType) {
-        vector<Point3f> corners;
+    std::vector<cv::Point3f> Calibration::createObjectPoints(cv::Size patternSize, float squareSize, CalibrationPattern patternType) {
+        std::vector<cv::Point3f> corners;
         switch(patternType) {
             case CHESSBOARD:
             case CIRCLES_GRID:
                 for(int i = 0; i < patternSize.height; i++)
                     for(int j = 0; j < patternSize.width; j++)
-                        corners.push_back(Point3f(float(j * squareSize), float(i * squareSize), 0));
+                        corners.push_back(cv::Point3f(float(j * squareSize), float(i * squareSize), 0));
                 break;
             case ASYMMETRIC_CIRCLES_GRID:
                 for(int i = 0; i < patternSize.height; i++)
                     for(int j = 0; j < patternSize.width; j++)
-                        corners.push_back(Point3f(float(((2 * j) + (i % 2)) * squareSize), float(i * squareSize), 0));
+                        corners.push_back(cv::Point3f(float(((2 * j) + (i % 2)) * squareSize), float(i * squareSize), 0));
                 break;
         }
         return corners;
