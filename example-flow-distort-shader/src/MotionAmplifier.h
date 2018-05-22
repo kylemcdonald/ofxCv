@@ -40,7 +40,7 @@ public:
         ySteps = 1+((rescale * h) / stepSize);
         for(int y = 0; y < ySteps; y++) {
             for(int x = 0; x < xSteps; x++) {
-                mesh.addVertex(ofVec2f(x, y) * stepSize / rescale);
+                mesh.addVertex(ofVec3f(ofVec2f(x, y) * stepSize / rescale));
             }
         }
         for(int y = 0; y + 1 < ySteps; y++) {
