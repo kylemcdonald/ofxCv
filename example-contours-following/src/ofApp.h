@@ -6,7 +6,7 @@
 class Glow : public ofxCv::RectFollower {
 protected:
 	ofColor color;
-	ofVec2f cur, smooth;
+	ofVec3f cur, smooth;
 	float startedDying;
 	ofPolyline all;
 public:
@@ -24,7 +24,7 @@ public:
 	void setup();
 	void update();
 	void draw();
-	
+
 	ofVideoPlayer movie;
 	ofxCv::ContourFinder contourFinder;
 	ofxCv::RectTrackerFollower<Glow> tracker;
