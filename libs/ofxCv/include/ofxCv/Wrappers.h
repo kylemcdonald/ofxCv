@@ -74,12 +74,14 @@ cv::name(xMat, yMat, resultMat);\
 	wrapThree(bitwise_xor);
 
 	// inverting non-floating point images is a just a bitwise not operation
-	template <class S, class D> void invert(S& src, D& dst) {
+	template <class S, class D>
+    void invert(S& src, D& dst) {
 		cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
 		bitwise_not(srcMat, dstMat);
 	}
 
-	template <class SD> void invert(SD& srcDst) {
+	template <class SD>
+    void invert(SD& srcDst) {
 		ofxCv::invert(srcDst, srcDst);
 	}
 
@@ -380,7 +382,7 @@ cv::name(xMat, yMat, resultMat);\
 	cv::RotatedRect minAreaRect(const ofPolyline& polyline);
 	cv::RotatedRect fitEllipse(const ofPolyline& polyline);
 	void fitLine(const ofPolyline& polyline, glm::vec2& point, glm::vec2& direction);
-
+    
     // Fills a convex polygon. It is much faster than the function fillPoly().
     // It can fill not only convex polygons but any monotonic polygon without self-intersections.
     // Apolygon whose contour intersects every horizontal line (scan line) twice at the most
@@ -450,7 +452,7 @@ cv::name(xMat, yMat, resultMat);\
 		cv::Mat dstMat = toCv(dst);
         cv::transpose(srcMat, dstMat);
     }
-
+    
 	// finds the 3x4 matrix that best describes the (premultiplied) affine transformation between two point clouds
 	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, float accuracy = .99);
 	ofMatrix4x4 estimateAffine3D(std::vector<glm::vec3>& from, std::vector<glm::vec3>& to, std::vector<unsigned char>& outliers, float accuracy = .99);

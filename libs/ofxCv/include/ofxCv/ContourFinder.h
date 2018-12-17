@@ -22,7 +22,6 @@
 // to implement in ContourFinder:
 // holes/no holes
 // CV_THRESH_OTSU?
-// cv::pointPolygonTest - inside, edge, outside
 // cv::matchShapes - similarity between two contours
 // cv::estimateRigidTransform? subdivision-based estimation for outline-flow?
 
@@ -53,10 +52,10 @@ namespace ofxCv {
 		ofPolyline& getPolyline(unsigned int i);
 		
 		cv::Rect getBoundingRect(unsigned int i) const;
-		cv::Point2f getCenter(unsigned int i) const; // center of bounding box (most stable)
-		cv::Point2f getCentroid(unsigned int i) const; // center of mass (less stable)
-		cv::Point2f getAverage(unsigned int i) const; // average of contour vertices (least stable)
-		cv::Vec2f getBalance(unsigned int i) const; // difference between centroid and center
+		cv::Point2f getCenter(unsigned int i) const;        // center of bounding box (most stable)
+		cv::Point2f getCentroid(unsigned int i) const;      // center of mass (less stable)
+		cv::Point2f getAverage(unsigned int i) const;       // average of contour vertices (least stable)
+		cv::Vec2f getBalance(unsigned int i) const;         // difference between centroid and center
 		double getContourArea(unsigned int i) const;
 		double getArcLength(unsigned int i) const;
 		std::vector<cv::Point> getConvexHull(unsigned int i) const;
@@ -70,6 +69,11 @@ namespace ofxCv {
 		
 		RectTracker& getTracker();
 		unsigned int getLabel(unsigned int i) const;
+        
+        // Performs a point-in-contour test.
+        // The function determines whether the point is inside a contour, outside, or lies on an edge (or coincides with a vertex)
+        // The return value is the signed distance (positive stands for inside).
+        double pointPolygonTest(unsigned int i, cv::Point2f point);
 		
 		void setThreshold(float thresholdValue);
 		void setAutoThreshold(bool autoThreshold);
