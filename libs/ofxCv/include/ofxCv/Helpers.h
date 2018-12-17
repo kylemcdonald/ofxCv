@@ -223,9 +223,10 @@ namespace ofxCv {
 		rotate(src, dst, rotationAmount);
 		return rotationAmount;
 	}
-	
+	    
+    // approximates a polygonal curve(s) with the specified precision.
 	std::vector<cv::Point2f> getConvexPolygon(const std::vector<cv::Point2f>& convexHull, int targetPoints);
-	
+    
 	static const ofColor cyanPrint = ofColor::fromHex(0x00abec);
 	static const ofColor magentaPrint = ofColor::fromHex(0xec008c);
 	static const ofColor yellowPrint = ofColor::fromHex(0xffee00);

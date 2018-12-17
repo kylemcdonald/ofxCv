@@ -381,14 +381,25 @@ cv::name(xMat, yMat, resultMat);\
 	cv::RotatedRect fitEllipse(const ofPolyline& polyline);
 	void fitLine(const ofPolyline& polyline, glm::vec2& point, glm::vec2& direction);
 
-	// kind of obscure function, draws filled polygons on the CPU
+    // Fills a convex polygon. It is much faster than the function fillPoly().
+    // It can fill not only convex polygons but any monotonic polygon without self-intersections.
+    // Apolygon whose contour intersects every horizontal line (scan line) twice at the most
+    // (though, its top-most and/or the bottom edge could be horizontal).
+    template <class D>
+    void fillConvexPoly(const std::vector<cv::Point>& points, D& dst) {
+        cv::Mat dstMat = toCv(dst);
+        dstMat.setTo(cv::Scalar(0));
+        cv::fillConvexPoly(dstMat, points, cv::Scalar(255));    // default 8-connected, no shift
+    }
+    
+	// Fills the area bounded by one or more polygons into a texture (image)
+    // The function can fill complex areas, for example, areas with holes,
+    // contours with self-intersections (some of their parts), and so forth.
 	template <class D>
 	void fillPoly(const std::vector<cv::Point>& points, D& dst) {
 		cv::Mat dstMat = toCv(dst);
-		const cv::Point* ppt[1] = { &(points[0]) };
-		int npt[] = { (int) points.size() };
 		dstMat.setTo(cv::Scalar(0));
-		fillPoly(dstMat, ppt, npt, 1, cv::Scalar(255));
+        cv::fillPoly(dstMat, points, cv::Scalar(255));          // default 8-connected, no shift
 	}
 
 	template <class S, class D>

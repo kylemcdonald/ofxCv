@@ -87,7 +87,7 @@ namespace ofxCv {
 		}
 		return angleSum / weights;
 	}
-	
+    
     std::vector<cv::Point2f> getConvexPolygon(const std::vector<cv::Point2f>& convexHull, int targetPoints) {
 		std::vector<cv::Point2f> result = convexHull;
 		
