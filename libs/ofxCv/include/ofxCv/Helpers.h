@@ -203,6 +203,7 @@ namespace ofxCv {
 	template <class S, class T, class D>
 	float autorotate(const S& src, D& dst, float threshold1 = 50, float threshold2 = 200) {
 		cv::Mat thresh;
+        cv::Mat srcMat = toCv(src);
 		cv::Canny(src, thresh, threshold1, threshold2);
 		return autorotate(src, thresh, dst);
 	}
