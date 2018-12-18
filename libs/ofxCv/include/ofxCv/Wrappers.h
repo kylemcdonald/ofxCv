@@ -303,23 +303,25 @@ cv::name(xMat, yMat, resultMat);\
 		if(black != 0) {
 			add(dstMat, cv::Scalar(black), dstMat);
 		}
-		// copy from dst (unsigned char) to img (int)
-		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++) {
-				img[y][x] = dstMat.at<unsigned char>(y, x);
-			}
-		}
+		// fast copy from dst (unsigned char) to img (int)
+        for(int y = 0; y < height; ++y) {
+            const unsigned char* dstPtr = dstMat.ptr<unsigned char>(y);
+            for(int x = 0; x < width; ++x) {
+                img[y][x] = dstPtr[x];
+            }
+        }
 		ETF etf;
 		etf.init(height, width);
 		etf.set(img);
 		etf.Smooth(halfw, smoothPasses);
 		GetFDoG(img, etf, sigma1, sigma2, tau);
-		// copy result from img (int) to dst (unsigned char)
-		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++) {
-				dstMat.at<unsigned char>(y, x) = img[y][x];
-			}
-		}
+		// fast copy result from img (int) to dst (unsigned char)
+        for(int y = 0; y < height; ++y) {
+            unsigned char* dstPtr = dstMat.ptr<unsigned char>(y);
+            for(int x = 0; x < width; ++x) {
+                dstPtr[x] = img[y][x];
+            }
+        }
 	}
 
 	// dst does not imitate src
