@@ -101,12 +101,16 @@ namespace ofxCv {
 		if(!nextPts.empty() || calcFeaturesNextFrame){
 			if(calcFeaturesNextFrame){
 				calcFeaturesToTrack(prevPts, next);
+				if (prevPts.empty()) {
+					nextPts.clear();
+					return;
+				}
 				calcFeaturesNextFrame = false;
 			}else{
                 swap(prevPts, nextPts);
 			}
 			nextPts.clear();
-            
+
 #if CV_MAJOR_VERSION>=2 && (CV_MINOR_VERSION>4 || (CV_MINOR_VERSION==4 && CV_SUBMINOR_VERSION>=1))
 			if (prevPyramid.empty()) {
 				buildOpticalFlowPyramid(prev,prevPyramid,cv::Size(windowSize, windowSize),10);
