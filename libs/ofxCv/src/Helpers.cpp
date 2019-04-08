@@ -130,13 +130,11 @@ namespace ofxCv {
     //
     // Author:  Nash (nash [at] opencv-code [dot] com)
     // https://github.com/bsdnoobz/zhang-suen-thinning
-    void thinningIteration( cv::Mat & img, int iter )
+    void thinningIteration( cv::Mat & img, int iter, cv::Mat & marker )
     {
         CV_Assert(img.channels() == 1);
         CV_Assert(img.depth() != sizeof(uchar));
         CV_Assert(img.rows > 3 && img.cols > 3);
-        
-        cv::Mat marker = cv::Mat::zeros(img.size(), CV_8UC1);
         
         int nRows = img.rows;
         int nCols = img.cols;
@@ -189,16 +187,28 @@ namespace ofxCv {
                 so = se;
                 se = &(pBelow[x+1]);
                 
+                // @valillon
+                // Beyond this point the original Nash's code used an unified conditional at the end
+                // Intermediate conditionals speeds the process up (depending on the image to be thinned).
+                if (*me == 0) continue; // do not thin already zeroed pixels
+                
                 int A  = (*no == 0 && *ne == 1) + (*ne == 0 && *ea == 1) +
                 (*ea == 0 && *se == 1) + (*se == 0 && *so == 1) +
                 (*so == 0 && *sw == 1) + (*sw == 0 && *we == 1) +
                 (*we == 0 && *nw == 1) + (*nw == 0 && *no == 1);
-                int B  = *no + *ne + *ea + *se + *so + *sw + *we + *nw;
-                int m1 = iter == 0 ? (*no * *ea * *so) : (*no * *ea * *we);
-                int m2 = iter == 0 ? (*ea * *so * *we) : (*no * *so * *we);
+                if (A != 1) continue;
                 
-                if (A == 1 && (B >= 2 && B <= 6) && m1 == 0 && m2 == 0)
-                    pDst[x] = 1;
+                int B  = *no + *ne + *ea + *se + *so + *sw + *we + *nw;
+                if (B < 2 || B > 6) continue;
+                
+                int m1 = iter == 0 ? (*no * *ea * *so) : (*no * *ea * *we);
+                if (m1) continue;
+                
+                int m2 = iter == 0 ? (*ea * *so * *we) : (*no * *so * *we);
+                if (m2) continue;
+                
+                // if (A == 1 && (B >= 2 && B <= 6) && m1 == 0 && m2 == 0)
+                pDst[x] = 1;
             }
         }
         

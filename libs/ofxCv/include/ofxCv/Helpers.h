@@ -200,18 +200,21 @@ namespace ofxCv {
     // Consider to rescale the input image and then upscale the skeleton for being computed every update()
     // Otherwise use ofxCv::thin(), although it may lead to wrong skeletons for some shapes.
     // Note: do not call thinningIteration() directly from your ofApp.
-    void thinningIteration( cv::Mat & img, int iter );
+    void thinningIteration( cv::Mat & img, int iter, cv::Mat & marker );
     template<class T>
     void thinning(T& img)
     {
         cv::Mat dst = toCv(img);
         dst /= 255;
         cv::Mat prev = cv::Mat::zeros(dst.size(), CV_8UC1);
+        cv::Mat marker = cv::Mat::zeros(dst.size(), CV_8UC1);   // Re-uses allocated memory
         cv::Mat diff;
         
         do {
-            thinningIteration(dst, 0);
-            thinningIteration(dst, 1);
+            marker.setTo(cv::Scalar(0));
+            thinningIteration(dst, 0, marker);
+            marker.setTo(cv::Scalar(0));
+            thinningIteration(dst, 1, marker);
             cv::absdiff(dst, prev, diff);
             dst.copyTo(prev);
         }
