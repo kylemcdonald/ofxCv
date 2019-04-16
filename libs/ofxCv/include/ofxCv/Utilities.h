@@ -18,7 +18,8 @@
 #include "ofVideoGrabber.h"
 #include "ofPolyline.h"
 #include "ofVectorMath.h"
-
+#include "opencv2/imgproc/imgproc_c.h"
+#include "opencv2/calib3d/calib3d_c.h"
 namespace ofxCv {
 	// these functions are for accessing Mat, ofPixels and ofImage consistently.
 	// they're very important for imitate().
