@@ -79,7 +79,7 @@ namespace ofxCv {
 		:lastSeen(old.lastSeen)
 		,label(old.label)
 		,age(old.age)
-		,index(-1)
+		,index(old.index)
 		,object(old.object){
 		}
 		void timeStep(bool visible) {
@@ -117,7 +117,7 @@ namespace ofxCv {
 		std::map<unsigned int, TrackedObject<T>*> previousLabelMap, currentLabelMap;
 		
 		unsigned int persistence;
-    	        unsigned long long curLabel;
+		unsigned long long curLabel;
 		float maximumDistance;
 		unsigned long long getNewLabel() {
 			curLabel++;
