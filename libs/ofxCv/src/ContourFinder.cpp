@@ -276,6 +276,10 @@ namespace ofxCv {
 		return tracker;
 	}
 	
+    double ContourFinder::pointPolygonTest(unsigned int i, cv::Point2f point) {
+        return cv::pointPolygonTest(contours[i], point, true);
+    }
+    
 	void ContourFinder::setAutoThreshold(bool autoThreshold) {
 		this->autoThreshold = autoThreshold;
 	}

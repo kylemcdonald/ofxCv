@@ -87,7 +87,7 @@ namespace ofxCv {
 		}
 		return angleSum / weights;
 	}
-	
+    
     std::vector<cv::Point2f> getConvexPolygon(const std::vector<cv::Point2f>& convexHull, int targetPoints) {
 		std::vector<cv::Point2f> result = convexHull;
 		
@@ -121,4 +121,98 @@ namespace ofxCv {
 		
 		return result;
 	}
+    
+    // Code for thinning a binary image using Zhang-Suen algorithm.
+    // Normally you wouldn't call this function directly from your code.
+    //
+    // im    Binary image with range = [0,1]
+    // iter  0=even, 1=odd
+    //
+    // Author:  Nash (nash [at] opencv-code [dot] com)
+    // https://github.com/bsdnoobz/zhang-suen-thinning
+    void thinningIteration( cv::Mat & img, int iter, cv::Mat & marker )
+    {
+        CV_Assert(img.channels() == 1);
+        CV_Assert(img.depth() != sizeof(uchar));
+        CV_Assert(img.rows > 3 && img.cols > 3);
+        
+        int nRows = img.rows;
+        int nCols = img.cols;
+        
+        if (img.isContinuous()) {
+            nCols *= nRows;
+            nRows = 1;
+        }
+        
+        int x, y;
+        uchar *pAbove;
+        uchar *pCurr;
+        uchar *pBelow;
+        uchar *nw, *no, *ne;    // north (pAbove)
+        uchar *we, *me, *ea;
+        uchar *sw, *so, *se;    // south (pBelow)
+        
+        uchar *pDst;
+        
+        // initialize row pointers
+        pAbove = NULL;
+        pCurr  = img.ptr<uchar>(0);
+        pBelow = img.ptr<uchar>(1);
+        
+        for (y = 1; y < img.rows-1; ++y) {
+            // shift the rows up by one
+            pAbove = pCurr;
+            pCurr  = pBelow;
+            pBelow = img.ptr<uchar>(y+1);
+            
+            pDst = marker.ptr<uchar>(y);
+            
+            // initialize col pointers
+            no = &(pAbove[0]);
+            ne = &(pAbove[1]);
+            me = &(pCurr[0]);
+            ea = &(pCurr[1]);
+            so = &(pBelow[0]);
+            se = &(pBelow[1]);
+            
+            for (x = 1; x < img.cols-1; ++x) {
+                // shift col pointers left by one (scan left to right)
+                nw = no;
+                no = ne;
+                ne = &(pAbove[x+1]);
+                we = me;
+                me = ea;
+                ea = &(pCurr[x+1]);
+                sw = so;
+                so = se;
+                se = &(pBelow[x+1]);
+                
+                // @valillon
+                // Beyond this point the original Nash's code used an unified conditional at the end
+                // Intermediate conditionals speeds the process up (depending on the image to be thinned).
+                if (*me == 0) continue; // do not thin already zeroed pixels
+                
+                int A  = (*no == 0 && *ne == 1) + (*ne == 0 && *ea == 1) +
+                (*ea == 0 && *se == 1) + (*se == 0 && *so == 1) +
+                (*so == 0 && *sw == 1) + (*sw == 0 && *we == 1) +
+                (*we == 0 && *nw == 1) + (*nw == 0 && *no == 1);
+                if (A != 1) continue;
+                
+                int B  = *no + *ne + *ea + *se + *so + *sw + *we + *nw;
+                if (B < 2 || B > 6) continue;
+                
+                int m1 = iter == 0 ? (*no * *ea * *so) : (*no * *ea * *we);
+                if (m1) continue;
+                
+                int m2 = iter == 0 ? (*ea * *so * *we) : (*no * *so * *we);
+                if (m2) continue;
+                
+                // if (A == 1 && (B >= 2 && B <= 6) && m1 == 0 && m2 == 0)
+                pDst[x] = 1;
+            }
+        }
+        
+        img &= ~marker;
+    }
+        
 }

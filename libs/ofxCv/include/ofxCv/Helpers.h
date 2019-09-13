@@ -165,9 +165,10 @@ namespace ofxCv {
 	cv::Point3_<T> intersectPointRay(cv::Point3_<T> point, cv::Point3_<T> ray) {
 		return ray * (point.dot(ray) / ray.dot(ray));
 	}
-	
+    
 	// morphological thinning, also called skeletonization, strangely missing from opencv
 	// here is a description of the algorithm http://homepages.inf.ed.ac.uk/rbf/HIPR2/thin.htm
+    // Note: it may produce wrong skeletons for some complex shapes.
 	template <class T>
 	void thin(T& img) {
 		cv::Mat mat = toCv(img);
@@ -194,6 +195,34 @@ namespace ofxCv {
 		for(int i=0;i<n;i++){int j=q[i];if(!p[j+ib1]&&!p[j+ia1]&&!p[j+ia2]&&p[j+ic2]&&p[j+ib3]){p[j]=0;}}
 	}
 	
+    // Code for thinning a binary image using Zhang-Suen algorithm.
+    // Large areas to skeletonize may take considerable amount of time.
+    // Consider to rescale the input image and then upscale the skeleton for being computed every update()
+    // Otherwise use ofxCv::thin(), although it may lead to wrong skeletons for some shapes.
+    // Note: do not call thinningIteration() directly from your ofApp.
+    void thinningIteration( cv::Mat & img, int iter, cv::Mat & marker );
+    template<class T>
+    void thinning(T& img)
+    {
+        cv::Mat dst = toCv(img);
+        dst /= 255;
+        cv::Mat prev = cv::Mat::zeros(dst.size(), CV_8UC1);
+        cv::Mat marker = cv::Mat::zeros(dst.size(), CV_8UC1);   // Re-uses allocated memory
+        cv::Mat diff;
+        
+        do {
+            marker.setTo(cv::Scalar(0));
+            thinningIteration(dst, 0, marker);
+            marker.setTo(cv::Scalar(0));
+            thinningIteration(dst, 1, marker);
+            cv::absdiff(dst, prev, diff);
+            dst.copyTo(prev);
+        }
+        while (cv::countNonZero(diff) > 0);
+        
+        dst *= 255;
+    }
+    
 	// given a vector of lines, this function will find the average angle
 	float weightedAverageAngle(const std::vector<cv::Vec4i>& lines);
 	
@@ -203,6 +232,7 @@ namespace ofxCv {
 	template <class S, class T, class D>
 	float autorotate(const S& src, D& dst, float threshold1 = 50, float threshold2 = 200) {
 		cv::Mat thresh;
+        cv::Mat srcMat = toCv(src);
 		cv::Canny(src, thresh, threshold1, threshold2);
 		return autorotate(src, thresh, dst);
 	}
@@ -223,9 +253,10 @@ namespace ofxCv {
 		rotate(src, dst, rotationAmount);
 		return rotationAmount;
 	}
-	
+	    
+    // approximates a polygonal curve(s) with the specified precision.
 	std::vector<cv::Point2f> getConvexPolygon(const std::vector<cv::Point2f>& convexHull, int targetPoints);
-	
+    
 	static const ofColor cyanPrint = ofColor::fromHex(0x00abec);
 	static const ofColor magentaPrint = ofColor::fromHex(0xec008c);
 	static const ofColor yellowPrint = ofColor::fromHex(0xffee00);
