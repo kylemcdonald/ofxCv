@@ -214,6 +214,19 @@ cv::name(xMat, yMat, resultMat);\
         return centers;
     }
 
+    template <class S, class M, class D>
+    void inpaint(const S& src, const M& mask, D& dst) {
+        imitate(dst, src);
+        cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+        if (srcMat.type() != CV_8UC1 && srcMat.type() != CV_8UC3) {
+            ofLogError("ofxCV") << "Unsupported image type at inpaint";
+            return;
+        }
+        cv::Mat maskMat = toCv(mask);
+        maskMat.convertTo(maskMat, CV_8UC1);
+        cv::inpaint(srcMat, maskMat, dstMat, 3, cv::INPAINT_NS);
+    }
+    
 	// CV_RGB2GRAY, CV_HSV2RGB, etc. with [RGB, BGR, GRAY, HSV, HLS, XYZ, YCrCb, Lab, Luv]
 	// you can convert whole images...
 	template <class S, class D>
