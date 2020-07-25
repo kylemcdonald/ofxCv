@@ -173,6 +173,60 @@ cv::name(xMat, yMat, resultMat);\
 		ofxCv::autothreshold(srcDst, srcDst, invert);
 	}
 
+    // k-means color clustering (high computational cost, not intended for real-time operation)
+    template <class S, class D>
+    cv::Mat kmeans(const S& src, D& dst, int nClusters, int maxIterations = 10, double eps = 0.1, int attempts = 3) {
+        cv::Mat srcMat = toCv(src);
+        if (srcMat.type() != CV_8UC1 && srcMat.type() != CV_8UC3) {
+            ofLogError("ofxCV") << "Unsupported image type in kmeans";
+            return cv::Mat();
+        }
+        cv::Mat labels, centers;
+        cv::Mat samples(srcMat.rows * srcMat.cols, 1, CV_32F);
+        for(int y = 0; y < srcMat.rows; ++y)
+            for(int x = 0; x < srcMat.cols; ++x)
+                if(srcMat.channels() == 3) {
+                    samples.at<float>(x + y * srcMat.cols, 0) = srcMat.at<cv::Vec3b>(y,x)[0];
+                    samples.at<float>(x + y * srcMat.cols, 1) = srcMat.at<cv::Vec3b>(y,x)[1];
+                    samples.at<float>(x + y * srcMat.cols, 2) = srcMat.at<cv::Vec3b>(y,x)[2];
+                } else samples.at<float>(x + y * srcMat.cols) = srcMat.at<uchar>(y,x);
+        
+        double compactness = cv::kmeans(samples, nClusters, labels,
+                        cv::TermCriteria( cv::TermCriteria::EPS+cv::TermCriteria::COUNT, maxIterations, eps),
+                        attempts, cv::KmeansFlags::KMEANS_PP_CENTERS, centers);
+
+        cv::Mat dstMat(srcMat.size(), srcMat.type());
+        for(int y = 0; y < srcMat.rows; ++y)
+            for(int x = 0; x < srcMat.cols; ++x) {
+                int clusterID = labels.at<int>(x + y * srcMat.cols, 0);
+                if(srcMat.channels() == 3) {
+                    dstMat.at<cv::Vec3b>(y,x)[0] = centers.at<float>(clusterID, 0);
+                    dstMat.at<cv::Vec3b>(y,x)[1] = centers.at<float>(clusterID, 1);
+                    dstMat.at<cv::Vec3b>(y,x)[2] = centers.at<float>(clusterID, 2);
+                } else dstMat.at<uchar>(y,x) = centers.at<uchar>(clusterID);
+            }
+
+        ofxCv::toOf(dstMat, dst);
+        // Returning centers as Mat. Access the class centroids by using
+        // centers.at<uchar>(k) for grayscale images,
+        // centers.at<Vec3b>(k) for 3-channel color images or
+        // centers.at<float>(k, channel) for a specific color component.
+        return centers;
+    }
+
+    template <class S, class M, class D>
+    void inpaint(const S& src, const M& mask, D& dst) {
+        imitate(dst, src);
+        cv::Mat srcMat = toCv(src), dstMat = toCv(dst);
+        if (srcMat.type() != CV_8UC1 && srcMat.type() != CV_8UC3) {
+            ofLogError("ofxCV") << "Unsupported image type at inpaint";
+            return;
+        }
+        cv::Mat maskMat = toCv(mask);
+        maskMat.convertTo(maskMat, CV_8UC1);
+        cv::inpaint(srcMat, maskMat, dstMat, 3, cv::INPAINT_NS);
+    }
+    
 	// CV_RGB2GRAY, CV_HSV2RGB, etc. with [RGB, BGR, GRAY, HSV, HLS, XYZ, YCrCb, Lab, Luv]
 	// you can convert whole images...
 	template <class S, class D>
