@@ -526,7 +526,7 @@ namespace ofxCv {
         ofPushMatrix();
         ofNoFill();
         
-        applyMatrix(makeMatrix(boardRotations[i], boardTranslations[i]));
+        ofMultMatrix(makeMatrix(boardRotations[i], boardTranslations[i]));
         
         ofSetColor(ofColor::fromHsb(255 * i / size(), 255, 255));
         

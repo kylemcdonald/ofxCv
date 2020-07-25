@@ -16,7 +16,6 @@
 namespace ofxCv {
 	
 	ofMatrix4x4 makeMatrix(cv::Mat rotation, cv::Mat translation);
-	void applyMatrix(const ofMatrix4x4& matrix);
 	
 	void drawMat(const cv::Mat& mat, float x, float y);
 	void drawMat(const cv::Mat& mat, float x, float y, float width, float height);

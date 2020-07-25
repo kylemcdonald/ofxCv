@@ -35,7 +35,7 @@ void ofApp::draw() {
 	cam.draw(0, 0);
 	if(found) {
 		calibration.getDistortedIntrinsics().loadProjectionMatrix();
-		applyMatrix(modelMatrix);
+		ofMultMatrix(modelMatrix);
 		
 		ofMesh mesh;
 		mesh.setMode(OF_PRIMITIVE_POINTS);

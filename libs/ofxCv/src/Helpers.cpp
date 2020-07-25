@@ -45,10 +45,6 @@ namespace ofxCv {
 		tex.draw(x, y, width, height);
 	}
 	
-	void applyMatrix(const ofMatrix4x4& matrix) {
-		glMultMatrixf((GLfloat*) matrix.getPtr());
-	}
-	
 	int forceOdd(int x) {
 		return (x / 2) * 2 + 1;
 	}
