@@ -420,8 +420,8 @@ namespace ofxCv {
 				unsigned int curLabel = Tracker<T>::newLabels[i];
 				labels.push_back(curLabel);
 				followers.push_back(F());
-				followers.back().setup(Tracker<T>::getCurrent(curLabel));
 				followers.back().setLabel(curLabel);
+				followers.back().setup(Tracker<T>::getCurrent(curLabel));
 			}
 			// remove dead
 			for(int i = labels.size() - 1; i >= 0; i--) {
