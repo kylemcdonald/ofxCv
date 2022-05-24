@@ -417,6 +417,8 @@ namespace ofxCv {
         cv::Mat matSrc = cv::Mat(1, 1, CV_32FC2, &src.x);
         cv::Mat matDst = cv::Mat(1, 1, CV_32FC2, &dst.x);;
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
+        dst.x = dst.x * undistortedIntrinsics.getCameraMatrix().at<double>(0, 0) + undistortedIntrinsics.getCameraMatrix().at<double>(0, 2);
+        dst.y = dst.y * undistortedIntrinsics.getCameraMatrix().at<double>(1, 1) + undistortedIntrinsics.getCameraMatrix().at<double>(1, 2);
         return dst;
     }
     
@@ -426,6 +428,10 @@ namespace ofxCv {
         cv::Mat matSrc = cv::Mat(n, 1, CV_32FC2, &src[0].x);
         cv::Mat matDst = cv::Mat(n, 1, CV_32FC2, &dst[0].x);
         undistortPoints(matSrc, matDst, distortedIntrinsics.getCameraMatrix(), distCoeffs);
+        for (auto& v : dst) {
+            v.x = v.x * undistortedIntrinsics.getCameraMatrix().at<double>(0, 0) + undistortedIntrinsics.getCameraMatrix().at<double>(0, 2);
+            v.y = v.y * undistortedIntrinsics.getCameraMatrix().at<double>(1, 1) + undistortedIntrinsics.getCameraMatrix().at<double>(1, 2);
+        }
     }
     
     bool Calibration::getTransformation(Calibration& dst, cv::Mat& rotation, cv::Mat& translation) {
