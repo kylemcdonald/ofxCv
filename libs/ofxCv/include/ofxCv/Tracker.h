@@ -125,7 +125,7 @@ namespace ofxCv {
 		}
 		
 	public:
-		Tracker<T>()
+		Tracker()
 		:persistence(15)
 		,curLabel(0)
 		,maximumDistance(64) {
