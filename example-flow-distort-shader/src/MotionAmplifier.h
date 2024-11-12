@@ -65,7 +65,7 @@ public:
 		flow.calcOpticalFlow(rescaled);
         duplicateFirstChannel(flow.getFlow(), flow3);
         flow3 *= scaleFactor;
-        flow3 += cv::Scalar_<float>(.5, .5, 0);
+        flow3 += cv::Scalar(.5, .5, 0);
         ofxCv::blur(flow3, blurAmount);
         int w = flow3.cols, h = flow3.rows;
         if(needToReset || accumulator.size() != flow3.size()) {
