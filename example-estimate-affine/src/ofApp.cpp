@@ -12,18 +12,18 @@ void ofApp::setup() {
 	rigid.translate(translation);
 	rigid.rotate(rotation);
 	
-	vector<ofVec3f> from;
+	vector<glm::vec3> from;
 	for(int i = 0; i < 4; i++) {
-		from.push_back(ofVec3f(ofRandom(1,2), ofRandom(1,2), ofRandom(5,6)));
-		from.push_back(ofVec3f(ofRandom(3,4), ofRandom(3,4), ofRandom(5,6)));
-		from.push_back(ofVec3f(ofRandom(1,2), ofRandom(3,4), ofRandom(5,6)));
-		from.push_back(ofVec3f(ofRandom(3,4), ofRandom(1,2), ofRandom(5,6)));
+		from.push_back(glm::vec3(ofRandom(1,2), ofRandom(1,2), ofRandom(5,6)));
+		from.push_back(glm::vec3(ofRandom(3,4), ofRandom(3,4), ofRandom(5,6)));
+		from.push_back(glm::vec3(ofRandom(1,2), ofRandom(3,4), ofRandom(5,6)));
+		from.push_back(glm::vec3(ofRandom(3,4), ofRandom(1,2), ofRandom(5,6)));
 	}
 	
-	vector<ofVec3f> to;
+	vector<glm::vec3> to;
 	for(int i = 0; i < from.size(); i++) {
 		// opencv assumes you're doing premultiplication
-		to.push_back(rigid.preMult(from[i]));
+		to.push_back(rigid.preMult(ofVec3f(from[i])));
 	}
 	
 	ofMatrix4x4 rigidEstimate = estimateAffine3D(from, to);
@@ -33,7 +33,7 @@ void ofApp::setup() {
 	
 	for(int i = 0; i < from.size(); i++) {
 		// opencv assumes you're doing premultiplication
-		ofVec3f after = rigidEstimate.preMult(from[i]);
+		ofVec3f after = rigidEstimate.preMult(ofVec3f(from[i]));
 		cout << from[i] << " -> " << to[i] << " estimated as: " << after << endl;
 	}
 	
