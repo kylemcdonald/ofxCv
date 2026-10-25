@@ -76,7 +76,7 @@ public:
     }
     void add(float y) {
         ofVec2f cur(n, y);
-        mesh.addVertex(cur);
+        mesh.addVertex(glm::vec3(cur.x, cur.y, 0));
         if(n == 0) {
             min = cur;
             max = cur;

@@ -12,6 +12,6 @@ public:
 	ofxCv::KalmanPosition kalman;
 	
 	ofMesh predicted, line, estimated;
-	ofVec2f point;
+	glm::vec3 point;
 	float speed;
 };

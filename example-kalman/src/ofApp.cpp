@@ -16,7 +16,7 @@ void ofApp::setup() {
 }
 
 void ofApp::update() {
-	ofVec2f curPoint(mouseX, mouseY);
+	glm::vec3 curPoint(mouseX, mouseY, 0);
 	line.addVertex(curPoint);
 	
 	kalman.update(curPoint); // feed measurement

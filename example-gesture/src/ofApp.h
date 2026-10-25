@@ -49,8 +49,10 @@ public:
 		if(isLine) {
 			gestureType = GESTURE_LINE;
 			fitError = lineSum;
-			idealized.addVertex(closestPointOnRay(linePoint, linePoint + lineDirection, polyline[0]));
-			idealized.addVertex(closestPointOnRay(linePoint, linePoint + lineDirection, polyline[polyline.size() - 1]));
+			ofVec2f start = closestPointOnRay(linePoint, linePoint + lineDirection, polyline[0]);
+			ofVec2f end = closestPointOnRay(linePoint, linePoint + lineDirection, polyline[polyline.size() - 1]);
+			idealized.addVertex(start.x, start.y);
+			idealized.addVertex(end.x, end.y);
 		} else {
 			gestureType = GESTURE_ARC;
 			fitError = ellipseSum;
@@ -62,14 +64,14 @@ public:
 				float a = ellipse.size.width / 2, b = ellipse.size.height / 2, x0 = cur.x, y0 = cur.y;
 				cur *= (a * b) / sqrtf(a * a * y0 * y0 + b * b * x0 * x0);
 				cur.rotate(ellipse.angle), cur += center;
-				idealized.addVertex(cur);
+				idealized.addVertex(cur.x, cur.y);
 			}
 		}
 	}
 	
 protected:
 	cv::RotatedRect ellipse, rect;
-	ofVec2f linePoint, lineDirection;
+	glm::vec2 linePoint, lineDirection;
 	ofPolyline idealized;
 	float lineRatio, fitError;
 	GestureType gestureType;
